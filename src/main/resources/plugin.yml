@@ -1,0 +1,6 @@
+name: ${project.artifactId}
+version: ${project.version}
+description: A core plugin for any server to get up and go.
+author: NJDaeger
+main: com.njdaeger.bedrock.Bedrock
+depend: [CoalesceCore]
