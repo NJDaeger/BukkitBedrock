@@ -2,8 +2,10 @@ package com.njdaeger.bedrock.api;
 
 import com.coalesce.core.Color;
 import com.coalesce.core.plugin.ICoPlugin;
-import com.njdaeger.bedrock.MessageFile;
 import com.njdaeger.bedrock.Message;
+import com.njdaeger.bedrock.MessageFile;
+import com.njdaeger.bedrock.api.command.BedrockCommand;
+import com.njdaeger.bedrock.api.command.BedrockCommandRegister;
 import com.njdaeger.bedrock.api.user.IUser;
 
 import java.util.List;
@@ -50,7 +52,27 @@ public interface IBedrock extends ICoPlugin {
      * @return The string colored, translated, and placeholders replaced.
      */
     default String translate(Message message, Object... placeholders) {
+        return Color.translate('&',getCoFormatter().formatString(getMessageFile().translate(message), placeholders));
+    }
+    
+    /**
+     * Get a translated string colored and formatted
+     * @param message The message to translate
+     * @param placeholders The placeholders in the message.
+     * @return The string colored, translated, formatted, and placeholders replaced.
+     */
+    default String formatTranslate(Message message, Object... placeholders) {
         return Color.translate('&',getCoFormatter().format(getMessageFile().translate(message), placeholders));
+    }
+    
+    /**
+     * Register a processed command.
+     * @param commands The commands to register
+     */
+    default void registerCommand(BedrockCommand... commands) {
+        for (BedrockCommand command : commands) {
+            getCommandStore().registerCommand(command, new BedrockCommandRegister(command, this));
+        }
     }
     
 }

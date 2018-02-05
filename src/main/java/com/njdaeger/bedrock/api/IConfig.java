@@ -6,4 +6,6 @@ public interface IConfig extends com.coalesce.core.config.base.IConfig {
     
     MessageFile.Language getLanguage();
     
+    boolean autoUpdate();
+    
 }

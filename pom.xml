@@ -28,6 +28,10 @@
                     <include>plugin.yml</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>src/main/messages</directory>
+                <filtering>false</filtering>
+            </resource>
         </resources>
 
     </build>

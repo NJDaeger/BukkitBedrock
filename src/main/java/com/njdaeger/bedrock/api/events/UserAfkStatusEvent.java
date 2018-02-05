@@ -8,8 +8,8 @@ import org.bukkit.event.HandlerList;
 public class UserAfkStatusEvent extends Event implements Cancellable{
     
     private static final HandlerList handlers = new HandlerList();
+    private boolean canceled = false;
     private String afkMessage;
-    private boolean canceled;
     private boolean status;
     private IUser user;
     

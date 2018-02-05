@@ -10,12 +10,17 @@ public class Config extends YmlConfig implements IConfig {
         super("config", plugin);
         
         addEntry("language", "en_us");
-        
+        addEntry("auto-update", true);
     }
     
     
     @Override
     public MessageFile.Language getLanguage() {
         return MessageFile.Language.valueOf(getString("language").toUpperCase());
+    }
+    
+    @Override
+    public boolean autoUpdate() {
+        return getBoolean("auto-update");
     }
 }

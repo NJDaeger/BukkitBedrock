@@ -1,6 +1,7 @@
 package com.njdaeger.bedrock;
 
 import com.coalesce.core.CoPlugin;
+import com.coalesce.core.Color;
 import com.coalesce.core.session.NamespacedSessionStore;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.IConfig;
@@ -20,15 +21,19 @@ import java.util.List;
 public class Bedrock extends CoPlugin implements IBedrock {
     
     private NamespacedSessionStore<IUser> userNameSpace;
+    private MessageFile messageFile;
     private IConfig configuration;
     
     @Override
     public void onPluginLoad() throws Exception {
         
+        //This moves all the currently existing language files to lang folder
+        File langFolder = new File(getDataFolder() + File.separator + "lang");
         if (!getDataFolder().exists()) getDataFolder().createNewFile();
+        if (!langFolder.exists()) langFolder.mkdir();
         
         for (MessageFile.Language language : MessageFile.Language.values()) {
-            File langFile = new File(getDataFolder() + File.separator + language.getFileName() + ".yml");
+            File langFile = new File(langFolder + File.separator + language.getFileName() + ".yml");
             if (!langFile.exists()) {
                 langFile.createNewFile();
             }
@@ -49,16 +54,20 @@ public class Bedrock extends CoPlugin implements IBedrock {
         }
     }
     
-    
-    
     @Override
     public void onPluginEnable() throws Exception {
+        setDisplayName("Bedrock");
+        setPluginColor(Color.GREEN);
+        
         this.userNameSpace = new NamespacedSessionStore<>("users", IUser.class);
         this.configuration = new Config(this);
-        configuration.create();
+        this.messageFile = new MessageFile(this);
+        this.configuration.create();
         registerListener(this);
+    
+        updateCheck("NJDaeger", "BukkitBedrock", configuration.autoUpdate());
+        
         new BasicCommands(this);
-        new MessageFile(this);
     }
     
     @Override
@@ -88,7 +97,7 @@ public class Bedrock extends CoPlugin implements IBedrock {
     
     @Override
     public MessageFile getMessageFile() {
-        return null;
+        return messageFile;
     }
     
     @Override

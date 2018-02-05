@@ -1,4 +1,0 @@
-afkCommandDesc: "Mark a user as away from keyboard"
-afkCommandUsage: "/afk [message]"
-afkMessage: "&7* &r{0}&7 is now AFK."
-afkMessage: "&7* &r{0}&7 is now AFK. &o[{1}]"
