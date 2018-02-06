@@ -61,7 +61,7 @@ public interface IBedrock extends ICoPlugin {
      * @param placeholders The placeholders in the message.
      * @return The string colored, translated, formatted, and placeholders replaced.
      */
-    default String formatTranslate(Message message, Object... placeholders) {
+    default String pluginTranslate(Message message, Object... placeholders) {
         return Color.translate('&',getCoFormatter().format(getMessageFile().translate(message), placeholders));
     }
     

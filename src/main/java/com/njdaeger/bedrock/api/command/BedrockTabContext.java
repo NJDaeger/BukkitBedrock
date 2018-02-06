@@ -7,7 +7,7 @@ import com.njdaeger.bedrock.Permission;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.user.IUser;
 
-public class BedrockTabContext extends TabContext {
+public class BedrockTabContext extends TabContext<BedrockCommandContext, BedrockTabContext> {
     
     private IBedrock bedrock;
     

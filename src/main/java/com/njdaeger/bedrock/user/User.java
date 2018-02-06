@@ -1,5 +1,6 @@
 package com.njdaeger.bedrock.user;
 
+import com.coalesce.core.plugin.ICoPlugin;
 import com.coalesce.core.session.AbstractSession;
 import com.coalesce.core.session.NamespacedSessionStore;
 import com.njdaeger.bedrock.Permission;
@@ -33,6 +34,11 @@ public class User extends AbstractSession<Player> implements IUser {
     @Override
     public String getName() {
         return name;
+    }
+    
+    @Override
+    public IBedrock getSessionOwner() {
+        return bedrock;
     }
     
     @Override

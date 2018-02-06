@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class BedrockCommandContext extends CommandContext {
+public class BedrockCommandContext extends CommandContext<BedrockCommandContext, BedrockTabContext> {
     
     private IBedrock bedrock;
     
@@ -84,12 +84,20 @@ public class BedrockCommandContext extends CommandContext {
         return false;
     }
     
+    public void send(Message message, Object... objects) {
+        send(bedrock.translate(message, objects));
+    }
+    
+    public void pluginMessage(Message message, Object... placeholders) {
+        pluginMessage(bedrock.translate(message, placeholders));
+    }
+    
     /**
      * Error message if the user given is not found.
      * @param user The user that wasn't found
      */
     public void userNotFound(String user) {
-        pluginMessage(bedrock.translate(Message.ERROR_USER_NOT_FOUND, user));
+        pluginMessage(Message.ERROR_USER_NOT_FOUND, user);
     }
     
     /**
@@ -104,22 +112,22 @@ public class BedrockCommandContext extends CommandContext {
     
     @Override
     public void noPermission(String... permissionsNeeded) {
-        pluginMessage(bedrock.translate(Message.ERROR_NO_PERMISSION, (Object[])permissionsNeeded));
+        pluginMessage(Message.ERROR_NO_PERMISSION, (Object[])permissionsNeeded);
     }
     
     @Override
     public void tooManyArgs(int max, int given) {
-        pluginMessage(bedrock.translate(Message.ERROR_TOO_MANY_ARGS, max, given));
+        pluginMessage(Message.ERROR_TOO_MANY_ARGS, max, given);
     }
     
     @Override
     public void notEnoughArgs(int min, int given) {
-        pluginMessage(bedrock.translate(Message.ERROR_NOT_ENOUGH_ARGS, min, given));
+        pluginMessage(Message.ERROR_NOT_ENOUGH_ARGS, min, given);
     }
     
     @Override
     public void notCorrectSender(SenderType... allowed) {
-        pluginMessage(bedrock.translate(Message.ERROR_INCORRECT_SENDER, (Object[])allowed));
+        pluginMessage(Message.ERROR_INCORRECT_SENDER, (Object[])allowed);
     }
     
     @Override

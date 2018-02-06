@@ -1,6 +1,8 @@
 package com.njdaeger.bedrock.api.user;
 
 import com.coalesce.core.session.ISession;
+import com.njdaeger.bedrock.Message;
+import com.njdaeger.bedrock.api.IBedrock;
 import org.bukkit.entity.Player;
 
 public interface IUser extends ISession<Player> {
@@ -50,5 +52,60 @@ public interface IUser extends ISession<Player> {
      * Runs logout process.
      */
     void logout();
+    
+    @Override
+    IBedrock getSessionOwner();
+    
+    /**
+     * Send the user a message
+     * @param message the message to send
+     */
+    default void sendMessage(String message) {
+        get().sendMessage(message);
+    }
+    
+    /**
+     * Send the user a plugin message with placeholders
+     * @param message The message to send
+     * @param placeholders The placeholders
+     */
+    default void sendMessage(String message, Object... placeholders) {
+        sendMessage(getSessionOwner().getCoFormatter().formatString(message, placeholders));
+    }
+    
+    /**
+     * Send the user a translated message
+     * @param message The message to send
+     * @param placeholder The message placeholders
+     */
+    default void sendMessage(Message message, Object... placeholder) {
+        sendMessage(getSessionOwner().translate(message, placeholder));
+    }
+    
+    /**
+     * Send the user a formatted message
+     * @param message The message to send
+     */
+    default void pluginMessage(String message) {
+        sendMessage(getSessionOwner().getCoFormatter().format(message));
+    }
+    
+    /**
+     * Send the user a formatted message with placeholders
+     * @param message The message to send
+     * @param placeholders the placeholders
+     */
+    default void pluginMessage(String message, Object... placeholders) {
+        sendMessage(getSessionOwner().getCoFormatter().format(message, placeholders));
+    }
+    
+    /**
+     * Send the user a translated formatted message
+     * @param message The message to send
+     * @param placeholder The message placeholders
+     */
+    default void pluginMessage(Message message, Object... placeholder) {
+        sendMessage(getSessionOwner().pluginTranslate(message, placeholder));
+    }
     
 }
