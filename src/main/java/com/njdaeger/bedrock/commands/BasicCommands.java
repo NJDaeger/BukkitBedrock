@@ -88,7 +88,10 @@ public class BasicCommands {
     
     private void healConsole(BedrockCommandContext context) {
         //Since the command is already set to not be allowed to have more than 1 we know it has less than 1
-        if (!context.isLength(1)) context.notEnoughArgs(1, 0);
+        if (!context.isLength(1)) {
+            context.notEnoughArgs(1, 0);
+            return;
+        }
         IUser user = context.getUser(context.argAt(0));
         if (user == null) {
             context.userNotFound(context.argAt(0));
