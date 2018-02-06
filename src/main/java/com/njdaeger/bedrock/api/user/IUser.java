@@ -3,6 +3,7 @@ package com.njdaeger.bedrock.api.user;
 import com.coalesce.core.session.ISession;
 import com.njdaeger.bedrock.Message;
 import com.njdaeger.bedrock.api.IBedrock;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public interface IUser extends ISession<Player> {
@@ -30,6 +31,18 @@ public interface IUser extends ISession<Player> {
      * @param value True marks the user afk
      */
     void setAfk(boolean value, String message);
+    
+    /**
+     * Get the location where the user went afk originally
+     * @return The user's afk location.
+     */
+    Location getAfkLocation();
+    
+    /**
+     * Get the user's current location
+     * @return The user's current location
+     */
+    Location getLocation();
     
     /**
      * Get the displayname of the user

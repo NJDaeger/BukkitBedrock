@@ -7,6 +7,7 @@ import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.IConfig;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.commands.BasicCommands;
+import com.njdaeger.bedrock.listeners.PlayerListener;
 import com.njdaeger.bedrock.user.User;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -56,14 +57,16 @@ public class Bedrock extends CoPlugin implements IBedrock {
     
     @Override
     public void onPluginEnable() throws Exception {
-        setDisplayName("Bedrock");
+        setDisplayName("BukkitBedrock");
         setPluginColor(Color.GREEN);
         
         this.userNameSpace = new NamespacedSessionStore<>("users", IUser.class);
         this.configuration = new Config(this);
         this.messageFile = new MessageFile(this);
         this.configuration.create();
+        
         registerListener(this);
+        registerListener(new PlayerListener(this));
     
         updateCheck("NJDaeger", "BukkitBedrock", configuration.autoUpdate());
         

@@ -7,6 +7,7 @@ import com.njdaeger.bedrock.MessageFile;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
 import com.njdaeger.bedrock.api.command.BedrockCommandRegister;
 import com.njdaeger.bedrock.api.user.IUser;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -24,6 +25,15 @@ public interface IBedrock extends ICoPlugin {
      * @return The user if they exist, null otherwise.
      */
     IUser getUser(String name);
+    
+    /**
+     * Get an online user via its bukkit player object
+     * @param player Player to get user representation of
+     * @return The user if they exist, null otherwise
+     */
+    default IUser getUser(Player player) {
+        return getUser(player.getName());
+    }
     
     /**
      * Get a list of all the users currently online

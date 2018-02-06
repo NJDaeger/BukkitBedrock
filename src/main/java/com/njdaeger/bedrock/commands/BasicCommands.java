@@ -42,11 +42,11 @@ public class BasicCommands {
     
     private void afk(BedrockCommandContext context) {
         
-        String message = bedrock.translate(AFK_AWAY_MESSAGE, context.getName());
+        String message = bedrock.translate(AFK_AWAY_MESSAGE, context.getDisplayName());
         
         if (context.hasArgs()) {
             if (context.hasPermission(COMMAND_AFK_MESSAGE)) {
-                message = bedrock.translate(AFK_AWAY_MESSAGE_MOREINFO, context.getName(), context.joinArgs());
+                message = bedrock.translate(AFK_AWAY_MESSAGE_MOREINFO, context.getDisplayName(), context.joinArgs());
             }
         }
         if (!context.getUser().isAfk()) {
@@ -77,8 +77,8 @@ public class BasicCommands {
             }
             
             user.get().setHealth(20);
-            user.pluginMessage(HEAL_OTHER_MESSAGE_RECEIVER, context.getName());
-            context.pluginMessage(HEAL_OTHER_MESSAGE_SENDER, user.getName());
+            user.pluginMessage(HEAL_OTHER_MESSAGE_RECEIVER, context.getDisplayName());
+            context.pluginMessage(HEAL_OTHER_MESSAGE_SENDER, user.getDisplayName());
             return;
         }
         user = context.getUser();
@@ -98,8 +98,8 @@ public class BasicCommands {
             return;
         }
         user.get().setHealth(20);
-        user.pluginMessage(HEAL_OTHER_MESSAGE_RECEIVER, context.getName());
-        context.pluginMessage(HEAL_OTHER_MESSAGE_SENDER, user.getName());
+        user.pluginMessage(HEAL_OTHER_MESSAGE_RECEIVER, context.getDisplayName());
+        context.pluginMessage(HEAL_OTHER_MESSAGE_SENDER, user.getDisplayName());
     }
     
     private void healTab(BedrockTabContext context) {

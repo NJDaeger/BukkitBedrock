@@ -9,6 +9,7 @@ import com.njdaeger.bedrock.api.events.UserAfkStatusEvent;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.api.user.IUserFile;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
@@ -16,8 +17,9 @@ import java.util.Objects;
 public class User extends AbstractSession<Player> implements IUser {
     
     private boolean afk;
-    private String displayName;
     private final String name;
+    private String displayName;
+    private Location afkLocation;
     private final IBedrock bedrock;
     private final IUserFile userFile;
     
@@ -53,16 +55,29 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public void setAfk(boolean value, String message) {
-        
         UserAfkStatusEvent event = new UserAfkStatusEvent(this, value, message);
         Bukkit.getPluginManager().callEvent(event);
         
         //Check if the event was cancelled
         if (event.isCancelled()) return;
         
+        if (value) {
+            this.afkLocation = getLocation();
+        } else this.afkLocation = null;
+        
         Bukkit.broadcastMessage(event.getMessage());
         
         this.afk = value;
+    }
+    
+    @Override
+    public Location getAfkLocation() {
+        return afkLocation;
+    }
+    
+    @Override
+    public Location getLocation() {
+        return get().getLocation();
     }
     
     @Override

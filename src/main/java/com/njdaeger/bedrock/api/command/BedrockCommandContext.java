@@ -47,6 +47,11 @@ public class BedrockCommandContext extends CommandContext<BedrockCommandContext,
         return getSender().getName();
     }
     
+    public String getDisplayName() {
+        if (getSender().getType() == SenderType.CONSOLE) return "Console";
+        else return getUser().getDisplayName();
+    }
+    
     /**
      * Check if the user has all the permissions specified
      * @param permissions The permissions needed
