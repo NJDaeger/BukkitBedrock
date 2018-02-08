@@ -1,6 +1,7 @@
 package com.njdaeger.bedrock.api.user;
 
 import com.coalesce.core.session.ISession;
+import com.njdaeger.bedrock.Gamemode;
 import com.njdaeger.bedrock.Message;
 import com.njdaeger.bedrock.api.IBedrock;
 import org.bukkit.Location;
@@ -68,6 +69,10 @@ public interface IUser extends ISession<Player> {
     
     @Override
     IBedrock getSessionOwner();
+    
+    void setGamemode(Gamemode gamemode);
+    
+    Gamemode getGamemode();
     
     /**
      * Send the user a message

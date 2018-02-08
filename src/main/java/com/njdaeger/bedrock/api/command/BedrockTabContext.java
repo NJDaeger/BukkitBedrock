@@ -7,7 +7,12 @@ import com.njdaeger.bedrock.Permission;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.user.IUser;
 
-public class BedrockTabContext extends TabContext<BedrockCommandContext, BedrockTabContext> {
+import java.util.HashSet;
+import java.util.Set;
+
+import static com.njdaeger.bedrock.Permission.*;
+
+public class BedrockTabContext extends TabContext<BedrockCommandContext, BedrockTabContext, BedrockBuilder> {
     
     private IBedrock bedrock;
     
@@ -32,6 +37,19 @@ public class BedrockTabContext extends TabContext<BedrockCommandContext, Bedrock
     public IUser getUser() {
         if (getSender().getType() == SenderType.PLAYER) return getUser(getSender().getName());
         return null;
+    }
+    
+    /**
+     * Quick gamemode completions
+     * @param index Index where to do the gamemode completion
+     */
+    public void gamemodeCompletionAt(int index) {
+        Set<String> modes = new HashSet<>();
+        if (hasPermission(COMMAND_GAMEMODE_ADVENTURE)) modes.add("Adventure");
+        if (hasPermission(COMMAND_GAMEMODE_CREATIVE)) modes.add("Creative");
+        if (hasPermission(COMMAND_GAMEMODE_SPECTATOR)) modes.add("Spectator");
+        if (hasPermission(COMMAND_GAMEMODE_SURVIVAL)) modes.add("Survival");
+        completionAt(index, modes.toArray(new String[0]));
     }
     
     /**

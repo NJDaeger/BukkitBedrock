@@ -1,14 +1,14 @@
 package com.njdaeger.bedrock.user;
 
-import com.coalesce.core.plugin.ICoPlugin;
 import com.coalesce.core.session.AbstractSession;
 import com.coalesce.core.session.NamespacedSessionStore;
-import com.njdaeger.bedrock.Permission;
+import com.njdaeger.bedrock.Gamemode;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.events.UserAfkStatusEvent;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.api.user.IUserFile;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -18,6 +18,7 @@ public class User extends AbstractSession<Player> implements IUser {
     
     private boolean afk;
     private final String name;
+    private Gamemode gamemode;
     private String displayName;
     private Location afkLocation;
     private final IBedrock bedrock;
@@ -41,6 +42,17 @@ public class User extends AbstractSession<Player> implements IUser {
     @Override
     public IBedrock getSessionOwner() {
         return bedrock;
+    }
+    
+    @Override
+    public void setGamemode(Gamemode gamemode) {
+        this.gamemode = gamemode;
+        get().setGameMode(GameMode.valueOf(gamemode.getNicename().toUpperCase()));
+    }
+    
+    @Override
+    public Gamemode getGamemode() {
+        return gamemode;
     }
     
     @Override

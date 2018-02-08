@@ -8,11 +8,11 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-public class BedrockCommandRegister extends CommandRegister<BedrockCommandContext, BedrockTabContext> {
+public class BedrockCommandRegister extends CommandRegister<BedrockCommandContext, BedrockTabContext, BedrockBuilder> {
     
     private final IBedrock bedrock;
     
-    public BedrockCommandRegister(ProcessedCommand<BedrockCommandContext, BedrockTabContext> command, IBedrock plugin) {
+    public BedrockCommandRegister(ProcessedCommand<BedrockCommandContext, BedrockTabContext, BedrockBuilder> command, IBedrock plugin) {
         super(command, plugin);
         this.bedrock = plugin;
     }

@@ -31,6 +31,16 @@ public class BedrockCommandContext extends CommandContext<BedrockCommandContext,
     }
     
     /**
+     * Get a user from the server via an argument
+     * @param index The arg to get the user name from
+     * @return Null if the user does not exist or if the index is greater than the amount the command has
+     */
+    public IUser getUser(int index) {
+        if (length()-1 < index) return null;
+        return getUser(argAt(index));
+    }
+    
+    /**
      * Get the sender as a user.
      * @return Null if the sender is not a User. the user otherwise.
      */

@@ -4,7 +4,7 @@ import com.coalesce.core.command.base.ProcessedCommand;
 import com.coalesce.core.plugin.ICoPlugin;
 import com.njdaeger.bedrock.api.IBedrock;
 
-public class BedrockCommand extends ProcessedCommand<BedrockCommandContext, BedrockTabContext> {
+public class BedrockCommand extends ProcessedCommand<BedrockCommandContext, BedrockTabContext, BedrockBuilder> {
     
     BedrockCommand(ICoPlugin plugin, String name) {
         super(plugin, name);

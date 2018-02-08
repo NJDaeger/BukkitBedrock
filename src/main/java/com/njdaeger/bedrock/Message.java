@@ -66,7 +66,34 @@ public enum Message {
     /**
      * {0} - The healer
      */
-    HEAL_OTHER_MESSAGE_RECEIVER("healOtherReceiver");
+    HEAL_OTHER_MESSAGE_RECEIVER("healOtherReceiver"),
+    
+    /**
+     * No placeholders
+     */
+    GAMEMODE_DESC("gamemodeCommandDesc"),
+    
+    /**
+     * No placeholders
+     */
+    GAMEMODE_USAGE("gamemodeCommandUsage"),
+    
+    /**
+     * {0} - New gamemode
+     */
+    GAMEMODE_SELF("gamemodeSelfMessage"),
+    
+    /**
+     * {0} - User running command
+     * {1} - New gamemode
+     */
+    GAMEMODE_OTHER_RECEIVER("gamemodeOtherReceiver"),
+    
+    /**
+     * {0} - User getting gamemode changed
+     * {1} - New gamemode
+     */
+    GAMEMODE_OTHER_SENDER("gamemodeOtherSender");
 
     private final String key;
     

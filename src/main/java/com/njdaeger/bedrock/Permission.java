@@ -2,6 +2,12 @@ package com.njdaeger.bedrock;
 
 public enum Permission {
     
+    COMMAND_GAMEMODE("bedrock.gamemode"),
+    COMMAND_GAMEMODE_OTHER("bedrock.gamemode.other"),
+    COMMAND_GAMEMODE_CREATIVE("bedrock.gamemode.mode.creative"),
+    COMMAND_GAMEMODE_SURVIVAL("bedrock.gamemode.mode.survival"),
+    COMMAND_GAMEMODE_ADVENTURE("bedrock.gamemode.mode.adventure"),
+    COMMAND_GAMEMODE_SPECTATOR("bedrock.gamemode.mode.spectator"),
     COMMAND_AFK("bedrock.afk"),
     COMMAND_AFK_MESSAGE("bedrock.afk.message"),
     COMMAND_AFK_NOTIFY("bedrock.afk.notify"),
