@@ -20,11 +20,11 @@ public class BedrockCommandRegister extends CommandRegister<BedrockCommandContex
     @Override
     public boolean execute(CommandSender sender, String alias, String[] args) {
         
-        return command.run(new BedrockCommandContext(new CoSender(plugin, sender), args, bedrock));
+        return command.run(new BedrockCommandContext(new CoSender(plugin, sender), alias, args, bedrock));
     }
     
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
-        return command.complete(new BedrockTabContext(new BedrockCommandContext(new CoSender(plugin, sender), args, bedrock), command, args));
+        return command.complete(new BedrockTabContext(new BedrockCommandContext(new CoSender(plugin, sender), alias, args, bedrock), command, args));
     }
 }

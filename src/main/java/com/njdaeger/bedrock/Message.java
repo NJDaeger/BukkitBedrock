@@ -2,6 +2,8 @@ package com.njdaeger.bedrock;
 
 public enum Message {
     
+    ERROR_NOT_A_NUMBER("errorNotANumber"),
+    
     /**
      * {0} - Array of permissions
      */
@@ -93,7 +95,37 @@ public enum Message {
      * {0} - User getting gamemode changed
      * {1} - New gamemode
      */
-    GAMEMODE_OTHER_SENDER("gamemodeOtherSender");
+    GAMEMODE_OTHER_SENDER("gamemodeOtherSender"),
+    
+    /**
+     * No placeholders
+     */
+    SPEED_DESC("speedCommandDesc"),
+    
+    /**
+     * No placeholders
+     */
+    SPEED_USAGE("speedCommandUsage"),
+    
+    /**
+     * {0} - Type of speed
+     * {1} - New speed
+     */
+    SPEED_SELF("speedSelfMessage"),
+    
+    /**
+     * {0} - User running command
+     * {1} - Type of speed
+     * {2} - New speed
+     */
+    SPEED_OTHER_RECEIVER("speedOtherReceiver"),
+    
+    /**
+     * {0} - User being affected
+     * {1} - Type of speed
+     * {2} - New speed
+     */
+    SPEED_OTHER_SENDER("speedOtherSender");
 
     private final String key;
     

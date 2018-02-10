@@ -1,18 +1,22 @@
 package com.njdaeger.bedrock;
 
+import org.bukkit.GameMode;
+
 public enum Gamemode {
     
-    SURVIVAL("Survival", "0", "s", "surv", "smp"),
-    SPECTATOR("Spectator", "3", "sp", "spect"),
-    CREATIVE("Creative", "1", "c", "cr", "cmp"),
-    ADVENTURE("Adventure", "2", "a", "adv", "amp");
+    SURVIVAL(GameMode.SURVIVAL, "Survival", "0", "s", "surv", "smp"),
+    SPECTATOR(GameMode.SPECTATOR, "Spectator", "3", "sp", "spect"),
+    CREATIVE(GameMode.CREATIVE, "Creative", "1", "c", "cr", "cmp"),
+    ADVENTURE(GameMode.ADVENTURE, "Adventure", "2", "a", "adv", "amp");
     
+    private GameMode bukkitMode;
     private String[] aliases;
     private String nicename;
     
-    Gamemode(String... aliases) {
+    Gamemode(GameMode bukkitMode, String... aliases) {
         this.aliases = aliases;
         this.nicename = aliases[0];
+        this.bukkitMode = bukkitMode;
     }
     
     public String getNicename() {
@@ -21,6 +25,10 @@ public enum Gamemode {
     
     public String[] getAliases() {
         return aliases;
+    }
+    
+    public GameMode getBukkitMode() {
+        return bukkitMode;
     }
     
     public static Gamemode resolveGamemode(String alias) {

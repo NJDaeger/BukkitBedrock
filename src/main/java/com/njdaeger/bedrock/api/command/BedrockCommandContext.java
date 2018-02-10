@@ -16,8 +16,8 @@ public class BedrockCommandContext extends CommandContext<BedrockCommandContext,
     
     private IBedrock bedrock;
     
-    public BedrockCommandContext(CoSender sender, String[] args, IBedrock plugin) {
-        super(sender, args, plugin);
+    public BedrockCommandContext(CoSender sender, String alias, String[] args, IBedrock plugin) {
+        super(sender, alias, args, plugin);
         this.bedrock = plugin;
     }
     

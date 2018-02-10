@@ -82,4 +82,19 @@ public class BedrockTabContext extends TabContext<BedrockCommandContext, Bedrock
         return false;
     }
     
+    /**
+     * Completion at a specific index
+     * @param index The index to do the completion
+     * @param startRange The number to start off the completion with. (inclusive)
+     * @param endRange The number to stop the completion with. (inclusive)
+     */
+    public void completionAt(int index, int startRange, int endRange) {
+        String[] numbers = new String[1+endRange-startRange];
+        for (int i = 0; startRange <= endRange; i++) {
+            numbers[i] = Integer.toString(startRange);
+            startRange++;
+        }
+        completionAt(index, numbers);
+    }
+    
 }

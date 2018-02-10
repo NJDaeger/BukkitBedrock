@@ -2,6 +2,9 @@ package com.njdaeger.bedrock.commands;
 
 import com.coalesce.core.SenderType;
 import com.njdaeger.bedrock.Gamemode;
+import com.njdaeger.bedrock.Message;
+import com.njdaeger.bedrock.Permission;
+import com.njdaeger.bedrock.SpeedType;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
 import com.njdaeger.bedrock.api.command.BedrockCommandContext;
@@ -49,8 +52,20 @@ public class BasicCommands {
                 .aliases("gmode", "gm")
                 .build();
                 
+        BedrockCommand speedCommand = BedrockCommand.builder(bedrock, "speed")
+                .senders(SenderType.PLAYER, SenderType.CONSOLE)
+                .permission(COMMAND_SPEED, COMMAND_SPEED_OTHER)
+                .description(bedrock.translate(SPEED_DESC))
+                .usage(bedrock.translate(SPEED_USAGE))
+                .completer(this::speedTab)
+                .executor(this::speed)
+                .minArgs(1)
+                .maxArgs(2)
+                .aliases("walkspeed", "flyspeed")
+                .build();
+                
         
-        bedrock.registerCommand(afkCommand, healCommand, gamemodeCommand);
+        bedrock.registerCommand(afkCommand, healCommand, gamemodeCommand, speedCommand);
         
     }
     
@@ -138,6 +153,10 @@ public class BasicCommands {
         }
     }
     
+    /**
+     * gamemode command
+     * @param context command context
+     */
     private void gamemode(BedrockCommandContext context) {
         if (context.subCommand(SenderType.CONSOLE, this::gamemodeConsole)) return;
         
@@ -189,6 +208,10 @@ public class BasicCommands {
         
     }
     
+    /**
+     * gamemode command for console
+     * @param context command context
+     */
     private void gamemodeConsole(BedrockCommandContext context) {
         if (context.isLength(1)) {
             context.notEnoughArgs(2, 1);
@@ -205,11 +228,101 @@ public class BasicCommands {
         context.pluginMessage(GAMEMODE_OTHER_SENDER, user.getDisplayName(), mode.getNicename());
     }
     
+    /**
+     * gamemode tab completion
+     * @param context tab context
+     */
     private void gamemodeTab(BedrockTabContext context) {
         context.gamemodeCompletionAt(0);
         if (context.hasPermission(COMMAND_GAMEMODE_OTHER)) {
             context.playerCompletion(1);
         }
+    }
+    
+    private void speed(BedrockCommandContext context) {
+        
+        IUser user;
+        double speed;
+        SpeedType type;
+        
+        //
+        //Checking who the sender is referring to
+        //
+        if (context.isLength(1)) {
+            if (context.getSender().getType() == SenderType.CONSOLE) {
+                context.notEnoughArgs(2, 1);
+                return;
+            }
+            user = context.getUser();
+        } else {
+            //We know the sender is affecting another player, do a permission check
+            if (!context.hasPermission(COMMAND_SPEED_OTHER)) {
+               context.noPermission(COMMAND_SPEED_OTHER);
+               return;
+            }
+            user = context.getUser(1);
+        }
+        
+        //Check if the user is null. It shouldnt be if the sender is acting upon themselves
+        if (user == null) {
+            context.userNotFound(context.argAt(1));
+            return;
+        }
+        
+        //
+        //Gotta check the alias to see if the type is specified
+        //
+        switch (context.getAlias().toLowerCase()) {
+        case "walkspeed":
+            if (!context.hasPermission(COMMAND_SPEED_WALK)) {
+                context.noPermission(COMMAND_SPEED_WALK);
+                return;
+            }
+            type = SpeedType.WALKING;
+            break;
+        case "flyspeed":
+            if (!context.hasPermission(COMMAND_SPEED_FLY)) {
+                context.noPermission(COMMAND_SPEED_FLY);
+                return;
+            }
+            type = SpeedType.FLYING;
+            break;
+        default:
+            //Nothing was specified, so we gotta get the type on our own
+            type = user.getMovementType();
+        }
+    
+        //Check if theyre trying to reset their speed.
+        if (context.isLength(1) && context.argAt(0).equalsIgnoreCase("reset")) {
+            speed = 1;
+        } else {
+            try {
+                speed = Double.parseDouble(context.argAt(0));
+            } catch (NumberFormatException e) {
+                context.pluginMessage(ERROR_NOT_A_NUMBER, context.argAt(0));
+                return;
+            }
+            if (speed > 10) {
+                speed = 10;
+            }
+            if (speed < 0) {
+                speed = 0;
+            }
+        }
+        
+        if (context.isLength(2)) {
+            user.pluginMessage(SPEED_OTHER_RECEIVER, context.getDisplayName(), type.getNicename(), speed);
+            context.pluginMessage(SPEED_OTHER_SENDER, user.getDisplayName(), type.getNicename(), speed);
+        } else {
+            context.pluginMessage(SPEED_SELF, type.getNicename(), speed);
+        }
+        
+        user.setSpeed(type, Float.parseFloat(Double.toString(speed)));
+    }
+    
+    private void speedTab(BedrockTabContext context) {
+        context.completionAt(0, 0, 10);
+        context.playerCompletion(1);
     }
     
 }

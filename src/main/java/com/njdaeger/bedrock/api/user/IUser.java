@@ -3,6 +3,7 @@ package com.njdaeger.bedrock.api.user;
 import com.coalesce.core.session.ISession;
 import com.njdaeger.bedrock.Gamemode;
 import com.njdaeger.bedrock.Message;
+import com.njdaeger.bedrock.SpeedType;
 import com.njdaeger.bedrock.api.IBedrock;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -70,9 +71,48 @@ public interface IUser extends ISession<Player> {
     @Override
     IBedrock getSessionOwner();
     
+    /**
+     * Set the users gamemode
+     * @param gamemode The new gamemode
+     */
     void setGamemode(Gamemode gamemode);
     
+    /**
+     * Get the users current gamemode
+     * @return The gamemode they currently have
+     */
     Gamemode getGamemode();
+    
+    /**
+     * Set the users speed
+     * @param type The type of speed to set
+     * @param speed The speed [0-10]
+     */
+    void setSpeed(SpeedType type, double speed);
+    
+    /**
+     * Set the users speed according to whether they're flying or walking
+     * @param speed The speed to set [0-10]
+     */
+    void setSpeed(double speed);
+    
+    /**
+     * Get whether the user is flying or walking
+     * @return The type of movement they are currently doing
+     */
+    SpeedType getMovementType();
+    
+    /**
+     * Get the users fly speed
+     * @return The users fly speed
+     */
+    double getFlySpeed();
+    
+    /**
+     * Get the users walk speed
+     * @return The users walk speed
+     */
+    double getWalkSpeed();
     
     /**
      * Send the user a message
