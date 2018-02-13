@@ -1,8 +1,9 @@
-package com.njdaeger.bedrock;
+package com.njdaeger.bedrock.config;
 
 import com.coalesce.core.config.YmlConfig;
+import com.njdaeger.bedrock.MessageFile;
 import com.njdaeger.bedrock.api.IBedrock;
-import com.njdaeger.bedrock.api.IConfig;
+import com.njdaeger.bedrock.api.config.IConfig;
 
 public class Config extends YmlConfig implements IConfig {
     

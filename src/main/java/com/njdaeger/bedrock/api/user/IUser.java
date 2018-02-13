@@ -5,8 +5,14 @@ import com.njdaeger.bedrock.Gamemode;
 import com.njdaeger.bedrock.Message;
 import com.njdaeger.bedrock.SpeedType;
 import com.njdaeger.bedrock.api.IBedrock;
+import com.njdaeger.bedrock.api.config.IHome;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.UUID;
 
 public interface IUser extends ISession<Player> {
     
@@ -15,6 +21,12 @@ public interface IUser extends ISession<Player> {
      * @return The user's name
      */
     String getName();
+    
+    /**
+     * Get the users UUID
+     * @return The user UUID
+     */
+    UUID getId();
     
     /**
      * Get the user data file
@@ -113,6 +125,105 @@ public interface IUser extends ISession<Player> {
      * @return The users walk speed
      */
     double getWalkSpeed();
+    
+    /**
+     * Get a list of homes this user owns
+     * @return The homes list
+     */
+    Collection<IHome> getHomes();
+    
+    /**
+     * Get a home from this user
+     * @param name The name of the home
+     * @return The home. Null if it doesnt exist.
+     */
+    IHome getHome(String name);
+    
+    /**
+     * Create a new home for this user
+     * @param name The name of this home
+     * @return Whether the home was successfully created or not.
+     */
+    boolean createHome(String name);
+    
+    /**
+     * Delete a home from this user
+     * @param name The name of the home to delete
+     * @return True if the home was deleted, false if it didnt exist or couldnt be deleted.
+     */
+    boolean deleteHome(String name);
+    
+    /**
+     * Get the base directory of this user.
+     * @return The user directory
+     */
+    default File getUserDirectory() {
+        return getDataFile().getDirectory();
+    }
+    
+    /**
+     * Get the users X value
+     * @return X value
+     */
+    default double getX() {
+        return getLocation().getX();
+    }
+    
+    /**
+     * Get the users Y value
+     * @return Y value
+     */
+    default double getY() {
+        return getLocation().getY();
+    }
+    
+    /**
+     * GTet the users Z value
+     * @return Z value
+     */
+    default double getZ() {
+        return getLocation().getZ();
+    }
+    
+    /**
+     * Get the users Yaw
+     * @return Yaw value
+     */
+    default float getYaw() {
+        return getLocation().getYaw();
+    }
+    
+    /**
+     * Get the users Pitch
+     * @return Pitch value
+     */
+    default float getPitch() {
+        return getLocation().getPitch();
+    }
+    
+    /**
+     * Get the users current world
+     * @return World user is currently in
+     */
+    default World getWorld() {
+        return getLocation().getWorld();
+    }
+    
+    /**
+     * Teleports a user to a location
+     * @param location The teleport location
+     */
+    default void teleport(Location location) {
+        get().teleport(location);
+    }
+    
+    /**
+     * Send this user to a home
+     * @param home The home to send the user to.
+     */
+    default void sendHome(IHome home) {
+        teleport(home.getLocation());
+    }
     
     /**
      * Send the user a message

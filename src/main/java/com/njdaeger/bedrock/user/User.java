@@ -5,14 +5,21 @@ import com.coalesce.core.session.NamespacedSessionStore;
 import com.njdaeger.bedrock.Gamemode;
 import com.njdaeger.bedrock.SpeedType;
 import com.njdaeger.bedrock.api.IBedrock;
+import com.njdaeger.bedrock.api.config.IHome;
 import com.njdaeger.bedrock.api.events.UserAfkStatusEvent;
 import com.njdaeger.bedrock.api.events.UserSpeedChangeEvent;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.api.user.IUserFile;
+import com.njdaeger.bedrock.config.Home;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class User extends AbstractSession<Player> implements IUser {
     
@@ -25,20 +32,28 @@ public class User extends AbstractSession<Player> implements IUser {
     private Location afkLocation;
     private final IBedrock bedrock;
     private final IUserFile userFile;
+    private final Map<String, IHome> homes;
     
     public User(IBedrock bedrock, NamespacedSessionStore<IUser> namespace, String sessionKey, Player type) {
         super(bedrock, namespace, sessionKey, type);
         
         this.name = sessionKey;
         this.bedrock = bedrock;
+        this.homes = new HashMap<>();
         
         this.userFile = new UserFile(bedrock, this);
         this.userFile.create();
+        System.out.println("usercreation" + System.currentTimeMillis());
     }
     
     @Override
     public String getName() {
         return name;
+    }
+    
+    @Override
+    public UUID getId() {
+        return get().getUniqueId();
     }
     
     @Override
@@ -99,6 +114,31 @@ public class User extends AbstractSession<Player> implements IUser {
     }
     
     @Override
+    public Collection<IHome> getHomes() {
+        return homes.values();
+    }
+    
+    @Override
+    public IHome getHome(String name) {
+        return homes.get(name);
+    }
+    
+    @Override
+    public boolean createHome(String name) {
+        name = name.toLowerCase();
+        if (homes.containsKey(name)) return false;
+        IHome home = new Home(bedrock, this, name);
+        homes.put(name, home);
+        return true;
+    }
+    
+    @Override
+    public boolean deleteHome(String name) {
+        name = name.toLowerCase();
+        return homes.containsKey(name) && homes.get(name).delete();
+    }
+    
+    @Override
     public IUserFile getDataFile() {
         return userFile;
     }
@@ -148,6 +188,16 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public void login() {
+    
+        System.out.println("loginstart" + System.currentTimeMillis());
+        File homesDir = new File(getUserDirectory() + File.separator + "homes");
+        if (homesDir.exists() && homesDir.listFiles() != null) {
+            for (File file : homesDir.listFiles()) {
+                String name = file.getName().substring(0, file.getName().lastIndexOf("."));
+                homes.put(name.toLowerCase(), new Home(bedrock, this, name.toLowerCase()));
+            }
+        }
+        
         userFile.setEntry("name", get().getName());//no
         userFile.setEntry("afk", false);//no
         userFile.addEntry("displayname", get().getDisplayName());
@@ -165,6 +215,7 @@ public class User extends AbstractSession<Player> implements IUser {
         get().setWalkSpeed(Float.parseFloat(Double.toString(0.2 * Math.pow(walkSpeed, 0.69897))));
         get().setFlySpeed((float)flySpeed/10);
         get().setGameMode(gamemode.getBukkitMode());
+        System.out.println("loginfinish" + System.currentTimeMillis());
     }
     
     @Override

@@ -86,13 +86,13 @@ public enum Message {
     GAMEMODE_SELF("gamemodeSelfMessage"),
     
     /**
-     * {0} - User running command
+     * {0} - User running command<p>
      * {1} - New gamemode
      */
     GAMEMODE_OTHER_RECEIVER("gamemodeOtherReceiver"),
     
     /**
-     * {0} - User getting gamemode changed
+     * {0} - User getting gamemode changed<p>
      * {1} - New gamemode
      */
     GAMEMODE_OTHER_SENDER("gamemodeOtherSender"),
@@ -108,21 +108,21 @@ public enum Message {
     SPEED_USAGE("speedCommandUsage"),
     
     /**
-     * {0} - Type of speed
+     * {0} - Type of speed<p>
      * {1} - New speed
      */
     SPEED_SELF("speedSelfMessage"),
     
     /**
-     * {0} - User running command
-     * {1} - Type of speed
+     * {0} - User running command<p>
+     * {1} - Type of speed<p>
      * {2} - New speed
      */
     SPEED_OTHER_RECEIVER("speedOtherReceiver"),
     
     /**
-     * {0} - User being affected
-     * {1} - Type of speed
+     * {0} - User being affected<p>
+     * {1} - Type of speed<p>
      * {2} - New speed
      */
     SPEED_OTHER_SENDER("speedOtherSender");

@@ -2,8 +2,6 @@ package com.njdaeger.bedrock.commands;
 
 import com.coalesce.core.SenderType;
 import com.njdaeger.bedrock.Gamemode;
-import com.njdaeger.bedrock.Message;
-import com.njdaeger.bedrock.Permission;
 import com.njdaeger.bedrock.SpeedType;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
@@ -14,7 +12,7 @@ import com.njdaeger.bedrock.api.user.IUser;
 import static com.njdaeger.bedrock.Message.*;
 import static com.njdaeger.bedrock.Permission.*;
 
-public class BasicCommands {
+public final class BasicCommands {
 
     private final IBedrock bedrock;
     

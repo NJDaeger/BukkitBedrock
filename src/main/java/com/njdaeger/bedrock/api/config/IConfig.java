@@ -1,4 +1,4 @@
-package com.njdaeger.bedrock.api;
+package com.njdaeger.bedrock.api.config;
 
 import com.njdaeger.bedrock.MessageFile;
 

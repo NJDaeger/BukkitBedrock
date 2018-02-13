@@ -11,7 +11,11 @@ public class UserFile extends YmlConfig implements IUserFile {
     
     public UserFile(IBedrock plugin, IUser user) {
         super("users" + File.separator + user.getName() + File.separator + "data", plugin);
-        setEntry("name", user.getName());
-        addEntry("displayname", user.getDisplayName());
+        setEntry("name", user.get().getName());//no
+        setEntry("afk", false);//no
+        addEntry("displayname", user.get().getDisplayName());
+        addEntry("walkspeed", Math.floor(user.get().getWalkSpeed()*-8)/(-1.8+user.get().getWalkSpeed()));
+        addEntry("flyspeed", user.get().getFlySpeed()*10);
+        addEntry("gamemode", user.get().getGameMode().toString());
     }
 }

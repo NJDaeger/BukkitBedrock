@@ -6,6 +6,7 @@ import com.njdaeger.bedrock.Message;
 import com.njdaeger.bedrock.MessageFile;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
 import com.njdaeger.bedrock.api.command.BedrockCommandRegister;
+import com.njdaeger.bedrock.api.config.IConfig;
 import com.njdaeger.bedrock.api.user.IUser;
 import org.bukkit.entity.Player;
 
