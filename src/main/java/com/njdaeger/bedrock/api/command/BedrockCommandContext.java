@@ -22,6 +22,22 @@ public class BedrockCommandContext extends CommandContext<BedrockCommandContext,
     }
     
     /**
+     * Check if the sender is the console
+     * @return True if the sender is the console, false otherwise.
+     */
+    public boolean isConsole() {
+        return getSender().getType() == SenderType.CONSOLE;
+    }
+    
+    /**
+     * Check if the sender is a command block
+     * @return True if the sender is a commandblock, false otherwise.
+     */
+    public boolean isBlock() {
+        return getSender().getType() == SenderType.BLOCK;
+    }
+    
+    /**
      * Get a user from the server
      * @param name The name of the user to get.
      * @return Null if the user does not exist/is online.

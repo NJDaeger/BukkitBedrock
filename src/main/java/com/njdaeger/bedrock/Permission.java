@@ -2,6 +2,18 @@ package com.njdaeger.bedrock;
 
 public enum Permission {
     
+    COMMAND_HOME("bedrock.homes.home"),
+    COMMAND_HOME_OTHER("bedrock.homes.home.other"),
+    COMMAND_HOME_OTHERTOME("bedrock.homes.home.other.to-me"),
+    COMMAND_HOME_METOOTHER("bedrock.homes.home.other.me-to-other"),
+    COMMAND_HOME_OTHERTOOWN("bedrock.homes.home.other.to-own"),
+    COMMAND_HOME_OTHERTOOTHER("bedrock.homes.home.other.to-other"),
+    COMMAND_SETHOME("bedrock.homes.sethome"),
+    COMMAND_SETHOME_OTHER("bedrock.homes.sethome.other"),
+    COMMAND_DELHOME("bedrock.homes.delhome"),
+    COMMAND_DELHOME_OTHER("bedrock.homes.delhome.other"),
+    COMMAND_LISTHOMES("bedrock.homes.listhomes"),
+    COMMAND_LISTHOMES_OTHER("bedrock.homes.listhomes.other"),
     COMMAND_SPEED("bedrock.speed"),
     COMMAND_SPEED_WALK("bedrock.speed.type.walk"),
     COMMAND_SPEED_FLY("bedrock.speed.type.fly"),

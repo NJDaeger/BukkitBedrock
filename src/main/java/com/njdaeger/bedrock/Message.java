@@ -28,6 +28,22 @@ public enum Message {
     ERROR_USER_NOT_FOUND("errorUserNotFound"),
     
     /**
+     * {0} - Home trying to be found
+     * {1} - User home trying to be found from
+     */
+    ERROR_HOME_NOT_FOUND("errorHomeNotFound"),
+    
+    /**
+     * No placeholders
+     */
+    ERROR_USER_NOT_SPECIFIED("errorUserNotSpecified"),
+    
+    /**
+     * No placeholders
+     */
+    ERROR_NO_HOMES("errorNoHomes"),
+    
+    /**
      * No placeholders
      */
     AFK_DESC("afkCommandDesc"),
@@ -125,7 +141,47 @@ public enum Message {
      * {1} - Type of speed<p>
      * {2} - New speed
      */
-    SPEED_OTHER_SENDER("speedOtherSender");
+    SPEED_OTHER_SENDER("speedOtherSender"),
+    
+    /**
+     * No placeholders
+     */
+    HOME_DESC("homeCommandDesc"),
+    
+    /**
+     * No placeholders
+     */
+    HOME_USAGE("homeCommandUsage"),
+    
+    /**
+     * No placeholders
+     */
+    SETHOME_DESC("sethomeCommandDesc"),
+    
+    /**
+     * No placeholders
+     */
+    SETHOME_USAGE("sethomeCommandUsage"),
+    
+    /**
+     * No placeholders
+     */
+    DELHOME_DESC("delhomeCommandDesc"),
+    
+    /**
+     * No placeholders
+     */
+    DELHOME_USAGE("delhomeCommandUsage"),
+    
+    /**
+     * No placeholders
+     */
+    LISTHOMES_DESC("listhomesCommandDesc"),
+    
+    /**
+     * No placeholders
+     */
+    LISTHOMES_USAGE("listhomesCommandUsage");
 
     private final String key;
     

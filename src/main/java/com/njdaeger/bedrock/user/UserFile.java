@@ -10,7 +10,7 @@ import java.io.File;
 public class UserFile extends YmlConfig implements IUserFile {
     
     public UserFile(IBedrock plugin, IUser user) {
-        super("users" + File.separator + user.getName() + File.separator + "data", plugin);
+        super("users" + File.separator + user.getId().toString() + File.separator + "data", plugin);
         setEntry("name", user.get().getName());//no
         setEntry("afk", false);//no
         addEntry("displayname", user.get().getDisplayName());
