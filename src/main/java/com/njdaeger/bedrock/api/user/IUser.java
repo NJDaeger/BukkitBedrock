@@ -154,6 +154,24 @@ public interface IUser extends ISession<Player> {
     boolean deleteHome(String name);
     
     /**
+     * Get a string of all the users homes formatted
+     * @return The users homes
+     */
+    default String listHomes() {
+        StringBuilder builder = new StringBuilder();
+        getHomes().forEach(home -> builder.append(getSessionOwner().translate(Message.LISTHOMES_FORMAT, home.getName())));
+        return builder.toString();
+    }
+    
+    /**
+     * Check whether this user has any homes
+     * @return True if the user has homes, false otherwise.
+     */
+    default boolean hasHomes() {
+        return !getHomes().isEmpty();
+    }
+    
+    /**
      * Get the base directory of this user.
      * @return The user directory
      */

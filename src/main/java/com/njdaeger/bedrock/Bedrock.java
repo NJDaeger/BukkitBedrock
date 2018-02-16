@@ -7,6 +7,7 @@ import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.config.IConfig;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.commands.BasicCommands;
+import com.njdaeger.bedrock.commands.HomeCommands;
 import com.njdaeger.bedrock.config.Config;
 import com.njdaeger.bedrock.listeners.PlayerListener;
 import com.njdaeger.bedrock.user.User;
@@ -74,6 +75,7 @@ public class Bedrock extends CoPlugin implements IBedrock {
         updateCheck("NJDaeger", "BukkitBedrock", configuration.autoUpdate());
         
         new BasicCommands(this);
+        new HomeCommands(this);
         
         for (Player player : Bukkit.getOnlinePlayers()) {
             userNameSpace.addSession(new User(this, userNameSpace, player.getName(), player)).login();

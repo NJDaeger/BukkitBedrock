@@ -39,9 +39,19 @@ public enum Message {
     ERROR_USER_NOT_SPECIFIED("errorUserNotSpecified"),
     
     /**
-     * No placeholders
+     * {0} - User that doesn't have any homes
      */
     ERROR_NO_HOMES("errorNoHomes"),
+    
+    /**
+     * {0} - Name of the home trying to be created
+     */
+    ERROR_HOME_EXISTS("errorHomeExists"),
+    
+    /**
+     * {0} - Name of the home that couldnt be deleted
+     */
+    ERROR_HOME_NOT_DELETED("errorHomeNotDeleted"),
     
     /**
      * No placeholders
@@ -154,6 +164,43 @@ public enum Message {
     HOME_USAGE("homeCommandUsage"),
     
     /**
+     * {0} - Name of the home
+     */
+    HOME_SENDER_TO_OWN("homeSenderToOwnHome"),
+    
+    /**
+     * {0} - User being sent<p>
+     * {1} - Home user is being sent to
+     */
+    HOME_SENDER_SEND_OTHER("homeSenderSentToOther"),
+    
+    /**
+     * {0} - User running command<p>
+     * {1} - Name of the home the receiver is being sent to
+     */
+    HOME_RECEIVER_SEND_OTHER("homeReceiverSentToOther"),
+    
+    /**
+     * {0} - User being sent<p>
+     * {1} - User who owns the home being sent to<p>
+     * {2} - Name of the home
+     */
+    HOME_SENDER_OTHER_TO_OTHER("homeSenderSentOtherToOther"),
+    
+    /**
+     * {0} - User sending command<p>
+     * {1} - User who owns the home being sent to<p>
+     * {2} - Name of the home
+     */
+    HOME_RECEIVER_OTHER_TO_OTHER("homeReceiverSentOtherToOther"),
+    
+    /**
+     * {0} - User who owns the home being sent to<p>
+     * {1} - Name of the home
+     */
+    HOME_SENDER_TO_OTHER("homeSenderToOther"),
+    
+    /**
      * No placeholders
      */
     SETHOME_DESC("sethomeCommandDesc"),
@@ -162,6 +209,23 @@ public enum Message {
      * No placeholders
      */
     SETHOME_USAGE("sethomeCommandUsage"),
+    
+    /**
+     * {0} - The home created
+     */
+    SETHOME_SENDER("sethomeSender"),
+    
+    /**
+     * {0} - User creating the home<p>
+     * {1} - Home created
+     */
+    SETHOME_OTHER_CREATED_RECEIVER("sethomeReceiverOther"),
+    
+    /**
+     * {0} - Home created<p>
+     * {1} - User home being created for
+     */
+    SETHOME_OTHER_CREATED_SENDER("sethomeSenderOther"),
     
     /**
      * No placeholders
@@ -174,6 +238,23 @@ public enum Message {
     DELHOME_USAGE("delhomeCommandUsage"),
     
     /**
+     * {0} - Home deleted
+     */
+    DELHOME_SENDER("delhomeSender"),
+    
+    /**
+     * {0} - Home being deleted
+     * {1} - User home being deleted from
+     */
+    DELHOME_OTHER_SENDER("delhomeOtherSender"),
+    
+    /**
+     * {0} - User deleting home
+     * {1} - Home being deleted
+     */
+    DELHOME_OTHER_RECEIVER("delhomeOtherReceiver"),
+    
+    /**
      * No placeholders
      */
     LISTHOMES_DESC("listhomesCommandDesc"),
@@ -181,7 +262,18 @@ public enum Message {
     /**
      * No placeholders
      */
-    LISTHOMES_USAGE("listhomesCommandUsage");
+    LISTHOMES_USAGE("listhomesCommandUsage"),
+    
+    /**
+     * {0} - name of the home
+     */
+    LISTHOMES_FORMAT("listhomesFormat"),
+    
+    /**
+     * {0} - The user the homes are from
+     * {1} - The string of homes
+     */
+    LISTHOMES_MESSAGE_FORMAT("listhomesMessage");
 
     private final String key;
     
