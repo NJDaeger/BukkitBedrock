@@ -3,8 +3,15 @@ package com.njdaeger.bedrock.commands;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
 import com.njdaeger.bedrock.api.command.BedrockCommandContext;
+import com.njdaeger.bedrock.api.command.BedrockTabContext;
 import com.njdaeger.bedrock.api.config.IHome;
 import com.njdaeger.bedrock.api.user.IUser;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.coalesce.core.SenderType.CONSOLE;
 import static com.coalesce.core.SenderType.PLAYER;
@@ -16,6 +23,7 @@ public final class HomeCommands {
     public HomeCommands(IBedrock bedrock) {
         BedrockCommand home = BedrockCommand.builder(bedrock, "home")
                 .permission(COMMAND_HOME, COMMAND_HOME_OTHER)
+                .completer(this::homeTab)
                 .executor(this::home)
                 .aliases("gohome")
                 .description(HOME_DESC)
@@ -27,6 +35,7 @@ public final class HomeCommands {
     
         BedrockCommand setHome = BedrockCommand.builder(bedrock, "sethome")
                 .permission(COMMAND_SETHOME, COMMAND_SETHOME_OTHER)
+                .completer(this::setHomeTab)
                 .executor(this::setHome)
                 .aliases("newhome")
                 .description(SETHOME_DESC)
@@ -38,6 +47,7 @@ public final class HomeCommands {
         
         BedrockCommand delHome = BedrockCommand.builder(bedrock, "delhome")
                 .permission(COMMAND_DELHOME, COMMAND_DELHOME_OTHER)
+                .completer(this::delhomeTab)
                 .executor(this::delHome)
                 .aliases("removehome")
                 .description(DELHOME_DESC)
@@ -49,6 +59,7 @@ public final class HomeCommands {
     
         BedrockCommand listHomes = BedrockCommand.builder(bedrock, "listhomes")
                 .permission(COMMAND_LISTHOMES, COMMAND_LISTHOMES_OTHER)
+                .completer(this::listHomesTab)
                 .executor(this::listHomes)
                 .aliases("homes")
                 .description(LISTHOMES_DESC)
@@ -56,7 +67,6 @@ public final class HomeCommands {
                 .maxArgs(1)
                 .senders(PLAYER, CONSOLE)
                 .build();
-        
         bedrock.registerCommand(home, setHome, delHome, listHomes);
     }
     //home <home>               send me to my home          bedrock.homes.home
@@ -286,6 +296,58 @@ public final class HomeCommands {
         user1.sendHome(home);
     }
     
+    //home <home>               send me to my home          bedrock.homes.home
+    //home <home> [user]        send other to my home       bedrock.homes.home.other.to-me
+    //home [u:user] <home>      send me to other home       bedrock.homes.home.other.me-to-other
+    //home [u:user] <u:home>    send other to own home      bedrock.homes.home.other.to-own
+    //home [u:user] <user:home> send other to another home  bedrock.homes.home.other.to-other
+    private void homeTab(BedrockTabContext context) {
+    
+        if (context.length(0)) {
+            List<String> players = Bukkit.getOnlinePlayers().stream().map(Player::getName).map("u:"::concat).collect(Collectors.toList());
+    
+            if (!context.isConsole()) {
+                players.addAll(context.getUser().getHomes().stream().map(IHome::getName).collect(Collectors.toList()));
+            }
+            context.completionAt(0, players.toArray(new String[0]));
+            return;
+        }
+        
+        if (!context.getPrevious().contains(":")) {
+            if (context.isConsole()) return;
+            
+            context.playerCompletion(1);
+            return;
+        }
+    
+        List<String> completions = new ArrayList<>();
+        IUser user = context.getUser(context.getPrevious().split(":")[1]);
+
+        if (user == null) return;
+
+        if (!context.getCurrent().contains(":")) {
+            
+            completions.add("u");
+            completions.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()));
+            completions.addAll(user.getHomes().stream().map(IHome::getName).collect(Collectors.toList()));
+            
+        } else {
+            
+            if (context.getCurrent().startsWith("u:")) {
+                completions.addAll(user.getHomes().stream().map(IHome::getName).map("u:"::concat).collect(Collectors.toList()));
+                
+            } else {
+                
+                IUser user1 = context.getUser(context.getCurrent().split(":")[0]);
+                if (user1 == null) return;
+                completions.addAll(user.getHomes().stream().map(IHome::getName).map(user.getName()::concat).collect(Collectors.toList()));
+            }
+        }
+        
+        context.completionAt(1, completions.toArray(new String[0]));
+        
+    }
+    
     private void setHome(BedrockCommandContext context) {
         if (context.isLength(1)) {
             if (context.isConsole()) {
@@ -316,6 +378,10 @@ public final class HomeCommands {
         }
     }
     
+    private void setHomeTab(BedrockTabContext context) {
+        if (context.length(1)) context.playerCompletion(1);
+    }
+    
     private void delHome(BedrockCommandContext context) {
         IHome home;
         if (context.isLength(1)) {
@@ -329,7 +395,10 @@ public final class HomeCommands {
                 context.pluginMessage(ERROR_HOME_NOT_FOUND, context.argAt(0), context.getDisplayName());
                 return;
             }
-            if (context.getUser().deleteHome(home.getName())) context.pluginMessage(ERROR_HOME_NOT_DELETED, home.getName());
+            if (!context.getUser().deleteHome(home.getName())) {
+                context.pluginMessage(ERROR_HOME_NOT_DELETED, home.getName());
+                return;
+            }
             else {
                 context.pluginMessage(DELHOME_SENDER, home.getName());
                 return;
@@ -363,28 +432,58 @@ public final class HomeCommands {
         
     }
     
+    private void delhomeTab(BedrockTabContext context) {
+        if (context.isConsole()) {
+            context.playerCompletion(0);
+            return;
+        } else {
+            IUser user = context.getUser();
+            List<String> completion = user.getHomes().stream().map(IHome::getName).collect(Collectors.toList());
+            completion.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()));
+            context.completionAt(0, completion.toArray(new String[0]));
+        }
+        
+        if (context.length(1)) {
+            IUser user = context.getUser(context.argAt(0));
+            if (user == null) return;
+            context.completionAt(1, user.getHomes().stream().map(IHome::getName).toArray(String[]::new));
+        }
+        
+    }
+    
     private void listHomes(BedrockCommandContext context) {
-        if (context.isLength(1)) {
+        IUser user;
+        
+        if (context.isLength(0)) {
             if (context.isConsole()) {
                 context.notEnoughArgs(1, 0);
                 return;
             }
-            context.pluginMessage(LISTHOMES_MESSAGE_FORMAT, context.getDisplayName(), context.getUser().listHomes());
-            return;
+            user = context.getUser();
         }
-        
-        if (!context.hasPermission(COMMAND_LISTHOMES_OTHER)) {
-            context.noPermission(COMMAND_LISTHOMES_OTHER);
-            return;
+        else {
+            if (!context.hasPermission(COMMAND_LISTHOMES_OTHER)) {
+                context.noPermission(COMMAND_LISTHOMES_OTHER);
+                return;
+            }
+            user = context.getUser(0);
         }
-        
-        IUser user = context.getUser(0);
         
         if (user == null) {
             context.userNotFound(context.argAt(0));
             return;
         }
+        
+        if (!user.hasHomes()) {
+            context.pluginMessage(ERROR_NO_HOMES, user.getDisplayName());
+            return;
+        }
+        
         context.pluginMessage(LISTHOMES_MESSAGE_FORMAT, user.getDisplayName(), user.listHomes());
+    }
+    
+    private void listHomesTab(BedrockTabContext context) {
+        context.playerCompletion(0);
     }
     
 }

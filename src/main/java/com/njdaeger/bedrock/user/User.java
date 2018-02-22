@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class User extends AbstractSession<Player> implements IUser {
@@ -135,7 +136,7 @@ public class User extends AbstractSession<Player> implements IUser {
     @Override
     public boolean deleteHome(String name) {
         name = name.toLowerCase();
-        return homes.containsKey(name) && homes.get(name).delete();
+        return homes.containsKey(name) && homes.remove(name).delete();
     }
     
     @Override
@@ -192,7 +193,7 @@ public class User extends AbstractSession<Player> implements IUser {
         System.out.println("loginstart" + System.currentTimeMillis());
         File homesDir = new File(getUserDirectory() + File.separator + "homes");
         if (homesDir.exists() && homesDir.listFiles() != null) {
-            for (File file : homesDir.listFiles()) {
+            for (File file : Objects.requireNonNull(homesDir.listFiles())) {
                 String name = file.getName().substring(0, file.getName().lastIndexOf("."));
                 homes.put(name.toLowerCase(), new Home(bedrock, this, name.toLowerCase()));
             }

@@ -21,6 +21,10 @@ public class BedrockTabContext extends TabContext<BedrockCommandContext, Bedrock
         bedrock = context.getPlugin();
     }
     
+    public boolean isConsole() {
+        return getSender().getType() == SenderType.CONSOLE;
+    }
+    
     /**
      * Get a user from the server
      * @param name The name of the user to get.
