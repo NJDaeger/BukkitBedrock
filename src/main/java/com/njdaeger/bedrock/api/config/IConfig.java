@@ -8,4 +8,6 @@ public interface IConfig extends com.coalesce.core.config.base.IConfig {
     
     boolean autoUpdate();
     
+    boolean debug();
+    
 }

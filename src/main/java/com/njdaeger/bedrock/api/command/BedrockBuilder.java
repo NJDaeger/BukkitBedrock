@@ -1,8 +1,8 @@
 package com.njdaeger.bedrock.api.command;
 
 import com.coalesce.core.command.base.CommandBuilder;
-import com.njdaeger.bedrock.Message;
-import com.njdaeger.bedrock.Permission;
+import com.njdaeger.bedrock.api.Message;
+import com.njdaeger.bedrock.api.Permission;
 import com.njdaeger.bedrock.api.IBedrock;
 
 import java.util.HashSet;

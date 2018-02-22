@@ -1,48 +1,49 @@
 package com.njdaeger.bedrock.commands;
 
 import com.coalesce.core.SenderType;
-import com.njdaeger.bedrock.Gamemode;
-import com.njdaeger.bedrock.SpeedType;
+import com.njdaeger.bedrock.api.Bedrock;
+import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.IBedrock;
+import com.njdaeger.bedrock.api.SpeedType;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
 import com.njdaeger.bedrock.api.command.BedrockCommandContext;
 import com.njdaeger.bedrock.api.command.BedrockTabContext;
 import com.njdaeger.bedrock.api.user.IUser;
 
-import static com.njdaeger.bedrock.Message.*;
-import static com.njdaeger.bedrock.Permission.*;
+import static com.njdaeger.bedrock.api.Message.*;
+import static com.njdaeger.bedrock.api.Permission.*;
 
 public final class BasicCommands {
 
     private final IBedrock bedrock;
     
-    public BasicCommands(IBedrock bedrock) {
-        this.bedrock = bedrock;
-        BedrockCommand afkCommand = BedrockCommand.builder(bedrock, "afk")
-                .description(bedrock.translate(AFK_DESC))
-                .usage(bedrock.translate(AFK_USAGE))
+    public BasicCommands() {
+        this.bedrock = Bedrock.getBedrock();
+        BedrockCommand afkCommand = BedrockCommand.builder("afk")
+                .description(AFK_DESC)
+                .usage(AFK_USAGE)
                 .senders(SenderType.PLAYER)
                 .permission(COMMAND_AFK)
                 .aliases("away", "brb")
                 .executor(this::afk)
                 .build();
         
-        BedrockCommand healCommand = BedrockCommand.builder(bedrock, "heal")
+        BedrockCommand healCommand = BedrockCommand.builder("heal")
                 .senders(SenderType.PLAYER, SenderType.CONSOLE)
                 .permission(COMMAND_HEAL, COMMAND_HEAL_OTHER)
-                .description(bedrock.translate(HEAL_DESC))
-                .usage(bedrock.translate(HEAL_USAGE))
+                .description(HEAL_DESC)
+                .usage(HEAL_USAGE)
                 .completer(this::healTab)
                 .aliases("fillhearts")
                 .executor(this::heal)
                 .maxArgs(1)
                 .build();
         
-        BedrockCommand gamemodeCommand = BedrockCommand.builder(bedrock, "gamemode")
+        BedrockCommand gamemodeCommand = BedrockCommand.builder("gamemode")
                 .senders(SenderType.PLAYER, SenderType.CONSOLE)
                 .permission(COMMAND_GAMEMODE)
-                .description(bedrock.translate(GAMEMODE_DESC))
-                .usage(bedrock.translate(GAMEMODE_USAGE))
+                .description(GAMEMODE_DESC)
+                .usage(GAMEMODE_USAGE)
                 .executor(this::gamemode)
                 .completer(this::gamemodeTab)
                 .maxArgs(2)
@@ -50,11 +51,11 @@ public final class BasicCommands {
                 .aliases("gmode", "gm")
                 .build();
                 
-        BedrockCommand speedCommand = BedrockCommand.builder(bedrock, "speed")
+        BedrockCommand speedCommand = BedrockCommand.builder("speed")
                 .senders(SenderType.PLAYER, SenderType.CONSOLE)
                 .permission(COMMAND_SPEED, COMMAND_SPEED_OTHER)
-                .description(bedrock.translate(SPEED_DESC))
-                .usage(bedrock.translate(SPEED_USAGE))
+                .description(SPEED_DESC)
+                .usage(SPEED_USAGE)
                 .completer(this::speedTab)
                 .executor(this::speed)
                 .minArgs(1)
@@ -63,7 +64,7 @@ public final class BasicCommands {
                 .build();
                 
         
-        bedrock.registerCommand(afkCommand, healCommand, gamemodeCommand, speedCommand);
+        Bedrock.registerCommand(afkCommand, healCommand, gamemodeCommand, speedCommand);
         
     }
     

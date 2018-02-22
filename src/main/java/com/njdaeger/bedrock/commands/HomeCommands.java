@@ -1,6 +1,6 @@
 package com.njdaeger.bedrock.commands;
 
-import com.njdaeger.bedrock.api.IBedrock;
+import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
 import com.njdaeger.bedrock.api.command.BedrockCommandContext;
 import com.njdaeger.bedrock.api.command.BedrockTabContext;
@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 
 import static com.coalesce.core.SenderType.CONSOLE;
 import static com.coalesce.core.SenderType.PLAYER;
-import static com.njdaeger.bedrock.Message.*;
-import static com.njdaeger.bedrock.Permission.*;
+import static com.njdaeger.bedrock.api.Message.*;
+import static com.njdaeger.bedrock.api.Permission.*;
 
 public final class HomeCommands {
     
-    public HomeCommands(IBedrock bedrock) {
-        BedrockCommand home = BedrockCommand.builder(bedrock, "home")
+    public HomeCommands() {
+        BedrockCommand home = BedrockCommand.builder("home")
                 .permission(COMMAND_HOME, COMMAND_HOME_OTHER)
                 .completer(this::homeTab)
                 .executor(this::home)
@@ -33,7 +33,7 @@ public final class HomeCommands {
                 .senders(PLAYER, CONSOLE)
                 .build();
     
-        BedrockCommand setHome = BedrockCommand.builder(bedrock, "sethome")
+        BedrockCommand setHome = BedrockCommand.builder( "sethome")
                 .permission(COMMAND_SETHOME, COMMAND_SETHOME_OTHER)
                 .completer(this::setHomeTab)
                 .executor(this::setHome)
@@ -45,7 +45,7 @@ public final class HomeCommands {
                 .senders(PLAYER, CONSOLE)
                 .build();
         
-        BedrockCommand delHome = BedrockCommand.builder(bedrock, "delhome")
+        BedrockCommand delHome = BedrockCommand.builder("delhome")
                 .permission(COMMAND_DELHOME, COMMAND_DELHOME_OTHER)
                 .completer(this::delhomeTab)
                 .executor(this::delHome)
@@ -57,7 +57,7 @@ public final class HomeCommands {
                 .senders(PLAYER, CONSOLE)
                 .build();
     
-        BedrockCommand listHomes = BedrockCommand.builder(bedrock, "listhomes")
+        BedrockCommand listHomes = BedrockCommand.builder("listhomes")
                 .permission(COMMAND_LISTHOMES, COMMAND_LISTHOMES_OTHER)
                 .completer(this::listHomesTab)
                 .executor(this::listHomes)
@@ -67,7 +67,8 @@ public final class HomeCommands {
                 .maxArgs(1)
                 .senders(PLAYER, CONSOLE)
                 .build();
-        bedrock.registerCommand(home, setHome, delHome, listHomes);
+        
+        Bedrock.registerCommand(home, setHome, delHome, listHomes);
     }
     //home <home>               send me to my home          bedrock.homes.home
     //home <home> [user]        send other to my home       bedrock.homes.home.other.to-me

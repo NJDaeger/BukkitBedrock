@@ -3,14 +3,14 @@ package com.njdaeger.bedrock.api.command;
 import com.coalesce.core.SenderType;
 import com.coalesce.core.command.base.ProcessedCommand;
 import com.coalesce.core.command.base.TabContext;
-import com.njdaeger.bedrock.Permission;
+import com.njdaeger.bedrock.api.Permission;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.user.IUser;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.njdaeger.bedrock.Permission.*;
+import static com.njdaeger.bedrock.api.Permission.*;
 
 public class BedrockTabContext extends TabContext<BedrockCommandContext, BedrockTabContext, BedrockBuilder> {
     

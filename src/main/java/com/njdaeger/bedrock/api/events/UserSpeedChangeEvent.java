@@ -1,6 +1,6 @@
 package com.njdaeger.bedrock.api.events;
 
-import com.njdaeger.bedrock.SpeedType;
+import com.njdaeger.bedrock.api.SpeedType;
 import com.njdaeger.bedrock.api.user.IUser;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

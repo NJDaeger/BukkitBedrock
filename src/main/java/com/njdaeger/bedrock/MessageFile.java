@@ -2,6 +2,7 @@ package com.njdaeger.bedrock;
 
 import com.coalesce.core.config.YmlConfig;
 import com.njdaeger.bedrock.api.IBedrock;
+import com.njdaeger.bedrock.api.Message;
 
 import java.io.File;
 import java.util.ArrayList;

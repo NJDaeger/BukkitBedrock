@@ -12,6 +12,7 @@ public class Config extends YmlConfig implements IConfig {
         
         addEntry("language", "en_us");
         addEntry("auto-update", true);
+        addEntry("debug", false);
     }
     
     
@@ -23,5 +24,10 @@ public class Config extends YmlConfig implements IConfig {
     @Override
     public boolean autoUpdate() {
         return getBoolean("auto-update");
+    }
+    
+    @Override
+    public boolean debug() {
+        return getBoolean("debug");
     }
 }

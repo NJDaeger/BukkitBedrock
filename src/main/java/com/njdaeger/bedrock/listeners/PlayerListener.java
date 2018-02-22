@@ -1,6 +1,6 @@
 package com.njdaeger.bedrock.listeners;
 
-import com.njdaeger.bedrock.Message;
+import com.njdaeger.bedrock.api.Message;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.user.IUser;
 import org.bukkit.Location;

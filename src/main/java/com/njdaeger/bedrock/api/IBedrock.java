@@ -2,7 +2,6 @@ package com.njdaeger.bedrock.api;
 
 import com.coalesce.core.Color;
 import com.coalesce.core.plugin.ICoPlugin;
-import com.njdaeger.bedrock.Message;
 import com.njdaeger.bedrock.MessageFile;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
 import com.njdaeger.bedrock.api.command.BedrockCommandRegister;
@@ -11,6 +10,8 @@ import com.njdaeger.bedrock.api.user.IUser;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public interface IBedrock extends ICoPlugin {
     
@@ -41,6 +42,15 @@ public interface IBedrock extends ICoPlugin {
      * @return The online users
      */
     List<IUser> getUsers();
+    
+    /**
+     * Get all the users that match the predicate
+     * @param predicate The predicate
+     * @return The users that match the given predicate
+     */
+    default List<IUser> getUsers(Predicate<IUser> predicate) {
+        return getUsers().stream().filter(predicate).collect(Collectors.toList());
+    }
     
     /**
      * Get the current message file. Language dependant.

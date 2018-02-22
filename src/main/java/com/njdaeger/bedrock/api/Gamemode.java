@@ -1,4 +1,4 @@
-package com.njdaeger.bedrock;
+package com.njdaeger.bedrock.api;
 
 import org.bukkit.GameMode;
 

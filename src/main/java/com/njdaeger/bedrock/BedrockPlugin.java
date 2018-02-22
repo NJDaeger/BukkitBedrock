@@ -3,6 +3,7 @@ package com.njdaeger.bedrock;
 import com.coalesce.core.CoPlugin;
 import com.coalesce.core.Color;
 import com.coalesce.core.session.NamespacedSessionStore;
+import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.config.IConfig;
 import com.njdaeger.bedrock.api.user.IUser;
@@ -23,7 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-public class Bedrock extends CoPlugin implements IBedrock {
+public class BedrockPlugin extends CoPlugin implements IBedrock {
     
     private NamespacedSessionStore<IUser> userNameSpace;
     private MessageFile messageFile;
@@ -63,7 +64,8 @@ public class Bedrock extends CoPlugin implements IBedrock {
     public void onPluginEnable() throws Exception {
         setDisplayName("BukkitBedrock");
         setPluginColor(Color.GREEN);
-        
+    
+        Bedrock.setBedrock(this);
         this.userNameSpace = new NamespacedSessionStore<>("users", IUser.class);
         this.configuration = new Config(this);
         this.messageFile = new MessageFile(this);
@@ -74,8 +76,8 @@ public class Bedrock extends CoPlugin implements IBedrock {
     
         updateCheck("NJDaeger", "BukkitBedrock", configuration.autoUpdate());
         
-        new BasicCommands(this);
-        new HomeCommands(this);
+        new BasicCommands();
+        new HomeCommands();
         
         for (Player player : Bukkit.getOnlinePlayers()) {
             userNameSpace.addSession(new User(this, userNameSpace, player.getName(), player)).login();

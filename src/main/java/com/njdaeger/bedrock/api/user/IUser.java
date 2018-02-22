@@ -1,9 +1,9 @@
 package com.njdaeger.bedrock.api.user;
 
 import com.coalesce.core.session.ISession;
-import com.njdaeger.bedrock.Gamemode;
-import com.njdaeger.bedrock.Message;
-import com.njdaeger.bedrock.SpeedType;
+import com.njdaeger.bedrock.api.Gamemode;
+import com.njdaeger.bedrock.api.Message;
+import com.njdaeger.bedrock.api.SpeedType;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.config.IHome;
 import org.bukkit.Location;

@@ -2,9 +2,9 @@ package com.njdaeger.bedrock.user;
 
 import com.coalesce.core.session.AbstractSession;
 import com.coalesce.core.session.NamespacedSessionStore;
-import com.njdaeger.bedrock.Gamemode;
-import com.njdaeger.bedrock.SpeedType;
+import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.IBedrock;
+import com.njdaeger.bedrock.api.SpeedType;
 import com.njdaeger.bedrock.api.config.IHome;
 import com.njdaeger.bedrock.api.events.UserAfkStatusEvent;
 import com.njdaeger.bedrock.api.events.UserSpeedChangeEvent;
@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import static com.njdaeger.bedrock.api.Bedrock.debug;
 
 public class User extends AbstractSession<Player> implements IUser {
     
@@ -44,7 +47,6 @@ public class User extends AbstractSession<Player> implements IUser {
         
         this.userFile = new UserFile(bedrock, this);
         this.userFile.create();
-        System.out.println("usercreation" + System.currentTimeMillis());
     }
     
     @Override
@@ -189,8 +191,9 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public void login() {
-    
-        System.out.println("loginstart" + System.currentTimeMillis());
+
+        long start = System.currentTimeMillis();
+        
         File homesDir = new File(getUserDirectory() + File.separator + "homes");
         if (homesDir.exists() && homesDir.listFiles() != null) {
             for (File file : Objects.requireNonNull(homesDir.listFiles())) {
@@ -216,7 +219,11 @@ public class User extends AbstractSession<Player> implements IUser {
         get().setWalkSpeed(Float.parseFloat(Double.toString(0.2 * Math.pow(walkSpeed, 0.69897))));
         get().setFlySpeed((float)flySpeed/10);
         get().setGameMode(gamemode.getBukkitMode());
-        System.out.println("loginfinish" + System.currentTimeMillis());
+        
+        
+        long finish = System.currentTimeMillis();
+        debug("User " + getName() + " loaded in " + (finish-start) + " milliseconds.");
+        
     }
     
     @Override

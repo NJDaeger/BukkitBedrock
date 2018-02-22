@@ -3,8 +3,8 @@ package com.njdaeger.bedrock.api.command;
 import com.coalesce.core.SenderType;
 import com.coalesce.core.command.base.CommandContext;
 import com.coalesce.core.wrappers.CoSender;
-import com.njdaeger.bedrock.Message;
-import com.njdaeger.bedrock.Permission;
+import com.njdaeger.bedrock.api.Message;
+import com.njdaeger.bedrock.api.Permission;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.user.IUser;
 
