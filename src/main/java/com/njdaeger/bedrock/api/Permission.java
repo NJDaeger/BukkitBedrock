@@ -2,6 +2,9 @@ package com.njdaeger.bedrock.api;
 
 public enum Permission {
     
+    COMMAND_NICK("bedrock.nick"),
+    COMMAND_NICK_OTHER("bedrock.nick.other"),
+    COMMAND_BACK("bedrock.back"),
     COMMAND_HOME("bedrock.homes.home"),
     COMMAND_HOME_OTHER("bedrock.homes.home.other"),
     COMMAND_HOME_OTHERTOME("bedrock.homes.home.other.to-me"),

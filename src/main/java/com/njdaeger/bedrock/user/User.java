@@ -1,5 +1,6 @@
 package com.njdaeger.bedrock.user;
 
+import com.coalesce.core.Color;
 import com.coalesce.core.session.AbstractSession;
 import com.coalesce.core.session.NamespacedSessionStore;
 import com.njdaeger.bedrock.api.Gamemode;
@@ -21,8 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
+import static com.njdaeger.bedrock.user.UserPath.*;
 import static com.njdaeger.bedrock.api.Bedrock.debug;
 
 public class User extends AbstractSession<Player> implements IUser {
@@ -34,6 +35,7 @@ public class User extends AbstractSession<Player> implements IUser {
     private Gamemode gamemode;
     private String displayName;
     private Location afkLocation;
+    private Location lastLocation;
     private final IBedrock bedrock;
     private final IUserFile userFile;
     private final Map<String, IHome> homes;
@@ -170,12 +172,22 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public Location getAfkLocation() {
-        return afkLocation;
+        return this.afkLocation;
     }
     
     @Override
     public Location getLocation() {
         return get().getLocation();
+    }
+    
+    @Override
+    public Location getLastLocation() {
+        return this.lastLocation;
+    }
+    
+    @Override
+    public void setLastLocation(Location location) {
+        this.lastLocation = location;
     }
     
     @Override
@@ -185,8 +197,8 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public void setDisplayName(String name) {
-        this.displayName = name;
-        get().setDisplayName(name);
+        this.displayName = Color.translate('&', name);
+        get().setDisplayName(displayName);
     }
     
     @Override
@@ -202,19 +214,33 @@ public class User extends AbstractSession<Player> implements IUser {
             }
         }
         
-        userFile.setEntry("name", get().getName());//no
-        userFile.setEntry("afk", false);//no
-        userFile.addEntry("displayname", get().getDisplayName());
-        userFile.addEntry("walkspeed", Math.floor(get().getWalkSpeed()*-8)/(-1.8+get().getWalkSpeed()));
-        userFile.addEntry("flyspeed", get().getFlySpeed()*10);
-        userFile.addEntry("gamemode", get().getGameMode().toString());
+        userFile.setEntry(NAME, get().getName());//no
+        userFile.addEntry(AFK, false);
+        userFile.addEntry(DISPLAYNAME, get().getDisplayName());
+        userFile.addEntry(WALKSPEED, Math.floor(get().getWalkSpeed()*-8)/(-1.8+get().getWalkSpeed()));
+        userFile.addEntry(FLYSPEED, get().getFlySpeed()*10);
+        userFile.addEntry(GAMEMODE, get().getGameMode().toString());
+        
+        userFile.addEntry(LASTX, get().getLocation().getX());
+        userFile.addEntry(LASTY, get().getLocation().getY());
+        userFile.addEntry(LASTZ, get().getLocation().getZ());
+        userFile.addEntry(LASTYAW, get().getLocation().getYaw());
+        userFile.addEntry(LASTPITCH, get().getLocation().getPitch());
+        userFile.addEntry(LASTWORLD, get().getLocation().getWorld().getName());
         
         this.afk = false;
-        this.displayName = userFile.getString("displayname");
-        this.walkSpeed = userFile.getDouble("walkspeed");
-        this.flySpeed = userFile.getDouble("flyspeed");
-        this.gamemode = Gamemode.valueOf(userFile.getString("gamemode"));
-    
+        this.displayName = userFile.get(DISPLAYNAME);
+        this.walkSpeed = userFile.get(WALKSPEED);
+        this.flySpeed = userFile.get(FLYSPEED);
+        this.gamemode = Gamemode.valueOf(userFile.get(GAMEMODE));
+        this.lastLocation = new Location(
+                userFile.getWorld(LASTWORLD) == null ? get().getWorld() : userFile.getWorld(LASTWORLD),
+                userFile.get(LASTX),
+                userFile.get(LASTY),
+                userFile.get(LASTZ),
+                userFile.get(LASTYAW),
+                userFile.get(LASTPITCH));
+        
         get().setDisplayName(displayName);
         get().setWalkSpeed(Float.parseFloat(Double.toString(0.2 * Math.pow(walkSpeed, 0.69897))));
         get().setFlySpeed((float)flySpeed/10);
@@ -228,11 +254,11 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public void logout() {
-        userFile.setEntry("name", getSessionKey());
-        userFile.setEntry("afk", false);
-        userFile.setEntry("displayname", displayName);
-        userFile.setEntry("walkspeed", walkSpeed);
-        userFile.setEntry("flyspeed", flySpeed);
-        userFile.setEntry("gamemode", gamemode.toString());
+        userFile.setEntry(NAME, getSessionKey());
+        userFile.setEntry(AFK, false);
+        userFile.setEntry(DISPLAYNAME, displayName);
+        userFile.setEntry(WALKSPEED, walkSpeed);
+        userFile.setEntry(FLYSPEED, flySpeed);
+        userFile.setEntry(GAMEMODE, gamemode.toString());
     }
 }

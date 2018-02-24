@@ -127,6 +127,18 @@ public interface IUser extends ISession<Player> {
     double getWalkSpeed();
     
     /**
+     * Get the users last location
+     * @return The last location the user was at.
+     */
+    Location getLastLocation();
+    
+    /**
+     * Set the users last location
+     * @param location The new last location
+     */
+    void setLastLocation(Location location);
+    
+    /**
      * Get a list of homes this user owns
      * @return The homes list
      */

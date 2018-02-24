@@ -243,13 +243,13 @@ public enum Message {
     DELHOME_SENDER("delhomeSender"),
     
     /**
-     * {0} - Home being deleted
+     * {0} - Home being deleted<p>
      * {1} - User home being deleted from
      */
     DELHOME_OTHER_SENDER("delhomeOtherSender"),
     
     /**
-     * {0} - User deleting home
+     * {0} - User deleting home<p>
      * {1} - Home being deleted
      */
     DELHOME_OTHER_RECEIVER("delhomeOtherReceiver"),
@@ -270,10 +270,67 @@ public enum Message {
     LISTHOMES_FORMAT("listhomesFormat"),
     
     /**
-     * {0} - The user the homes are from
+     * {0} - The user the homes are from<p>
      * {1} - The string of homes
      */
-    LISTHOMES_MESSAGE_FORMAT("listhomesMessage");
+    LISTHOMES_MESSAGE_FORMAT("listhomesMessage"),
+    
+    /**
+     * No placeholders
+     */
+    BACK_DESC("backDesc"),
+    
+    /**
+     * No placeholders
+     */
+    BACK_USAGE("backUsage"),
+    
+    /**
+     * No placeholders
+     */
+    BACK_MESSAGE("backMessage"),
+    
+    /**
+     * No placeholders
+     */
+    NICK_DESC("nickDesc"),
+    
+    /**
+     * No placeholders
+     */
+    NICK_USAGE("nickUsage"),
+    
+    /**
+     * {0} - New nickname
+     */
+    NICK_SELF_MESSAGE("nickSelf"),
+    
+    /**
+     * {0} - User changing nickname
+     * {1} - New nickname
+     */
+    NICK_OTHER_RECEIVER("nickOtherReceiver"),
+    
+    /**
+     * {0} - User whos nickname is being set
+     * {1} - New nickname
+     */
+    NICK_OTHER_SENDER("nickOtherSender"),
+    
+    /**
+     * No placeholders
+     */
+    NICK_RESET_SELF("nickResetSelf"),
+    
+    /**
+     * {0} - User who reset the user's nickname
+     */
+    NICK_RESET_OTHER_RECEIVER("nickResetOtherReceiver"),
+    
+    /**
+     * {0} - User whos nickname was reset
+     */
+    NICK_RESET_OTHER_SENDER("nickResetOtherSender");
 
     private final String key;
     

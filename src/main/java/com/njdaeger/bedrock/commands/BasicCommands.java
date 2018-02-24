@@ -3,7 +3,6 @@ package com.njdaeger.bedrock.commands;
 import com.coalesce.core.SenderType;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.Gamemode;
-import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.SpeedType;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
 import com.njdaeger.bedrock.api.command.BedrockCommandContext;
@@ -14,11 +13,8 @@ import static com.njdaeger.bedrock.api.Message.*;
 import static com.njdaeger.bedrock.api.Permission.*;
 
 public final class BasicCommands {
-
-    private final IBedrock bedrock;
     
     public BasicCommands() {
-        this.bedrock = Bedrock.getBedrock();
         BedrockCommand afkCommand = BedrockCommand.builder("afk")
                 .description(AFK_DESC)
                 .usage(AFK_USAGE)
@@ -63,8 +59,27 @@ public final class BasicCommands {
                 .aliases("walkspeed", "flyspeed")
                 .build();
                 
+        BedrockCommand backCommand = BedrockCommand.builder("back")
+                .senders(SenderType.PLAYER)
+                .permission(COMMAND_BACK)
+                .description(BACK_DESC)
+                .usage(BACK_USAGE)
+                .executor(this::back)
+                .maxArgs(0)
+                .build();
+               
+        BedrockCommand nickCommand = BedrockCommand.builder("nick")
+                .senders(SenderType.PLAYER, SenderType.CONSOLE)
+                .description(NICK_DESC)
+                .usage(NICK_USAGE)
+                .permission(COMMAND_NICK_OTHER, COMMAND_NICK)
+                .aliases("setnick", "nickname", "displayname")
+                .minArgs(1)
+                .maxArgs(2)
+                .executor(this::nick)
+                .build();
         
-        Bedrock.registerCommand(afkCommand, healCommand, gamemodeCommand, speedCommand);
+        Bedrock.registerCommand(afkCommand, healCommand, gamemodeCommand, speedCommand, backCommand, nickCommand);
         
     }
     
@@ -74,11 +89,11 @@ public final class BasicCommands {
      */
     private void afk(BedrockCommandContext context) {
         
-        String message = bedrock.translate(AFK_AWAY_MESSAGE, context.getDisplayName());
+        String message = Bedrock.translate(AFK_AWAY_MESSAGE, context.getDisplayName());
         
         if (context.hasArgs()) {
             if (context.hasPermission(COMMAND_AFK_MESSAGE)) {
-                message = bedrock.translate(AFK_AWAY_MESSAGE_MOREINFO, context.getDisplayName(), context.joinArgs());
+                message = Bedrock.translate(AFK_AWAY_MESSAGE_MOREINFO, context.getDisplayName(), context.joinArgs());
             }
         }
         if (!context.getUser().isAfk()) {
@@ -322,6 +337,52 @@ public final class BasicCommands {
     private void speedTab(BedrockTabContext context) {
         context.completionAt(0, 0, 10);
         context.playerCompletion(1);
+    }
+    
+    private void back(BedrockCommandContext context) {
+        context.getUser().teleport(context.getUser().getLastLocation());
+        context.pluginMessage(BACK_MESSAGE);
+    }
+    
+    //Remake this entire command it looks like shit
+    private void nick(BedrockCommandContext context) {
+        
+        boolean reset = context.argAt(0).equalsIgnoreCase("off") || context.argAt(0).equalsIgnoreCase("reset");
+        IUser user;
+        
+        if (context.isLength(1)) {
+            if (context.isConsole()) {
+                context.notEnoughArgs(2, 1);
+                return;
+            }
+            user = context.getUser();
+            if (reset) {
+                user.setDisplayName(user.getName());
+                user.pluginMessage(NICK_RESET_SELF);
+                return;
+            }
+            user.setDisplayName(context.argAt(0));
+            context.pluginMessage(NICK_SELF_MESSAGE, context.argAt(0));
+            return;
+        }
+        
+        user = context.getUser(1);
+        
+        if (user == null) {
+            context.userNotFound(context.argAt(1));
+            return;
+        }
+        
+        if (reset) {
+            user.setDisplayName(user.getName());
+            user.pluginMessage(NICK_RESET_OTHER_RECEIVER, context.getDisplayName());
+            context.pluginMessage(NICK_RESET_OTHER_SENDER, user.getDisplayName());
+            return;
+        }
+    
+        user.pluginMessage(NICK_OTHER_RECEIVER, context.getDisplayName(), context.argAt(0));
+        context.pluginMessage(NICK_OTHER_SENDER, user.getDisplayName(), context.argAt(0));
+        user.setDisplayName(context.argAt(0));
     }
     
 }

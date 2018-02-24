@@ -1,6 +1,7 @@
 package com.njdaeger.bedrock;
 
 import com.coalesce.core.config.YmlConfig;
+import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.Message;
 
@@ -27,7 +28,7 @@ public class MessageFile extends YmlConfig {
             } else missing.add(message.key());
         }
         
-        missing.forEach(k -> System.out.println("Could not find key \"" + k + "\" in " + language.getFileName() + ".yml"));
+        missing.forEach(k -> Bedrock.warn("Could not find key \"" + k + "\" in " + language.getFileName() + ".yml"));
         
     }
     

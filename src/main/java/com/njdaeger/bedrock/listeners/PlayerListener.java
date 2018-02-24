@@ -1,5 +1,6 @@
 package com.njdaeger.bedrock.listeners;
 
+import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.Message;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.user.IUser;
@@ -12,6 +13,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class PlayerListener implements Listener {
     
@@ -90,6 +92,13 @@ public class PlayerListener implements Listener {
         if (user.isAfk()) {
             user.setAfk(false, bedrock.translate(Message.AFK_BACK_MESSAGE, user.getDisplayName()));
         }
+    }
+    
+    @EventHandler
+    public void onTeleport(PlayerTeleportEvent event) {
+        IUser user = Bedrock.getUser(event.getPlayer());
+        
+        user.setLastLocation(event.getFrom());
     }
     
 }

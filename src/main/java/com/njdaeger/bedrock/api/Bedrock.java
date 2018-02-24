@@ -56,6 +56,10 @@ public final class Bedrock {
         if (getConf().debug()) getBedrock().getCoLogger().debug(message);
     }
     
+    public static void warn(String message) {
+        getBedrock().getCoLogger().warn(message);
+    }
+    
     public static void registerCommand(BedrockCommand... commands) {
         bedrock.registerCommand(commands);
     }
