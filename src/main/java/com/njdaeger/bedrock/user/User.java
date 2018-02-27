@@ -1,8 +1,10 @@
 package com.njdaeger.bedrock.user;
 
 import com.coalesce.core.Color;
+import com.coalesce.core.scoreboard.StaticScoreboard;
 import com.coalesce.core.session.AbstractSession;
 import com.coalesce.core.session.NamespacedSessionStore;
+import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.SpeedType;
@@ -14,7 +16,10 @@ import com.njdaeger.bedrock.api.user.IUserFile;
 import com.njdaeger.bedrock.config.Home;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Bed;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.util.Collection;
@@ -23,8 +28,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.njdaeger.bedrock.user.UserPath.*;
 import static com.njdaeger.bedrock.api.Bedrock.debug;
+import static com.njdaeger.bedrock.api.Bedrock.translate;
+import static com.njdaeger.bedrock.api.Message.*;
+import static com.njdaeger.bedrock.user.UserPath.*;
 
 public class User extends AbstractSession<Player> implements IUser {
     
@@ -32,8 +39,10 @@ public class User extends AbstractSession<Player> implements IUser {
     private double flySpeed;
     private double walkSpeed;
     private final String name;
+    private boolean infoBoard;
     private Gamemode gamemode;
     private String displayName;
+    private BukkitTask infotask;
     private Location afkLocation;
     private Location lastLocation;
     private final IBedrock bedrock;
@@ -144,6 +153,41 @@ public class User extends AbstractSession<Player> implements IUser {
     }
     
     @Override
+    public boolean hasInfobard() {
+        return infoBoard;
+    }
+    
+    @Override
+    public void runInfobard(boolean value) {
+        this.infoBoard = value;
+        
+        if (value) {
+            StaticScoreboard scoreboard = new StaticScoreboard();
+            infotask = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    scoreboard.setTitle(Color.GREEN + "Server Info");
+                    
+                    scoreboard.removeAll();
+                    scoreboard.setLine(0);
+                    scoreboard.setLine(1, translate(INFOBOARD_RAM_PERCENT, Bedrock.getMemUsage()));
+                    scoreboard.setLine(2, translate(INFOBOARD_RAM_MEGABYTES, Bedrock.getAllocatedMemory(), Bedrock.getMaxMemory()));
+                    scoreboard.setLine(3);
+                    scoreboard.setLine(4, translate(INFOBOARD_CPU, Bedrock.getCPULoad()));
+                    scoreboard.setLine(5);
+                    scoreboard.setLine(6, translate(INFOBOARD_TPS, Bedrock.getTPS()));
+                    scoreboard.setLine(7);
+                    
+                    scoreboard.send(get());
+                }
+            }.runTaskTimer(bedrock, 0L, 10); // Set timer*/
+        } else {
+            if (infotask != null) infotask.cancel();
+            get().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+        }
+    }
+    
+    @Override
     public IUserFile getDataFile() {
         return userFile;
     }
@@ -220,6 +264,7 @@ public class User extends AbstractSession<Player> implements IUser {
         userFile.addEntry(WALKSPEED, Math.floor(get().getWalkSpeed()*-8)/(-1.8+get().getWalkSpeed()));
         userFile.addEntry(FLYSPEED, get().getFlySpeed()*10);
         userFile.addEntry(GAMEMODE, get().getGameMode().toString());
+        userFile.addEntry(INFOBOARD, false);
         
         userFile.addEntry(LASTX, get().getLocation().getX());
         userFile.addEntry(LASTY, get().getLocation().getY());
@@ -233,6 +278,7 @@ public class User extends AbstractSession<Player> implements IUser {
         this.walkSpeed = userFile.get(WALKSPEED);
         this.flySpeed = userFile.get(FLYSPEED);
         this.gamemode = Gamemode.valueOf(userFile.get(GAMEMODE));
+        this.infoBoard = userFile.get(INFOBOARD);
         this.lastLocation = new Location(
                 userFile.getWorld(LASTWORLD) == null ? get().getWorld() : userFile.getWorld(LASTWORLD),
                 userFile.get(LASTX),
@@ -245,6 +291,7 @@ public class User extends AbstractSession<Player> implements IUser {
         get().setWalkSpeed(Float.parseFloat(Double.toString(0.2 * Math.pow(walkSpeed, 0.69897))));
         get().setFlySpeed((float)flySpeed/10);
         get().setGameMode(gamemode.getBukkitMode());
+        runInfobard(infoBoard);
         
         
         long finish = System.currentTimeMillis();

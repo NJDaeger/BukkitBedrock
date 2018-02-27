@@ -29,6 +29,7 @@ public class BedrockPlugin extends CoPlugin implements IBedrock {
     private NamespacedSessionStore<IUser> userNameSpace;
     private MessageFile messageFile;
     private IConfig configuration;
+    //private InfoBoard infoBoard;
     
     @Override
     public void onPluginLoad() throws Exception {
@@ -69,6 +70,7 @@ public class BedrockPlugin extends CoPlugin implements IBedrock {
         this.userNameSpace = new NamespacedSessionStore<>("users", IUser.class);
         this.configuration = new Config(this);
         this.messageFile = new MessageFile(this);
+        //this.infoBoard = new InfoBoard(this);
         this.configuration.create();
         
         registerListener(this);
@@ -105,6 +107,8 @@ public class BedrockPlugin extends CoPlugin implements IBedrock {
     public IUser getUser(String name) {
         return userNameSpace.getSession(name);
     }
+    
+    
     
     @Override
     public List<IUser> getUsers() {

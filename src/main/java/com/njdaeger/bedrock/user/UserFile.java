@@ -21,11 +21,11 @@ public class UserFile extends YmlConfig implements IUserFile {
         addEntry(WALKSPEED, Math.floor(user.get().getWalkSpeed()*-8)/(-1.8+user.get().getWalkSpeed()));
         addEntry(FLYSPEED, user.get().getFlySpeed()*10);
         addEntry(GAMEMODE, user.get().getGameMode().toString());
+        addEntry(INFOBOARD, false);
     }
     
     @Override
     public <T> T get(UserPath path) {
-        System.out.println(path.getKey());
         return get0(path, path.getType());
     }
     
@@ -36,7 +36,6 @@ public class UserFile extends YmlConfig implements IUserFile {
     
     @SuppressWarnings("unchecked")
     private <T> T get0(UserPath path, Class<T> type) {
-        System.out.println("TYPE: " + type);
         return getEntry(path.getKey()).getAs(type);
     }
     

@@ -10,6 +10,7 @@ public enum UserPath {
     WALKSPEED("walkspeed", Double.class),
     FLYSPEED("flyspeed", Double.class),
     GAMEMODE("gamemode", String.class),
+    INFOBOARD("infoboard", Boolean.class),
     LASTX("location.last.x", Double.class),
     LASTY("location.last.y", Double.class),
     LASTZ("location.last.z", Double.class),

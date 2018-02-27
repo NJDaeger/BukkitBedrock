@@ -165,6 +165,10 @@ public interface IUser extends ISession<Player> {
      */
     boolean deleteHome(String name);
     
+    boolean hasInfobard();
+    
+    void runInfobard(boolean value);
+    
     /**
      * Get a string of all the users homes formatted
      * @return The users homes

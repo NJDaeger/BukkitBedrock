@@ -3,6 +3,7 @@ package com.njdaeger.bedrock.commands;
 import com.coalesce.core.SenderType;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.Gamemode;
+import com.njdaeger.bedrock.api.Message;
 import com.njdaeger.bedrock.api.SpeedType;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
 import com.njdaeger.bedrock.api.command.BedrockCommandContext;
@@ -79,7 +80,16 @@ public final class BasicCommands {
                 .executor(this::nick)
                 .build();
         
-        Bedrock.registerCommand(afkCommand, healCommand, gamemodeCommand, speedCommand, backCommand, nickCommand);
+        BedrockCommand infoBoardCommand = BedrockCommand.builder("infoboard")
+                .senders(SenderType.PLAYER)
+                .description(INFOBOARD_DESC)
+                .usage(INFOBOARD_USAGE)
+                .aliases("serverinfo", "resources", "sinfo", "iboard")
+                .maxArgs(0)
+                .executor(this::infoBoard)
+                .build();
+        
+        Bedrock.registerCommand(afkCommand, healCommand, gamemodeCommand, speedCommand, backCommand, nickCommand, infoBoardCommand);
         
     }
     
@@ -383,6 +393,18 @@ public final class BasicCommands {
         user.pluginMessage(NICK_OTHER_RECEIVER, context.getDisplayName(), context.argAt(0));
         context.pluginMessage(NICK_OTHER_SENDER, user.getDisplayName(), context.argAt(0));
         user.setDisplayName(context.argAt(0));
+    }
+    
+    private void infoBoard(BedrockCommandContext context) {
+        boolean run = true;
+        Message msg = Message.INFOBOARD_ENABLED;
+        if (context.getUser().hasInfobard()) {
+            run = false;
+            msg = Message.INFOBOARD_DISABLED;
+        }
+        context.getUser().runInfobard(run);
+        context.pluginMessage(msg);
+        
     }
     
 }

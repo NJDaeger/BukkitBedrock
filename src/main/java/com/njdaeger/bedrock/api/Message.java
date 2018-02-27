@@ -330,7 +330,48 @@ public enum Message {
     /**
      * {0} - User whos nickname was reset
      */
-    NICK_RESET_OTHER_SENDER("nickResetOtherSender");
+    NICK_RESET_OTHER_SENDER("nickResetOtherSender"),
+    
+    /**
+     * No placeholders
+     */
+    INFOBOARD_DESC("infoBoardDesc"),
+    
+    /**
+     * No placeholders
+     */
+    INFOBOARD_USAGE("infoBoardUsage"),
+    
+    /**
+     * No placeholders
+     */
+    INFOBOARD_ENABLED("infoBoardEnabled"),
+    
+    /**
+     * No placeholders
+     */
+    INFOBOARD_DISABLED("infoBoardDisabled"),
+    
+    /**
+     * {0} - Ram usage percent
+     */
+    INFOBOARD_RAM_PERCENT("infoBoardRamPercent"),
+    
+    /**
+     * {0} - Memory used
+     * {1} - Max memory available
+     */
+    INFOBOARD_RAM_MEGABYTES("infoBoardRamMegabytes"),
+    
+    /**
+     * {0} - Cpu usage percent
+     */
+    INFOBOARD_CPU("infoBoardCpu"),
+    
+    /**
+     * {0} - Ticks per second
+     */
+    INFOBOARD_TPS("infoBoardTps");
 
     private final String key;
     
