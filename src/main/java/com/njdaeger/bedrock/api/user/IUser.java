@@ -5,6 +5,7 @@ import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.Message;
 import com.njdaeger.bedrock.api.SpeedType;
 import com.njdaeger.bedrock.api.IBedrock;
+import com.njdaeger.bedrock.api.chat.IChannel;
 import com.njdaeger.bedrock.api.config.IHome;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 public interface IUser extends ISession<Player> {
@@ -139,6 +141,57 @@ public interface IUser extends ISession<Player> {
     void setLastLocation(Location location);
     
     /**
+     * Check if this user has the infoboard enabled.
+     * @return True if enabled, false otherwise.
+     */
+    boolean hasInfobard();
+    
+    /**
+     * Enable or disable the server info board
+     * @param value True enables it, false disables it
+     */
+    void runInfobard(boolean value);
+    
+    /**
+     * Get the users currently selected channel.
+     * @return The currently selected channel.
+     */
+    IChannel getChannel();
+    
+    /**
+     * All the channels this user is currently subscribed to.
+     * @return All the channels the user is subscribed to
+     */
+    List<IChannel> getChannels();
+    
+    /**
+     * Whether the user has access to a specific channel
+     * @param channel The channel to check
+     * @return True if the user is in the channel, false otherwise
+     */
+    default boolean hasChannel(IChannel channel) {
+        return getChannels().contains(channel);
+    }
+    
+    /**
+     * Add this user to a channel
+     * @param channel The channel to add the user to.
+     */
+    default void addChannel(IChannel channel) {
+        getChannels().add(channel);
+        if (!channel.hasUser(this)) channel.addUser(this);
+    }
+    
+    /**
+     * Remove this user from a channel
+     * @param channel The channel to remove the user from
+     */
+    default void leaveChannel(IChannel channel) {
+        if (channel.hasUser(this)) channel.kickUser(this);
+        getChannels().remove(channel);
+    }
+    
+    /**
      * Get a list of homes this user owns
      * @return The homes list
      */
@@ -164,10 +217,6 @@ public interface IUser extends ISession<Player> {
      * @return True if the home was deleted, false if it didnt exist or couldnt be deleted.
      */
     boolean deleteHome(String name);
-    
-    boolean hasInfobard();
-    
-    void runInfobard(boolean value);
     
     /**
      * Get a string of all the users homes formatted

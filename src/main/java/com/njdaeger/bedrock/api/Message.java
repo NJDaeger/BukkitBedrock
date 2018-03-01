@@ -371,7 +371,42 @@ public enum Message {
     /**
      * {0} - Ticks per second
      */
-    INFOBOARD_TPS("infoBoardTps");
+    INFOBOARD_TPS("infoBoardTps"),
+    
+    /**
+     * {0} - Name of the channel
+     */
+    CUSTOM_CHANNEL_COMMAND_DESC("customChannelCommandDesc"),
+    
+    /**
+     * {0} - Name of the channel
+     */
+    CUSTOM_CHANNEL_COMMAND_USAGE("customChannelCommandUsage"),
+    
+    /**
+     * {0} - The channel prefix.
+     * {1} - The user sending the message.
+     * {2} - The message
+     */
+    CHANNEL_MESSAGE_FORMAT("channelMessageFormat"),
+    
+    CHANNEL_DESC("channelDesc"),
+    
+    CHANNEL_USAGE("channelUsage"),
+    
+    CHANNEL_CREATE("channelCreate"),
+    
+    CHANNEL_TEMP("channelTemp"),
+    
+    CHANNEL_DELETE("channelDelete"),
+    
+    CHANNEL_JOIN("channelJoin"),
+    
+    CHANNEL_LEAVE("channelLeave"),
+    
+    CHANNEL_KICK_RECEIVER("channelKickReceiver"),
+    
+    CHANNEL_KICK_SENDER("channelKickSender");
 
     private final String key;
     

@@ -8,6 +8,7 @@ import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.SpeedType;
+import com.njdaeger.bedrock.api.chat.IChannel;
 import com.njdaeger.bedrock.api.config.IHome;
 import com.njdaeger.bedrock.api.events.UserAfkStatusEvent;
 import com.njdaeger.bedrock.api.events.UserSpeedChangeEvent;
@@ -16,14 +17,15 @@ import com.njdaeger.bedrock.api.user.IUserFile;
 import com.njdaeger.bedrock.config.Home;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Bed;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -46,7 +48,9 @@ public class User extends AbstractSession<Player> implements IUser {
     private Location afkLocation;
     private Location lastLocation;
     private final IBedrock bedrock;
+    private IChannel currentChannel;
     private final IUserFile userFile;
+    private final List<IChannel> channels;
     private final Map<String, IHome> homes;
     
     public User(IBedrock bedrock, NamespacedSessionStore<IUser> namespace, String sessionKey, Player type) {
@@ -55,6 +59,7 @@ public class User extends AbstractSession<Player> implements IUser {
         this.name = sessionKey;
         this.bedrock = bedrock;
         this.homes = new HashMap<>();
+        this.channels = new ArrayList<>();
         
         this.userFile = new UserFile(bedrock, this);
         this.userFile.create();
@@ -188,6 +193,16 @@ public class User extends AbstractSession<Player> implements IUser {
     }
     
     @Override
+    public IChannel getChannel() {
+        return currentChannel;
+    }
+    
+    @Override
+    public List<IChannel> getChannels() {
+        return channels;
+    }
+    
+    @Override
     public IUserFile getDataFile() {
         return userFile;
     }
@@ -307,5 +322,6 @@ public class User extends AbstractSession<Player> implements IUser {
         userFile.setEntry(WALKSPEED, walkSpeed);
         userFile.setEntry(FLYSPEED, flySpeed);
         userFile.setEntry(GAMEMODE, gamemode.toString());
+        userFile.setEntry(INFOBOARD, infoBoard);
     }
 }
