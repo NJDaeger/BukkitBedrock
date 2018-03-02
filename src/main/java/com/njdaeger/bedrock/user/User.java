@@ -48,8 +48,10 @@ public class User extends AbstractSession<Player> implements IUser {
     private Location afkLocation;
     private Location lastLocation;
     private final IBedrock bedrock;
+    private boolean channelDisplay;
     private IChannel currentChannel;
     private final IUserFile userFile;
+    private StaticScoreboard chanDisplay;
     private final List<IChannel> channels;
     private final Map<String, IHome> homes;
     
@@ -193,18 +195,55 @@ public class User extends AbstractSession<Player> implements IUser {
     }
     
     @Override
-    public IChannel getChannel() {
-        return currentChannel;
+    public IChannel getSelectedChannel() {
+        return this.currentChannel;
+    }
+    
+    @Override
+    public void setSelectedChannel(IChannel channel) {
+        addChannel(channel);
+        this.currentChannel = channel;
+    }
+    
+    @Override
+    public boolean hasChannelDisplay() {
+        return this.channelDisplay;
+    }
+    
+    @Override
+    public void runChannelDisplay(boolean value) {
+        this.channelDisplay = value;
+        
+        if (value) {
+            if (channels.isEmpty()) {
+            }
+        }
     }
     
     @Override
     public List<IChannel> getChannels() {
-        return channels;
+        return this.channels;
+    }
+    
+    @Override
+    public void addChannel(IChannel channel) {
+        //Update the channeldisplay
+        
+        channels.add(channel);
+        if (!channel.hasUser(this)) channel.addUser(this);
+    }
+    
+    @Override
+    public void leaveChannel(IChannel channel) {
+        //update the cahnneldisplay
+        
+        if (channel.hasUser(this)) channel.kickUser(this);
+        channels.remove(channel);
     }
     
     @Override
     public IUserFile getDataFile() {
-        return userFile;
+        return this.userFile;
     }
     
     @Override

@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public interface IUser extends ISession<Player> {
     
     /**
@@ -156,7 +157,25 @@ public interface IUser extends ISession<Player> {
      * Get the users currently selected channel.
      * @return The currently selected channel.
      */
-    IChannel getChannel();
+    IChannel getSelectedChannel();
+    
+    /**
+     * Set the users currently selected channel
+     * @param channel The channel to set
+     */
+    void setSelectedChannel(IChannel channel);
+    
+    /**
+     * Check if the user has the channel display enabled
+     * @return True if enabled, false otherwise
+     */
+    boolean hasChannelDisplay();
+    
+    /**
+     * Enable or disable the channel display
+     * @param value True enables it, false disables it.
+     */
+    void runChannelDisplay(boolean value);
     
     /**
      * All the channels this user is currently subscribed to.
@@ -177,19 +196,13 @@ public interface IUser extends ISession<Player> {
      * Add this user to a channel
      * @param channel The channel to add the user to.
      */
-    default void addChannel(IChannel channel) {
-        getChannels().add(channel);
-        if (!channel.hasUser(this)) channel.addUser(this);
-    }
+    void addChannel(IChannel channel);
     
     /**
      * Remove this user from a channel
      * @param channel The channel to remove the user from
      */
-    default void leaveChannel(IChannel channel) {
-        if (channel.hasUser(this)) channel.kickUser(this);
-        getChannels().remove(channel);
-    }
+    void leaveChannel(IChannel channel);
     
     /**
      * Get a list of homes this user owns

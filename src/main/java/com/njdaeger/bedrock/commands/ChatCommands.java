@@ -51,6 +51,7 @@ public final class ChatCommands {
         /channel kick <user> [channel]                  Kicks a user from a channel. If none is specified, the user is kicked from the senders current channel
         /channel add <user> [channel]                   Adds a user to a channel. If no channel is specified, the user is added to the senders current channel.
         /channel select <name>                          Sets the given channel to the currently selected channel.
+        /channel display                                Toggles the channel scoreboard display
         
          */
     }
