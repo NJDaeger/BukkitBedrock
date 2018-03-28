@@ -55,7 +55,7 @@ public final class Bedrock {
     }
     
     public static IConfig getConf() {
-        return bedrock.getConf();
+        return bedrock.getSettings();
     }
     
     public static void debug(String message) {

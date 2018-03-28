@@ -8,6 +8,32 @@ import java.util.List;
 public interface IChannel {
     
     /**
+     * Whether the channel has an owner
+     * @return True if a user owns the channel, false otherwise.
+     */
+    default boolean hasOwner() {
+        return getOwner() == null;
+    }
+    
+    /**
+     * Whether this channel is temporary or not.
+     * @return True if it's suppose to close when the channel becomes empty, false does not close it when empty
+     */
+    boolean closeWhenEmpty();
+    
+    /**
+     * Whether to delete this channel when the owner exists
+     * @return Ill write this eventually
+     */
+    boolean closeOnExit();
+    
+    /**
+     * Whether this channel is saved in the channels.yml
+     * @return True if the channel is saved, false otherwise.
+     */
+    boolean isSaved();
+    
+    /**
      * Get the owner of this channel if it exists.
      * @return The owner. Null if no one owns this channel.
      */
@@ -20,10 +46,10 @@ public interface IChannel {
     List<IUser> getUsers();
     
     /**
-     * Whether to delete this channel when the owner exists
-     * @return Ill write this eventually
+     * When to close this channel
+     * @return When to close the channel
      */
-    boolean closeOnExit();
+    Close whenToClose();
     
     /**
      * Get a user from this channel
@@ -93,12 +119,21 @@ public interface IChannel {
     default void close() {
         sendMessage(getPrefix() + " Channel closing.");
         getUsers().forEach(this::kickUser);
+        Bedrock.getBedrock().closeChannel(this);
     }
     
     /**
-     * Completely removes this channel from the server.
+     * Get the type of display this channel uses in chat
+     * @return The display type
      */
-    void remove();
+    Display getDisplay();
+    
+    /**
+     * Removes the channel from the server
+     */
+    default void remove() {
+        Bedrock.getBedrock().removeChannel(this);
+    }
     
     /**
      * Get the name of this channel

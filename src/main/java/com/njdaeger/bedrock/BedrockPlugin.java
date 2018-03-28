@@ -5,9 +5,11 @@ import com.coalesce.core.Color;
 import com.coalesce.core.session.NamespacedSessionStore;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.IBedrock;
+import com.njdaeger.bedrock.api.chat.IChannel;
 import com.njdaeger.bedrock.api.config.IConfig;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.commands.BasicCommands;
+import com.njdaeger.bedrock.commands.ChatCommands;
 import com.njdaeger.bedrock.commands.HomeCommands;
 import com.njdaeger.bedrock.config.Config;
 import com.njdaeger.bedrock.listeners.PlayerListener;
@@ -27,9 +29,9 @@ import java.util.List;
 public class BedrockPlugin extends CoPlugin implements IBedrock {
     
     private NamespacedSessionStore<IUser> userNameSpace;
+    private ChannelConfig channelConfig;
     private MessageFile messageFile;
     private IConfig configuration;
-    //private InfoBoard infoBoard;
     
     @Override
     public void onPluginLoad() throws Exception {
@@ -69,8 +71,8 @@ public class BedrockPlugin extends CoPlugin implements IBedrock {
         Bedrock.setBedrock(this);
         this.userNameSpace = new NamespacedSessionStore<>("users", IUser.class);
         this.configuration = new Config(this);
+        this.channelConfig = new ChannelConfig(this);
         this.messageFile = new MessageFile(this);
-        //this.infoBoard = new InfoBoard(this);
         this.configuration.create();
         
         registerListener(this);
@@ -80,6 +82,7 @@ public class BedrockPlugin extends CoPlugin implements IBedrock {
         
         new BasicCommands();
         new HomeCommands();
+        new ChatCommands();
         
         for (Player player : Bukkit.getOnlinePlayers()) {
             userNameSpace.addSession(new User(this, userNameSpace, player.getName(), player)).login();
@@ -108,8 +111,6 @@ public class BedrockPlugin extends CoPlugin implements IBedrock {
         return userNameSpace.getSession(name);
     }
     
-    
-    
     @Override
     public List<IUser> getUsers() {
         return userNameSpace.getSessions();
@@ -121,7 +122,17 @@ public class BedrockPlugin extends CoPlugin implements IBedrock {
     }
     
     @Override
-    public IConfig getConf() {
+    public IConfig getSettings() {
         return configuration;
+    }
+    
+    @Override
+    public List<IChannel> getChannels() {
+        return getChannelConfig().getChannels();
+    }
+    
+    @Override
+    public ChannelConfig getChannelConfig() {
+        return this.channelConfig;
     }
 }

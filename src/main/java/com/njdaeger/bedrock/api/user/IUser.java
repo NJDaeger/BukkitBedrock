@@ -1,6 +1,8 @@
 package com.njdaeger.bedrock.api.user;
 
 import com.coalesce.core.session.ISession;
+import com.njdaeger.bedrock.api.chat.Close;
+import com.njdaeger.bedrock.api.chat.Display;
 import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.Message;
 import com.njdaeger.bedrock.api.SpeedType;
@@ -203,6 +205,17 @@ public interface IUser extends ISession<Player> {
      * @param channel The channel to remove the user from
      */
     void leaveChannel(IChannel channel);
+    
+    /**
+     * Creates a channel this user owns
+     * @param name The name of he channel
+     * @param prefix The channel prefix (Nullable)
+     * @param permission The permission needed to join (Nullable)
+     * @param display How to display this in chat (With prefix, name, or nothing)
+     * @param whenToClose When to close this channel
+     * @param save Whether to save this channel
+     */
+    void createChannel(String name, String prefix, String permission, Display display, Close whenToClose, boolean save);
     
     /**
      * Get a list of homes this user owns

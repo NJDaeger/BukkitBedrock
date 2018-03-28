@@ -1,6 +1,6 @@
 package com.njdaeger.bedrock.user;
 
-import org.apache.commons.lang3.Validate;
+import com.njdaeger.bedrock.api.Gamemode;
 
 public enum UserPath {
 
@@ -9,7 +9,7 @@ public enum UserPath {
     DISPLAYNAME("displayname", String.class),
     WALKSPEED("walkspeed", Double.class),
     FLYSPEED("flyspeed", Double.class),
-    GAMEMODE("gamemode", String.class),
+    GAMEMODE("gamemode", Gamemode.class),
     INFOBOARD("infoboard", Boolean.class),
     LASTX("location.last.x", Double.class),
     LASTY("location.last.y", Double.class),

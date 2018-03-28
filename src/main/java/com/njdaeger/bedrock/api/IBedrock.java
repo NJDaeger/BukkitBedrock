@@ -2,12 +2,16 @@ package com.njdaeger.bedrock.api;
 
 import com.coalesce.core.Color;
 import com.coalesce.core.plugin.ICoPlugin;
+import com.njdaeger.bedrock.ChannelConfig;
 import com.njdaeger.bedrock.MessageFile;
+import com.njdaeger.bedrock.api.chat.Close;
+import com.njdaeger.bedrock.api.chat.Display;
 import com.njdaeger.bedrock.api.chat.IChannel;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
 import com.njdaeger.bedrock.api.command.BedrockCommandRegister;
 import com.njdaeger.bedrock.api.config.IConfig;
 import com.njdaeger.bedrock.api.user.IUser;
+import com.njdaeger.bedrock.chat.Channel;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -20,7 +24,7 @@ public interface IBedrock extends ICoPlugin {
      * Get the plugin configuration
      * @return The plugin config.
      */
-    IConfig getConf();
+    IConfig getSettings();
     
     /**
      * Get all the currently registered channels
@@ -33,7 +37,27 @@ public interface IBedrock extends ICoPlugin {
      * @param name The name of the channel to get
      * @return The channel if it exists, null otherwise
      */
-    IChannel getChannel(String name);
+    default IChannel getChannel(String name) {
+        return getChannels().stream().filter(c -> c.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+    }
+    
+    /**
+     * Get the channel configuration file
+     * @return The channel config file
+     */
+    ChannelConfig getChannelConfig();
+    
+    /**
+     * Create a new channel
+     * @param name The name of the channel
+     * @param prefix The channel prefix
+     * @param permission The permission needed to join this channel
+     * @param display The type of display this channel is going to use in chat
+     * @param whenToClose When to close this channel
+     */
+    default boolean createChannel(String name, String prefix, String permission, Display display, Close whenToClose) {
+        return createChannel(new Channel(name, prefix, permission, null, display, whenToClose, true));
+    }
     
     /**
      * Create a new channel.
@@ -41,8 +65,8 @@ public interface IBedrock extends ICoPlugin {
      * @param prefix The prefix in chat for the channel
      * @param permission The permission needed to be automatically added into this channel
      */
-    default void createChannel(String name, String prefix, String permission) {
-    
+    default boolean createChannel(String name, String prefix, String permission, Display display) {
+        return createChannel(name, prefix, permission, display, Close.NEVER);
     }
     
     /**
@@ -50,14 +74,36 @@ public interface IBedrock extends ICoPlugin {
      * @param name The name of this channel
      * @param prefix The prefix in chat for the channel
      */
-    void createChannel(String name, String prefix);
+    default boolean createChannel(String name, String prefix, Display display) {
+        return createChannel(name, prefix, null, display);
+    }
+    
+    /**
+     * Adds a new channel to the server
+     * @param channel The channel to add to the server
+     */
+    default boolean createChannel(IChannel channel) {
+        return getChannelConfig().addChannel(channel);
+    }
+    
+    default void closeChannel(String name) {
+        if (getChannel(name) != null) {
+        
+        }
+    }
+    
+    default void closeChannel(IChannel channel) {
+    
+    }
     
     /**
      * Removes a channel from the server.
      * @param name The name of the channel to remove
      */
     default void removeChannel(String name) {
-        if (getChannel(name) != null) removeChannel(getChannel(name));
+        if (getChannel(name) != null) {
+            getChannelConfig().removeChannel(getChannel(name));
+        }
     }
     
     /**
@@ -65,8 +111,7 @@ public interface IBedrock extends ICoPlugin {
      * @param channel The channel to remove
      */
     default void removeChannel(IChannel channel) {
-        channel.close();
-        channel.remove();
+        getChannelConfig().removeChannel(channel);
     }
     
     /**
@@ -111,7 +156,7 @@ public interface IBedrock extends ICoPlugin {
      * @return The plugin language
      */
     default MessageFile.Language getLanguage() {
-        return getConf().getLanguage();
+        return getSettings().getLanguage();
     }
     
     /**

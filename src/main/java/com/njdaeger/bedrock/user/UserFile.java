@@ -26,17 +26,12 @@ public class UserFile extends YmlConfig implements IUserFile {
     
     @Override
     public <T> T get(UserPath path) {
-        return get0(path, path.getType());
+        return getValueAs(path.getKey(), path.getType());
     }
     
     @Override
     public World getWorld(UserPath path) {
         return Bukkit.getWorld(getString(path.getKey()));
-    }
-    
-    @SuppressWarnings("unchecked")
-    private <T> T get0(UserPath path, Class<T> type) {
-        return getEntry(path.getKey()).getAs(type);
     }
     
     @Override
