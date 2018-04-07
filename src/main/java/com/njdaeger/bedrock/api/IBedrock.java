@@ -2,14 +2,14 @@ package com.njdaeger.bedrock.api;
 
 import com.coalesce.core.Color;
 import com.coalesce.core.plugin.ICoPlugin;
-import com.njdaeger.bedrock.ChannelConfig;
-import com.njdaeger.bedrock.MessageFile;
+import com.njdaeger.bedrock.config.ChannelConfig;
+import com.njdaeger.bedrock.config.MessageFile;
 import com.njdaeger.bedrock.api.chat.Close;
 import com.njdaeger.bedrock.api.chat.Display;
 import com.njdaeger.bedrock.api.chat.IChannel;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
 import com.njdaeger.bedrock.api.command.BedrockCommandRegister;
-import com.njdaeger.bedrock.api.config.IConfig;
+import com.njdaeger.bedrock.api.config.ISettings;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.chat.Channel;
 import org.bukkit.entity.Player;
@@ -24,7 +24,7 @@ public interface IBedrock extends ICoPlugin {
      * Get the plugin configuration
      * @return The plugin config.
      */
-    IConfig getSettings();
+    ISettings getSettings();
     
     /**
      * Get all the currently registered channels
@@ -42,6 +42,15 @@ public interface IBedrock extends ICoPlugin {
     }
     
     /**
+     * Checks if a channel exists
+     * @param name The name of the channel to look for
+     * @return True if the channel exists, false otherwise
+     */
+    default boolean hasChannel(String name) {
+        return getChannel(name) != null;
+    }
+    
+    /**
      * Get the channel configuration file
      * @return The channel config file
      */
@@ -51,12 +60,12 @@ public interface IBedrock extends ICoPlugin {
      * Create a new channel
      * @param name The name of the channel
      * @param prefix The channel prefix
-     * @param permission The permission needed to join this channel
      * @param display The type of display this channel is going to use in chat
+     * @param permission The permission needed to join this channel
      * @param whenToClose When to close this channel
      */
-    default boolean createChannel(String name, String prefix, String permission, Display display, Close whenToClose) {
-        return createChannel(new Channel(name, prefix, permission, null, display, whenToClose, true));
+    default boolean createChannel(String name, String prefix, Display display, String permission, Close whenToClose) {
+        return createChannel(new Channel(name, prefix, display, permission, whenToClose, !whenToClose.equals(Close.CHANNEL_EMPTY)));
     }
     
     /**
@@ -65,8 +74,8 @@ public interface IBedrock extends ICoPlugin {
      * @param prefix The prefix in chat for the channel
      * @param permission The permission needed to be automatically added into this channel
      */
-    default boolean createChannel(String name, String prefix, String permission, Display display) {
-        return createChannel(name, prefix, permission, display, Close.NEVER);
+    default boolean createChannel(String name, String prefix, Display display, String permission) {
+        return createChannel(name, prefix, display, permission, Close.NEVER);
     }
     
     /**
@@ -75,7 +84,7 @@ public interface IBedrock extends ICoPlugin {
      * @param prefix The prefix in chat for the channel
      */
     default boolean createChannel(String name, String prefix, Display display) {
-        return createChannel(name, prefix, null, display);
+        return createChannel(name, prefix, display, null);
     }
     
     /**
@@ -87,13 +96,11 @@ public interface IBedrock extends ICoPlugin {
     }
     
     default void closeChannel(String name) {
-        if (getChannel(name) != null) {
-        
-        }
+        if (getChannel(name) != null) closeChannel(getChannel(name));
     }
     
     default void closeChannel(IChannel channel) {
-    
+        getChannelConfig().closeChannel(channel);
     }
     
     /**
@@ -101,9 +108,7 @@ public interface IBedrock extends ICoPlugin {
      * @param name The name of the channel to remove
      */
     default void removeChannel(String name) {
-        if (getChannel(name) != null) {
-            getChannelConfig().removeChannel(getChannel(name));
-        }
+        if (getChannel(name) != null) removeChannel(getChannel(name));
     }
     
     /**
@@ -187,6 +192,14 @@ public interface IBedrock extends ICoPlugin {
         for (BedrockCommand command : commands) {
             getCommandStore().registerCommand(command, new BedrockCommandRegister(command, this));
         }
+    }
+    
+    /**
+     * Unregisters a command from the server
+     * @param name The name of the command to unregister
+     */
+    default void unregisterCommand(String name) {
+        getCommandStore().unregisterCommand(name);
     }
     
 }

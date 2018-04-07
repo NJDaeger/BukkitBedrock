@@ -2,6 +2,7 @@ package com.njdaeger.bedrock.commands;
 
 import com.coalesce.core.SenderType;
 import com.njdaeger.bedrock.api.Bedrock;
+import com.njdaeger.bedrock.api.chat.Close;
 import com.njdaeger.bedrock.api.chat.Display;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.chat.IChannel;
@@ -39,6 +40,14 @@ public final class ChatCommands {
     
     private void customChannel(BedrockCommandContext context) {
         if (context.hasArgs()) bedrock.getChannel(context.getAlias()).sendMessage(context.joinArgs());
+        else {
+            //size
+            //name
+            //display
+            //close
+            //prefix
+            //users
+        }
         /*
        
         /[channelname] [message]                        Sends a message to this specific channel even if its not currently selected. (Still needs channel perm)
@@ -50,22 +59,24 @@ public final class ChatCommands {
     
     private void channel(BedrockCommandContext context) {
         
+        //String subcommand
+    
+        if (context.subCommandAt(0, "new", true, this::newChannel)) return;
+        if (context.subCommandAt(0, "temp", true, this::tempChannel)) return;
+        if (context.subCommandAt(0, "delete", true, this::deleteChannel)) return;
+        
         switch (context.argAt(0).toLowerCase()) {
-        case "new":
-            if (!context.isLength(3)) context.notEnoughArgs(3, context.length());
-            bedrock.createChannel(context.argAt(0), context.argAt(1), context.argAt(3), Display.valueOf(context.argAt(2)));
-        case "temp":
-            //if (!context.isLength(3)) context.notEnoughArgs(3, context.length());
-            //bedrock.createChannel(new Channel(context.argAt(0), context.argAt(1), context.argAt(2), context.getUser(), true, true));
-        case "delete":
         case "join":
             context.getUser().addChannel(bedrock.getChannel(context.argAt(1)));
+            break;
         case "leave":
             context.getUser().leaveChannel(bedrock.getChannel(context.argAt(1)));
+            break;
         case "kick":
         case "add":
         case "select":
         case "display":
+            context.getUser().runChannelDisplay(!context.getUser().hasChannelDisplay());
         default:
             //We dont know what arg was put in
         }
@@ -75,8 +86,8 @@ public final class ChatCommands {
         Create a new channel, delete a channel, list of channels
         
         
-        /channel new <name> <prefix> <display> [permission]      Creates a new channel saved by the server and owned by the player
-        /channel temp <name> <prefix> <display> [permission]    Creates a new temp channel which is removed when the owner exits
+        /channel new <name> <prefix> <display> [permission]     Creates a new channel saved by the server
+        /channel temp <name> <prefix> <display> [permission]    Creates a new temp channel which is removed when empty
         /channel delete <name>                                  Deletes a channel. Channel must be made by a user or the user must have permission
         /channel join <name>                                    Puts a channel back in this users channel selection list
         /channel leave <name>                                   Removes a channel from the channel selection list
@@ -84,9 +95,86 @@ public final class ChatCommands {
         /channel add <user> [channel]                           Adds a user to a channel. If no channel is specified, the user is added to the senders current channel.
         /channel select <name>                                  Sets the given channel to the currently selected channel.
         /channel display                                        Toggles the channel scoreboard display
-        /channel personal <name> <prefix> <display> [permission]
         
          */
+    }
+    
+    private void newChannel(BedrockCommandContext context) {
+        if (context.length() < 3) {
+            context.notEnoughArgs(3, context.length());
+            return;
+        }
+        String name = context.argAt(1);
+        String prefix = context.argAt(2);
+        String display = context.argAt(3);
+        String permission = context.argAt(4);
+    
+        if (bedrock.hasChannel(name)) {
+            //Channel exists
+            return;
+        }
+    
+        if (!Display.contains(display)) {
+            //Wtf is this display
+            return;
+        }
+        bedrock.createChannel(name, prefix, Display.valueOf(display), permission);
+        bedrock.registerCommand(BedrockCommand.builder(name)
+                .description(translate(CUSTOM_CHANNEL_COMMAND_DESC, name))
+                .usage(translate(CUSTOM_CHANNEL_COMMAND_USAGE, name))
+                .permission(permission == null ? "" : permission)
+                .executor(this::customChannel)
+                .senders(SenderType.PLAYER, SenderType.CONSOLE)
+                .build()
+        );
+    }
+    
+    private void tempChannel(BedrockCommandContext context) {
+        if (context.length() < 3) {
+            context.notEnoughArgs(3, context.length());
+            return;
+        }
+        String name = context.argAt(1);
+        String prefix = context.argAt(2);
+        String display = context.argAt(3);
+        String permission = context.argAt(4);
+    
+        if (bedrock.hasChannel(name)) {
+            //Channel exists
+            return;
+        }
+    
+        if (!Display.contains(display)) {
+            //Wtf is this display
+            return;
+        }
+        bedrock.createChannel(name, prefix, Display.valueOf(display), permission, Close.CHANNEL_EMPTY);
+        bedrock.registerCommand(BedrockCommand.builder(name)
+                .description(translate(CUSTOM_CHANNEL_COMMAND_DESC, name))
+                .usage(translate(CUSTOM_CHANNEL_COMMAND_USAGE, name))
+                .permission(permission == null ? "" : permission)
+                .executor(this::customChannel)
+                .senders(SenderType.PLAYER, SenderType.CONSOLE)
+                .build()
+        );
+    }
+    
+    private void deleteChannel(BedrockCommandContext context) {
+        if (context.length() < 2) {
+            context.notEnoughArgs(2, context.length());
+            return;
+        }
+        if (context.length() > 2) {
+            context.tooManyArgs(2, context.length());
+            return;
+        }
+        String name = context.argAt(1);
+        
+        if (!bedrock.hasChannel(name)) {
+            //Cant find dis channel
+            return;
+        }
+        bedrock.removeChannel(name);
     }
     
     /*

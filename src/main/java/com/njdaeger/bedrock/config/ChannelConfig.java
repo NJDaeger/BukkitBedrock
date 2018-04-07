@@ -1,7 +1,8 @@
-package com.njdaeger.bedrock;
+package com.njdaeger.bedrock.config;
 
 import com.coalesce.core.config.YmlConfig;
 import com.coalesce.core.config.base.ISection;
+import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.chat.Close;
 import com.njdaeger.bedrock.api.chat.Display;
 import com.njdaeger.bedrock.api.IBedrock;
@@ -25,31 +26,15 @@ public class ChannelConfig extends YmlConfig {
             addEntry("channels.main.display", Display.NONE.name());
             addEntry("channels.main.close", Close.NEVER.name());
         }
-    
-        System.out.println(getKeys(false));
-        System.out.println(getSection("channels").getKeys(false));
         
         for (ISection channel : getSections("channels")) {
-            System.out.println(channel.getName());
-            System.out.println("test");
             String prefix = channel.getString("prefix");
             String permission = channel.getString("permission");
-            String owner = channel.getString("owner");
             Close whenToClose = channel.getValueAs("close", Close.class);
             Display type = channel.getValueAs("display", Display.class);
-            System.out.println(prefix);
-            System.out.println(permission);
-            System.out.println(owner);
-            System.out.println(whenToClose);
-            System.out.println(type);
-            System.out.println(channel.getCurrentPath());
-            //boolean closeOnExit = channel.contains("closeOnExit") && channel.getBoolean("closeOnExit");
             
-            channels.add(new Channel(channel.getName(), prefix, permission, bedrock.getUser(owner), type, whenToClose, true));
+            channels.add(new Channel(channel.getName(), prefix, type, permission, whenToClose, true));
         }
-    
-        System.out.println(channels);
-        
     }
     
     /**
@@ -66,13 +51,15 @@ public class ChannelConfig extends YmlConfig {
      * @return True means the channel was removed from the open channels list, false means it wasn't removed, or it doesn't exist.
      */
     public boolean closeChannel(IChannel channel) {
-        channel.close();
+        channel.sendMessage("Channel closing.");
+        channel.kickAll();
+        Bedrock.getBedrock().unregisterCommand(channel.getName());
         return channels.remove(channel);
     }
     
     /**
      * Completely removes a channel from the server configuration
-     * @param channel
+     * @param channel The channel to remove
      * @return  True means it was successfully removed. False means it either didn't close properly, or it wasnt removed from the channels config
      */
     public boolean removeChannel(IChannel channel) {
@@ -95,8 +82,7 @@ public class ChannelConfig extends YmlConfig {
             s.addEntry(channel.getName() + ".prefix", channel.getPrefix());
             s.addEntry(channel.getName() + ".display", channel.getDisplay().name());
             s.addEntry(channel.getName() + ".permission", channel.getPermission());
-            s.addEntry(channel.getName() + ".owner", channel.getOwner().getName());
-            s.addEntry(channel.getName() + ".close", channel.whenToClose().name());
+            s.addEntry(channel.getName() + ".close", channel.getClose().name());
         }
         channels.add(channel);
         return true;

@@ -1,4 +1,4 @@
-package com.njdaeger.bedrock;
+package com.njdaeger.bedrock.config;
 
 import com.coalesce.core.config.YmlConfig;
 import com.njdaeger.bedrock.api.Bedrock;

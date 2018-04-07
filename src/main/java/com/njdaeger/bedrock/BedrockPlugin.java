@@ -6,12 +6,14 @@ import com.coalesce.core.session.NamespacedSessionStore;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.chat.IChannel;
-import com.njdaeger.bedrock.api.config.IConfig;
+import com.njdaeger.bedrock.api.config.ISettings;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.commands.BasicCommands;
 import com.njdaeger.bedrock.commands.ChatCommands;
 import com.njdaeger.bedrock.commands.HomeCommands;
-import com.njdaeger.bedrock.config.Config;
+import com.njdaeger.bedrock.config.ChannelConfig;
+import com.njdaeger.bedrock.config.Settings;
+import com.njdaeger.bedrock.config.MessageFile;
 import com.njdaeger.bedrock.listeners.PlayerListener;
 import com.njdaeger.bedrock.user.User;
 import org.bukkit.Bukkit;
@@ -31,7 +33,7 @@ public class BedrockPlugin extends CoPlugin implements IBedrock {
     private NamespacedSessionStore<IUser> userNameSpace;
     private ChannelConfig channelConfig;
     private MessageFile messageFile;
-    private IConfig configuration;
+    private ISettings configuration;
     
     @Override
     public void onPluginLoad() throws Exception {
@@ -70,7 +72,7 @@ public class BedrockPlugin extends CoPlugin implements IBedrock {
     
         Bedrock.setBedrock(this);
         this.userNameSpace = new NamespacedSessionStore<>("users", IUser.class);
-        this.configuration = new Config(this);
+        this.configuration = new Settings(this);
         this.channelConfig = new ChannelConfig(this);
         this.messageFile = new MessageFile(this);
         this.configuration.create();
@@ -122,7 +124,7 @@ public class BedrockPlugin extends CoPlugin implements IBedrock {
     }
     
     @Override
-    public IConfig getSettings() {
+    public ISettings getSettings() {
         return configuration;
     }
     

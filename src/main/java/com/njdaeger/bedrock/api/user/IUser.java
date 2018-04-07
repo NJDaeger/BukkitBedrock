@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public interface IUser extends ISession<Player> {
@@ -207,15 +208,11 @@ public interface IUser extends ISession<Player> {
     void leaveChannel(IChannel channel);
     
     /**
-     * Creates a channel this user owns
-     * @param name The name of he channel
-     * @param prefix The channel prefix (Nullable)
-     * @param permission The permission needed to join (Nullable)
-     * @param display How to display this in chat (With prefix, name, or nothing)
-     * @param whenToClose When to close this channel
-     * @param save Whether to save this channel
+     * Gets a channel the user is currently subscribed to
+     * @param name The name of the channel to find
+     * @return The channel if the user is subscribed to it
      */
-    void createChannel(String name, String prefix, String permission, Display display, Close whenToClose, boolean save);
+    IChannel getChannel(String name);
     
     /**
      * Get a list of homes this user owns

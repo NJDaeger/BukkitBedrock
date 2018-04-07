@@ -390,8 +390,14 @@ public enum Message {
      */
     CHANNEL_MESSAGE_FORMAT("channelMessageFormat"),
     
+    /**
+     * No placeholders
+     */
     CHANNEL_DESC("channelDesc"),
     
+    /**
+     * No placeholders
+     */
     CHANNEL_USAGE("channelUsage"),
     
     CHANNEL_CREATE("channelCreate"),
@@ -404,9 +410,25 @@ public enum Message {
     
     CHANNEL_LEAVE("channelLeave"),
     
+    CHANNEL_ADD_RECEIVER("channelAddReceiver"),
+    
+    CHANNEL_ADD_SENDER("channelAddSender"),
+    
     CHANNEL_KICK_RECEIVER("channelKickReceiver"),
     
-    CHANNEL_KICK_SENDER("channelKickSender");
+    CHANNEL_KICK_SENDER("channelKickSender"),
+    
+    CHANNEL_SIZE("channelInfoSize"),
+    
+    CHANNEL_NAME("channelInfoName"),
+    
+    CHANNEL_DISPLAY("channelInfoDisplay"),
+    
+    CHANNEL_CLOSE("channelInfoClose"),
+    
+    CHANNEL_PREFIX("channelInfoPrefix"),
+    
+    CHANNEL_USERS("channelInfoUsers");
 
     private final String key;
     

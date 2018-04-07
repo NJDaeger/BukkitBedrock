@@ -3,41 +3,26 @@ package com.njdaeger.bedrock.api.chat;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.user.IUser;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public interface IChannel {
-    
-    /**
-     * Whether the channel has an owner
-     * @return True if a user owns the channel, false otherwise.
-     */
-    default boolean hasOwner() {
-        return getOwner() == null;
-    }
     
     /**
      * Whether this channel is temporary or not.
      * @return True if it's suppose to close when the channel becomes empty, false does not close it when empty
      */
-    boolean closeWhenEmpty();
-    
-    /**
-     * Whether to delete this channel when the owner exists
-     * @return Ill write this eventually
-     */
-    boolean closeOnExit();
+    default boolean closeWhenEmpty() {
+        return getClose().equals(Close.CHANNEL_EMPTY);
+    }
     
     /**
      * Whether this channel is saved in the channels.yml
      * @return True if the channel is saved, false otherwise.
      */
     boolean isSaved();
-    
-    /**
-     * Get the owner of this channel if it exists.
-     * @return The owner. Null if no one owns this channel.
-     */
-    IUser getOwner();
     
     /**
      * Get a list of users currently in this channel.
@@ -49,7 +34,7 @@ public interface IChannel {
      * When to close this channel
      * @return When to close the channel
      */
-    Close whenToClose();
+    Close getClose();
     
     /**
      * Get a user from this channel
@@ -85,6 +70,24 @@ public interface IChannel {
     default void kickUser(IUser user) {
         if (user.hasChannel(this)) user.leaveChannel(this);
         getUsers().remove(user);
+        if (getUsers().size() == 0 && closeWhenEmpty()) close();
+    }
+    
+    /**
+     * Kicks all the users in this channel
+     */
+    default void kickAll() {
+        List<IUser> usersCopy = new ArrayList<>(getUsers());
+        usersCopy.forEach(this::kickUser);
+    }
+    
+    /**
+     * Kicks all the users that match the given predicate
+     * @param predicate The predicate to match
+     */
+    default void kickIf(Predicate<IUser> predicate) {
+        List<IUser> usersCopy = new ArrayList<>(getUsers()).stream().filter(predicate).collect(Collectors.toList());
+        usersCopy.forEach(this::kickUser);
     }
     
     /**
@@ -117,9 +120,7 @@ public interface IChannel {
      * Closes the channel and removes everyone from it.
      */
     default void close() {
-        sendMessage(getPrefix() + " Channel closing.");
-        getUsers().forEach(this::kickUser);
-        Bedrock.getBedrock().closeChannel(this);
+        Bedrock.closeChannel(this);
     }
     
     /**

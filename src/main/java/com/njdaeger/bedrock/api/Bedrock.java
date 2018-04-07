@@ -1,9 +1,13 @@
 package com.njdaeger.bedrock.api;
 
 import com.coalesce.core.Coalesce;
-import com.njdaeger.bedrock.MessageFile;
+import com.njdaeger.bedrock.api.chat.Close;
+import com.njdaeger.bedrock.api.chat.Display;
+import com.njdaeger.bedrock.config.ChannelConfig;
+import com.njdaeger.bedrock.config.MessageFile;
+import com.njdaeger.bedrock.api.chat.IChannel;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
-import com.njdaeger.bedrock.api.config.IConfig;
+import com.njdaeger.bedrock.api.config.ISettings;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.sun.management.OperatingSystemMXBean;
 import org.bukkit.entity.Player;
@@ -54,7 +58,7 @@ public final class Bedrock {
         return bedrock.getMessageFile();
     }
     
-    public static IConfig getConf() {
+    public static ISettings getConf() {
         return bedrock.getSettings();
     }
     
@@ -122,6 +126,50 @@ public final class Bedrock {
             e.printStackTrace();
         }
         return 0;
+    }
+    
+    public static ISettings getSettings() {
+        return bedrock.getSettings();
+    }
+    
+    public static List<IChannel> getChannels() {
+        return bedrock.getChannels();
+    }
+    
+    public static IChannel getChannel(String name) {
+        return bedrock.getChannel(name);
+    }
+    
+    public static boolean hasChannel(String name) {
+        return bedrock.hasChannel(name);
+    }
+    
+    public static boolean createChannel(String name, String prefix, Display display, String permission, Close whenToClose) {
+        return bedrock.createChannel(name, prefix, display, permission, whenToClose);
+    }
+    
+    public static boolean createChannel(String name, String prefix, Display display, String permission) {
+        return bedrock.createChannel(name, prefix, display, permission);
+    }
+    
+    public static boolean createChannel(String name, String prefix, Display display) {
+        return bedrock.createChannel(name, prefix, display);
+    }
+    
+    public static boolean createChannel(IChannel channel) {
+        return bedrock.createChannel(channel);
+    }
+    
+    public static ChannelConfig getChannelConfig() {
+        return bedrock.getChannelConfig();
+    }
+    
+    public static void closeChannel(String name) {
+        bedrock.closeChannel(name);
+    }
+    
+    public static void closeChannel(IChannel channel) {
+        bedrock.closeChannel(channel);
     }
     
 }

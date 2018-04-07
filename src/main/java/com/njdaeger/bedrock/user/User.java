@@ -16,6 +16,7 @@ import com.njdaeger.bedrock.api.events.UserAfkStatusEvent;
 import com.njdaeger.bedrock.api.events.UserSpeedChangeEvent;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.api.user.IUserFile;
+import com.njdaeger.bedrock.chat.Channel;
 import com.njdaeger.bedrock.config.Home;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -233,30 +234,38 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public void addChannel(IChannel channel) {
+        if (channel == null) return;
         if (!channels.contains(channel)) channels.add(0, channel);
         else {
             channels.remove(channel);
             channels.add(0, channel);
         }
         if (!channel.hasUser(this)) channel.addUser(this);
-        updateChannelBoard();
+        if (hasChannelDisplay()) updateChannelBoard();
     }
     
     @Override
     public void leaveChannel(IChannel channel) {
+        /*if (channel.hasOwner() && channel.getOwner().equals(this) && channel.getClose() == Close.OWNER_EXIT) {
+            channel.close();
+            if (!channel.isSaved()) {
+                channel.remove();
+            }
+        }*/
         channels.remove(channel);
         if (channel.hasUser(this)) channel.kickUser(this);
-        updateChannelBoard();
+        if (hasChannelDisplay()) updateChannelBoard();
     }
     
     @Override
-    public void createChannel(String name, String prefix, String permission, Display display, Close whenToClose, boolean save) {
-    
+    public IChannel getChannel(String name) {
+        return null;
     }
     
     private void updateChannelBoard() {
         chanDisplay.removeAll();
         chanDisplay.setLine(0);
+        System.out.println(channels);
         channels.forEach(c -> chanDisplay.addLine(c.getName()));
         chanDisplay.send(get());
     }
@@ -352,8 +361,6 @@ public class User extends AbstractSession<Player> implements IUser {
         this.walkSpeed = userFile.get(WALKSPEED);
         this.flySpeed = userFile.get(FLYSPEED);
         this.gamemode = userFile.get(GAMEMODE);
-        System.out.println((Object)userFile.get(GAMEMODE));
-        System.out.println(gamemode);
         this.infoBoard = userFile.get(INFOBOARD);
         this.lastLocation = new Location(
                 userFile.getWorld(LASTWORLD) == null ? get().getWorld() : userFile.getWorld(LASTWORLD),
@@ -366,7 +373,6 @@ public class User extends AbstractSession<Player> implements IUser {
         get().setDisplayName(displayName);
         get().setWalkSpeed(Float.parseFloat(Double.toString(0.2 * Math.pow(walkSpeed, 0.69897))));
         get().setFlySpeed((float)flySpeed/10);
-        System.out.println(gamemode.getBukkitMode());
         get().setGameMode(gamemode.getBukkitMode());
         runInfobard(infoBoard);
         
@@ -385,5 +391,6 @@ public class User extends AbstractSession<Player> implements IUser {
         userFile.setEntry(FLYSPEED, flySpeed);
         userFile.setEntry(GAMEMODE, gamemode.toString());
         userFile.setEntry(INFOBOARD, infoBoard);
+        
     }
 }

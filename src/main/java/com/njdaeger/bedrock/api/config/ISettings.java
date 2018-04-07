@@ -1,8 +1,8 @@
 package com.njdaeger.bedrock.api.config;
 
-import com.njdaeger.bedrock.MessageFile;
+import com.njdaeger.bedrock.config.MessageFile;
 
-public interface IConfig extends com.coalesce.core.config.base.IConfig {
+public interface ISettings extends com.coalesce.core.config.base.IConfig {
     
     MessageFile.Language getLanguage();
     
