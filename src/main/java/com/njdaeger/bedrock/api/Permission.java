@@ -31,7 +31,19 @@ public enum Permission {
     COMMAND_AFK_MESSAGE("bedrock.afk.message"),
     COMMAND_AFK_NOTIFY("bedrock.afk.notify"),
     COMMAND_HEAL("bedrock.heal"),
-    COMMAND_HEAL_OTHER("bedrock.heal.other");
+    COMMAND_HEAL_OTHER("bedrock.heal.other"),
+    COMMAND_CHAN_DISPLAY("bedrock.channel.basic.display"),
+    COMMAND_CHAN_SELECT("bedrock.channel.basic.select"),
+    COMMAND_CHAN_JOIN("bedrock.channel.basic.join"),
+    COMMAND_CHAN_LEAVE("bedrock.channel.basic.leave"),
+    COMMAND_CHAN_DELETE("bedrock.channel.delete"),
+    COMMAND_CHAN_NEW("bedrock.channel.create.new"),
+    COMMAND_CHAN_TEMP("bedrock.channel.create.temp"),
+    COMMAND_CHAN_JOIN_ANY("bedrock.channel.join-any"),
+    COMMAND_CHAN_ADD_CURRENT("bedrock.channel.add.current"),
+    COMMAND_CHAN_ADD_OTHER("bedrock.channel.add.other"),
+    COMMAND_CHAN_KICK_CURRENT("bedrock.channel.kick.current"),
+    COMMAND_CHAN_KICK_OTHER("bedrock.channel.kick.other");
     
     private String permission;
     

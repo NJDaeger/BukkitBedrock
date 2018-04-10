@@ -46,6 +46,10 @@ public final class Bedrock {
         return bedrock.getUsers();
     }
     
+    public static String translate(String string, Object... placeholders) {
+        return bedrock.translate(string, placeholders);
+    }
+    
     public static String translate(Message message, Object... placeholders) {
         return bedrock.translate(message, placeholders);
     }

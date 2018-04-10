@@ -1,6 +1,7 @@
 package com.njdaeger.bedrock.api.user;
 
 import com.coalesce.core.session.ISession;
+import com.njdaeger.bedrock.api.Permission;
 import com.njdaeger.bedrock.api.chat.Close;
 import com.njdaeger.bedrock.api.chat.Display;
 import com.njdaeger.bedrock.api.Gamemode;
@@ -85,6 +86,24 @@ public interface IUser extends ISession<Player> {
      * Runs logout process.
      */
     void logout();
+    
+    /**
+     * Check whether this user has permission
+     * @param permission The permission to check
+     * @return True if the user has the given permission
+     */
+    default boolean hasPermission(String permission) {
+        return get().hasPermission(permission);
+    }
+    
+    /**
+     * Check whether this user has permission
+     * @param permission The permission to check
+     * @return True if the user has the given permission
+     */
+    default boolean hasPermission(Permission permission) {
+        return hasPermission(permission.toString());
+    }
     
     @Override
     IBedrock getSessionOwner();
@@ -193,6 +212,15 @@ public interface IUser extends ISession<Player> {
      */
     default boolean hasChannel(IChannel channel) {
         return getChannels().contains(channel);
+    }
+    
+    /**
+     * Whether the user has access to a specific channel
+     * @param name The name of the channel
+     * @return True if the user is in the channel
+     */
+    default boolean hasChannel(String name) {
+        return hasChannel(getChannel(name));
     }
     
     /**

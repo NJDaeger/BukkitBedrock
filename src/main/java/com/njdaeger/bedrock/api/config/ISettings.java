@@ -10,4 +10,12 @@ public interface ISettings extends com.coalesce.core.config.base.IConfig {
     
     boolean debug();
     
+    String getRawMessageFormat();
+    
+    String getRawDefaultChannelFormat();
+    
+    String getMessageFormat();
+    
+    String getDefaultChannelFormat();
+    
 }

@@ -65,7 +65,7 @@ public interface IBedrock extends ICoPlugin {
      * @param whenToClose When to close this channel
      */
     default boolean createChannel(String name, String prefix, Display display, String permission, Close whenToClose) {
-        return createChannel(new Channel(name, prefix, display, permission, whenToClose, !whenToClose.equals(Close.CHANNEL_EMPTY)));
+        return createChannel(new Channel(name, prefix, display, permission, getSettings().getDefaultChannelFormat(), whenToClose, !whenToClose.equals(Close.CHANNEL_EMPTY)));
     }
     
     /**
@@ -162,6 +162,16 @@ public interface IBedrock extends ICoPlugin {
      */
     default MessageFile.Language getLanguage() {
         return getSettings().getLanguage();
+    }
+    
+    /**
+     * Translates a string's placeholders
+     * @param message The message to translate
+     * @param placeholders The placeholders
+     * @return The string, colored, translated, and placeholders replaced.
+     */
+    default String translate(String message, Object... placeholders) {
+        return Color.translate('&', getCoFormatter().formatString(message, placeholders));
     }
     
     /**

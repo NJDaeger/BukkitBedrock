@@ -23,6 +23,7 @@ public class ChannelConfig extends YmlConfig {
         if (!contains("channels", false)) {
             addEntry("channels.main.commandName", "main");
             addEntry("channels.main.prefix", "M");
+            addEntry("channels.main.format", "&7{DISPLAYNAME}: &r{MESSAGE}");
             addEntry("channels.main.display", Display.NONE.name());
             addEntry("channels.main.close", Close.NEVER.name());
         }
@@ -30,10 +31,11 @@ public class ChannelConfig extends YmlConfig {
         for (ISection channel : getSections("channels")) {
             String prefix = channel.getString("prefix");
             String permission = channel.getString("permission");
+            String format = channel.getString("format");
             Close whenToClose = channel.getValueAs("close", Close.class);
             Display type = channel.getValueAs("display", Display.class);
             
-            channels.add(new Channel(channel.getName(), prefix, type, permission, whenToClose, true));
+            channels.add(new Channel(channel.getName(), prefix, type, permission, (format == null ? bedrock.getSettings().getDefaultChannelFormat() : format), whenToClose, true));
         }
     }
     
@@ -51,7 +53,7 @@ public class ChannelConfig extends YmlConfig {
      * @return True means the channel was removed from the open channels list, false means it wasn't removed, or it doesn't exist.
      */
     public boolean closeChannel(IChannel channel) {
-        channel.sendMessage("Channel closing.");
+        channel.message("Channel closing.");
         channel.kickAll();
         Bedrock.getBedrock().unregisterCommand(channel.getName());
         return channels.remove(channel);
@@ -83,6 +85,7 @@ public class ChannelConfig extends YmlConfig {
             s.addEntry(channel.getName() + ".display", channel.getDisplay().name());
             s.addEntry(channel.getName() + ".permission", channel.getPermission());
             s.addEntry(channel.getName() + ".close", channel.getClose().name());
+            s.addEntry(channel.getName() + ".format", channel.getChannelFormat());
         }
         channels.add(channel);
         return true;

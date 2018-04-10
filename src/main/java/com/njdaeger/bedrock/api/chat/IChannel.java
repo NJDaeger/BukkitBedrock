@@ -109,11 +109,32 @@ public interface IChannel {
     }
     
     /**
-     * Send a message to all the users in this channel
+     * Send a message to all the users in this channel. no formatting
      * @param message The message to send
      */
-    default void sendMessage(String message) {
-        getUsers().forEach(u -> u.sendMessage(message));
+    default void message(String message) {
+        if (message == null) message = "";
+        String finalMessage = message;
+        getUsers().forEach(u -> u.sendMessage(finalMessage));
+    }
+    
+    /**
+     * Sends a user message with standard formatting
+     * @param user The user sending the message
+     * @param message The message being sent
+     */
+    default void userMessage(IUser user, String message) {
+        if (message == null) message = "";
+        message(Bedrock.translate(getRawChannelFormat(),
+                message,
+                user.getName(),
+                user.getDisplayName(),
+                user.get().getHealth(),
+                user.get().getFoodLevel(),
+                user.getWorld().getName(),
+                getName(),
+                getPrefix(),
+                (getDisplay().equals(Display.PREFIX) ? getPrefix() : getName())));
     }
     
     /**
@@ -135,6 +156,27 @@ public interface IChannel {
     default void remove() {
         Bedrock.getBedrock().removeChannel(this);
     }
+    
+    /**
+     * Check if the channel requires a permission to join
+     * @return True if the channel requires a permission, false otherwise.
+     */
+    default boolean hasPermission() {
+        return getPermission() != null;
+    }
+    
+    /**
+     * Gets the raw channel format meant for the string replacer
+     * @return The raw channel format.
+     */
+    String getRawChannelFormat();
+    
+    
+    /**
+     * Gets this channels chat format
+     * @return The channel chat format. If this doesn't have a custom one, the default is used.
+     */
+    String getChannelFormat();
     
     /**
      * Get the name of this channel

@@ -3,6 +3,7 @@ package com.njdaeger.bedrock.listeners;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.Message;
 import com.njdaeger.bedrock.api.IBedrock;
+import com.njdaeger.bedrock.api.chat.Display;
 import com.njdaeger.bedrock.api.user.IUser;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -14,6 +15,8 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+
+import static com.njdaeger.bedrock.api.Bedrock.translate;
 
 public class PlayerListener implements Listener {
     
@@ -33,7 +36,7 @@ public class PlayerListener implements Listener {
                 return;
             }
             if (isWithin(al.getBlockX(), cl.getBlockX()) || isWithin(al.getBlockY(), cl.getBlockY()) || isWithin(al.getBlockZ(), cl.getBlockZ())) {
-                user.setAfk(false, bedrock.translate(Message.AFK_BACK_MESSAGE, user.getDisplayName()));
+                user.setAfk(false, translate(Message.AFK_BACK_MESSAGE, user.getDisplayName()));
             }
         }
         
@@ -50,7 +53,7 @@ public class PlayerListener implements Listener {
         IUser user = bedrock.getUser(event.getPlayer());
         
         if (user.isAfk()) {
-            user.setAfk(false, bedrock.translate(Message.AFK_BACK_MESSAGE, user.getDisplayName()));
+            user.setAfk(false, translate(Message.AFK_BACK_MESSAGE, user.getDisplayName()));
         }
         
     }
@@ -59,9 +62,23 @@ public class PlayerListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         
         IUser user = bedrock.getUser(event.getPlayer());
-    
+        
+        if (user.getSelectedChannel() == null || user.getSelectedChannel().getDisplay() == Display.NONE) {
+            String formatted = bedrock.translate(bedrock.getSettings().getRawMessageFormat(),
+                    event.getMessage(),
+                    user.getName(),
+                    user.getDisplayName(),
+                    user.get().getHealth(),
+                    user.get().getFoodLevel(),
+                    user.getWorld().getName());
+            event.setFormat(formatted);
+        } else {
+            event.setCancelled(true);
+            user.getSelectedChannel().userMessage(user, event.getMessage());
+        }
+        
         if (user.isAfk()) {
-            user.setAfk(false, bedrock.translate(Message.AFK_BACK_MESSAGE, user.getDisplayName()));
+            user.setAfk(false, translate(Message.AFK_BACK_MESSAGE, user.getDisplayName()));
         }
         
     }
@@ -71,7 +88,7 @@ public class PlayerListener implements Listener {
         IUser user = bedrock.getUser(event.getPlayer());
     
         if (user.isAfk()) {
-            user.setAfk(false, bedrock.translate(Message.AFK_BACK_MESSAGE, user.getDisplayName()));
+            user.setAfk(false, translate(Message.AFK_BACK_MESSAGE, user.getDisplayName()));
         }
     }
     
@@ -80,7 +97,7 @@ public class PlayerListener implements Listener {
         IUser user = bedrock.getUser(event.getPlayer());
     
         if (user.isAfk()) {
-            user.setAfk(false, bedrock.translate(Message.AFK_BACK_MESSAGE, user.getDisplayName()));
+            user.setAfk(false, translate(Message.AFK_BACK_MESSAGE, user.getDisplayName()));
         }
     }
     
@@ -89,7 +106,7 @@ public class PlayerListener implements Listener {
         IUser user = bedrock.getUser(event.getPlayer());
     
         if (user.isAfk()) {
-            user.setAfk(false, bedrock.translate(Message.AFK_BACK_MESSAGE, user.getDisplayName()));
+            user.setAfk(false, translate(Message.AFK_BACK_MESSAGE, user.getDisplayName()));
         }
     }
     

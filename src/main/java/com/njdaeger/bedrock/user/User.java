@@ -8,15 +8,12 @@ import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.SpeedType;
-import com.njdaeger.bedrock.api.chat.Close;
-import com.njdaeger.bedrock.api.chat.Display;
 import com.njdaeger.bedrock.api.chat.IChannel;
 import com.njdaeger.bedrock.api.config.IHome;
 import com.njdaeger.bedrock.api.events.UserAfkStatusEvent;
 import com.njdaeger.bedrock.api.events.UserSpeedChangeEvent;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.api.user.IUserFile;
-import com.njdaeger.bedrock.chat.Channel;
 import com.njdaeger.bedrock.config.Home;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -204,7 +201,10 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public void setSelectedChannel(IChannel channel) {
-        addChannel(channel);
+        if (!hasChannel(channel)) addChannel(channel);
+        channels.remove(channel);
+        channels.addFirst(channel);
+        updateChannelBoard();
         this.currentChannel = channel;
     }
     
@@ -241,31 +241,26 @@ public class User extends AbstractSession<Player> implements IUser {
             channels.add(0, channel);
         }
         if (!channel.hasUser(this)) channel.addUser(this);
+        if (getSelectedChannel() == null || !getSelectedChannel().equals(channel)) setSelectedChannel(channel);
         if (hasChannelDisplay()) updateChannelBoard();
     }
     
     @Override
     public void leaveChannel(IChannel channel) {
-        /*if (channel.hasOwner() && channel.getOwner().equals(this) && channel.getClose() == Close.OWNER_EXIT) {
-            channel.close();
-            if (!channel.isSaved()) {
-                channel.remove();
-            }
-        }*/
         channels.remove(channel);
+        if (getSelectedChannel().equals(channel)) setSelectedChannel(channels.get(0));
         if (channel.hasUser(this)) channel.kickUser(this);
         if (hasChannelDisplay()) updateChannelBoard();
     }
     
     @Override
     public IChannel getChannel(String name) {
-        return null;
+        return channels.stream().filter(c -> c.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
     
     private void updateChannelBoard() {
         chanDisplay.removeAll();
         chanDisplay.setLine(0);
-        System.out.println(channels);
         channels.forEach(c -> chanDisplay.addLine(c.getName()));
         chanDisplay.send(get());
     }

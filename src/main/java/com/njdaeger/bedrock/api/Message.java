@@ -2,6 +2,9 @@ package com.njdaeger.bedrock.api;
 
 public enum Message {
     
+    /**
+     * {0} - The thing that isnt a number
+     */
     ERROR_NOT_A_NUMBER("errorNotANumber"),
     
     /**
@@ -52,6 +55,53 @@ public enum Message {
      * {0} - Name of the home that couldnt be deleted
      */
     ERROR_HOME_NOT_DELETED("errorHomeNotDeleted"),
+    
+    /**
+     * {0} - The unknown argument
+     */
+    ERROR_UNKNOWN_ARGUMENT("errorArgumentUnknown"),
+    
+    /**
+     * {0} - Name of the channel that already exists
+     */
+    ERROR_CHANNEL_EXISTS("errorChannelExists"),
+    
+    /**
+     * {0} - Name of the channel that could not be found
+     */
+    ERROR_CHANNEL_NOT_FOUND("errorChannelNotFound"),
+    
+    /**
+     * {0} - Name of the display that wasn't known
+     */
+    ERROR_UNKNOWN_DISPLAY("errorUnknownDisplay"),
+    
+    /**
+     * {0} - The channel the user is already in
+     */
+    ERROR_ALREADY_IN_CHANNEL("errorAlreadyInChannel"),
+    
+    /**
+     * {0} - The channel the user is not in
+     */
+    ERROR_NOT_IN_CHANNEL("errorNotInChannel"),
+    
+    /**
+     * {0} - The name of the user
+     * {1} - The name of the channel
+     */
+    ERROR_USER_NOT_IN_CHANNEL("errorUserNotInChannel"),
+    
+    /**
+     * {0} - The name of the user
+     * {1} - The name of the channel
+     */
+    ERROR_USER_ALREADY_IN_CHANNEL("errorUserAlreadyInChannel"),
+    
+    /**
+     * {0} - The channel thats already selected
+     */
+    ERROR_CHANNEL_SELECTED("errorChannelSelected"),
     
     /**
      * No placeholders
@@ -400,35 +450,108 @@ public enum Message {
      */
     CHANNEL_USAGE("channelUsage"),
     
+    /**
+     * {0} - Name of the channel created
+     */
     CHANNEL_CREATE("channelCreate"),
     
+    /**
+     * {0} - Name of the channel created
+     */
     CHANNEL_TEMP("channelTemp"),
     
+    /**
+     * {0} - Name of the channel deleted
+     */
     CHANNEL_DELETE("channelDelete"),
     
+    /**
+     * {0} - Name of the channel that was joined
+     */
     CHANNEL_JOIN("channelJoin"),
     
+    /**
+     * {0} - Name of the channel that was left
+     */
     CHANNEL_LEAVE("channelLeave"),
     
+    /**
+     * {0} - Name of the channel that was selected
+     */
+    CHANNEL_SELECT("channelSelect"),
+    
+    /**
+     * {0} - Name of the user adding the other
+     * {1} - Name of the channel the other is being added to
+     */
     CHANNEL_ADD_RECEIVER("channelAddReceiver"),
     
+    /**
+     * {0} - Name of the user being added
+     * {1} - Name of channel the user is being added to
+     */
     CHANNEL_ADD_SENDER("channelAddSender"),
     
+    /**
+     * {0} - Name of the channel the user is being kicked from
+     */
     CHANNEL_KICK_RECEIVER("channelKickReceiver"),
     
+    /**
+     * {0} - Name of the user being kicked
+     * {1} - Name of the channel the user is being kicked from
+     */
     CHANNEL_KICK_SENDER("channelKickSender"),
     
+    /**
+     * {0} - The number of players in the channel
+     */
     CHANNEL_SIZE("channelInfoSize"),
     
+    /**
+     * {0} - The name of the channel
+     */
     CHANNEL_NAME("channelInfoName"),
     
+    /**
+     * {0} - The channel display type
+     */
     CHANNEL_DISPLAY("channelInfoDisplay"),
     
+    /**
+     * {0} - When the channel will close
+     */
     CHANNEL_CLOSE("channelInfoClose"),
     
+    /**
+     * {0} - The channel prefix
+     */
     CHANNEL_PREFIX("channelInfoPrefix"),
     
-    CHANNEL_USERS("channelInfoUsers");
+    /**
+     * {0} - The name of the channel
+     */
+    CHANNEL_INFO_TITLE("channelInfoTitle"),
+    
+    /**
+     * {0} - The users currently in this channel
+     */
+    CHANNEL_USERS("channelInfoUsers"),
+    
+    /**
+     * {0} - The user
+     */
+    CHANNEL_USERS_FORMAT("channelInfoUserFormat"),
+    
+    /**
+     * No placeholders
+     */
+    CHANNEL_DISPLAY_ENABLE("channelDisplayEnable"),
+    
+    /**
+     * No placeholders
+     */
+    CHANNEL_DISPLAY_DISABLE("channelDisplayDisable");
 
     private final String key;
     
