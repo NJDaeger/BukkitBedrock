@@ -2,18 +2,19 @@ package com.njdaeger.bedrock.commands;
 
 import com.coalesce.core.SenderType;
 import com.njdaeger.bedrock.api.Bedrock;
+import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.Message;
 import com.njdaeger.bedrock.api.chat.Close;
 import com.njdaeger.bedrock.api.chat.Display;
-import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.chat.IChannel;
 import com.njdaeger.bedrock.api.command.BedrockCommand;
 import com.njdaeger.bedrock.api.command.BedrockCommandContext;
+import com.njdaeger.bedrock.api.command.BedrockTabContext;
 import com.njdaeger.bedrock.api.user.IUser;
 
+import static com.njdaeger.bedrock.api.Bedrock.translate;
 import static com.njdaeger.bedrock.api.Message.*;
 import static com.njdaeger.bedrock.api.Permission.*;
-import static com.njdaeger.bedrock.api.Bedrock.translate;
 
 public final class ChatCommands {
 
@@ -47,6 +48,7 @@ public final class ChatCommands {
                     COMMAND_CHAN_ADD_OTHER,
                     COMMAND_CHAN_JOIN_ANY)
             .executor(this::channel)
+            .completer(this::channelTab)
             .description(CHANNEL_DESC)
             .usage(CHANNEL_USAGE)
             .minArgs(1)
@@ -58,7 +60,7 @@ public final class ChatCommands {
     private void customChannel(BedrockCommandContext context) {
         if (context.hasArgs()) {
             if (context.isConsole()) {
-                bedrock.getChannel(context.getAlias()).message(context.joinArgs());
+                context.pluginMessage("Not Supported yet");
             } else bedrock.getChannel(context.getAlias()).userMessage(context.getUser(), context.joinArgs());
         }
         else {
@@ -75,6 +77,38 @@ public final class ChatCommands {
 
             context.pluginMessage(CHANNEL_USERS, b.toString().trim());
         }
+    }
+    
+    private void channelTab(BedrockTabContext context) {
+        context.completionAt(0, "new", "temp", "delete", "join", "leave", "kick", "add", "select", "display");
+        if (context.getLength() >= 1) {
+            if (context.subCompletionAt(0, "new", true, this::createTab)) return;
+            if (context.subCompletionAt(0, "temp", true, this::createTab)) return;
+            if (context.subCompletionAt(0, "delete", true, this::channelsTab)) return;
+            if (context.subCompletionAt(0, "join", true, this::channelsTab)) return;
+            if (context.subCompletionAt(0, "leave", true, this::channelsTab)) return;
+            if (context.subCompletionAt(0, "kick", true, this::kickOrAddUserTab)) return;
+            if (context.subCompletionAt(0, "add", true, this::kickOrAddUserTab)) return;
+            context.subCompletionAt(0, "select", true, this::selectTab);
+        }
+    }
+    
+    private void createTab(BedrockTabContext context) {
+        context.completionAt(3, "PREFIX", "NAME", "NONE");
+    }
+    
+    private void channelsTab(BedrockTabContext context) {
+        context.completionAt(1, bedrock.getChannels().stream().map(IChannel::getName).toArray(String[]::new));
+    }
+    
+    private void kickOrAddUserTab(BedrockTabContext context) {
+        context.playerCompletion(1);
+        context.completionAt(2, bedrock.getChannels().stream().map(IChannel::getName).toArray(String[]::new));
+    }
+    
+    private void selectTab(BedrockTabContext context) {
+        if (context.isConsole()) return;
+        context.completionAt(1, context.getUser().getChannels().stream().map(IChannel::getName).toArray(String[]::new));
     }
     
     private void channel(BedrockCommandContext context) {
@@ -393,6 +427,14 @@ public final class ChatCommands {
             context.pluginMessage(ERROR_CHANNEL_NOT_FOUND, name);
             return;
         }
+        
+        IChannel channel = bedrock.getChannel(name);
+        
+        if (channel.hasPermission() && !context.hasPermission(channel.getPermission())) {
+            context.noPermission(channel.getPermission());
+            return;
+        }
+        
         bedrock.removeChannel(name);
         context.pluginMessage(CHANNEL_DELETE, name);
     }
