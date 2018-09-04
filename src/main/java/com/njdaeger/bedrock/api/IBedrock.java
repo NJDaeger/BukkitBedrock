@@ -1,24 +1,28 @@
 package com.njdaeger.bedrock.api;
 
-import com.coalesce.core.Color;
-import com.coalesce.core.plugin.ICoPlugin;
-import com.njdaeger.bedrock.config.ChannelConfig;
-import com.njdaeger.bedrock.config.MessageFile;
+import com.njdaeger.bci.Utils;
 import com.njdaeger.bedrock.api.chat.Close;
 import com.njdaeger.bedrock.api.chat.Display;
 import com.njdaeger.bedrock.api.chat.IChannel;
-import com.njdaeger.bedrock.api.command.BedrockCommand;
-import com.njdaeger.bedrock.api.command.BedrockCommandRegister;
+import com.njdaeger.bedrock.api.command.Command;
+import com.njdaeger.bedrock.api.command.CommandStore;
+import com.njdaeger.bedrock.api.command.CommandWrapper;
 import com.njdaeger.bedrock.api.config.ISettings;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.chat.Channel;
+import com.njdaeger.bedrock.config.ChannelConfig;
+import com.njdaeger.bedrock.config.MessageFile;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public interface IBedrock extends ICoPlugin {
+public interface IBedrock extends Plugin {
+    
+    CommandStore getCommandStore();
     
     /**
      * Get the plugin configuration
@@ -171,7 +175,7 @@ public interface IBedrock extends ICoPlugin {
      * @return The string, colored, translated, and placeholders replaced.
      */
     default String translate(String message, Object... placeholders) {
-        return Color.translate('&', getCoFormatter().formatString(message, placeholders));
+        return ChatColor.translateAlternateColorCodes('&', Utils.formatString(message, placeholders));
     }
     
     /**
@@ -181,7 +185,7 @@ public interface IBedrock extends ICoPlugin {
      * @return The string colored, translated, and placeholders replaced.
      */
     default String translate(Message message, Object... placeholders) {
-        return Color.translate('&',getCoFormatter().formatString(getMessageFile().translate(message), placeholders));
+        return translate(getMessageFile().translate(message), placeholders);
     }
     
     /**
@@ -191,16 +195,16 @@ public interface IBedrock extends ICoPlugin {
      * @return The string colored, translated, formatted, and placeholders replaced.
      */
     default String pluginTranslate(Message message, Object... placeholders) {
-        return Color.translate('&',getCoFormatter().format(getMessageFile().translate(message), placeholders));
+        return translate(ChatColor.GRAY + "[" + ChatColor.GREEN + "BukkitBedrock" + ChatColor.GRAY + "]" + ChatColor.RESET + getMessageFile().translate(message), placeholders);
     }
     
     /**
      * Register a processed command.
      * @param commands The commands to register
      */
-    default void registerCommand(BedrockCommand... commands) {
-        for (BedrockCommand command : commands) {
-            getCommandStore().registerCommand(command, new BedrockCommandRegister(command, this));
+    default void registerCommand(Command... commands) {
+        for (Command command : commands) {
+            getCommandStore().registerCommand(new CommandWrapper(this, command));
         }
     }
     

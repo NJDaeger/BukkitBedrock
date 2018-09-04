@@ -1,14 +1,15 @@
 package com.njdaeger.bedrock.api.command;
 
-import com.coalesce.core.command.base.CommandBuilder;
+import com.njdaeger.bci.base.AbstractCommandBuilder;
+import com.njdaeger.bedrock.api.Bedrock;
+import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.Message;
 import com.njdaeger.bedrock.api.Permission;
-import com.njdaeger.bedrock.api.IBedrock;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class BedrockBuilder extends CommandBuilder<BedrockCommandContext, BedrockTabContext, BedrockBuilder, BedrockCommand> {
+public class BedrockBuilder extends AbstractCommandBuilder<CommandContext, TabContext, BedrockBuilder> {
     
     private final IBedrock bedrock;
     
@@ -19,13 +20,12 @@ public class BedrockBuilder extends CommandBuilder<BedrockCommandContext, Bedroc
      * @param name   The name of the command
      */
     public BedrockBuilder(IBedrock plugin, String name) {
-        super(plugin, name, new BedrockCommand(plugin, name));
+        super(name);
         this.bedrock = plugin;
     }
     
-    @Override
-    public BedrockCommand build() {
-        return command;
+    public static BedrockBuilder builder(String name) {
+        return new BedrockBuilder(Bedrock.getBedrock(), name);
     }
     
     public BedrockBuilder permission(Permission... permissions) {
@@ -33,12 +33,12 @@ public class BedrockBuilder extends CommandBuilder<BedrockCommandContext, Bedroc
         for (Permission permission : permissions) {
             perm.add(permission.toString());
         }
-        permission(perm.toArray(new String[0]));
+        permissions(perm.toArray(new String[0]));
         return this;
     }
     
     public BedrockBuilder permission(Permission permission) {
-        permission(permission.toString());
+        permissions(permission.toString());
         return this;
     }
     
@@ -52,4 +52,8 @@ public class BedrockBuilder extends CommandBuilder<BedrockCommandContext, Bedroc
         return this;
     }
     
+    @Override
+    public Command build() {
+        return (Command)command;
+    }
 }

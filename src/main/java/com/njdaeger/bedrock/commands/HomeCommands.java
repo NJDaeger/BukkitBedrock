@@ -1,25 +1,7 @@
 package com.njdaeger.bedrock.commands;
 
-import com.njdaeger.bedrock.api.Bedrock;
-import com.njdaeger.bedrock.api.command.BedrockCommand;
-import com.njdaeger.bedrock.api.command.BedrockCommandContext;
-import com.njdaeger.bedrock.api.command.BedrockTabContext;
-import com.njdaeger.bedrock.api.config.IHome;
-import com.njdaeger.bedrock.api.user.IUser;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.coalesce.core.SenderType.CONSOLE;
-import static com.coalesce.core.SenderType.PLAYER;
-import static com.njdaeger.bedrock.api.Message.*;
-import static com.njdaeger.bedrock.api.Permission.*;
-
 public final class HomeCommands {
-    
+/*
     public HomeCommands() {
         BedrockCommand home = BedrockCommand.builder("home")
                 .permission(COMMAND_HOME, COMMAND_HOME_OTHER)
@@ -486,5 +468,5 @@ public final class HomeCommands {
     private void listHomesTab(BedrockTabContext context) {
         context.playerCompletion(0);
     }
-    
+    */
 }

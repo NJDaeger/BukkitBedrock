@@ -1,6 +1,6 @@
 package com.njdaeger.bedrock.api.user;
 
-import com.coalesce.core.config.base.IConfig;
+import com.njdaeger.bcm.base.IConfig;
 import com.njdaeger.bedrock.user.UserPath;
 import org.bukkit.World;
 

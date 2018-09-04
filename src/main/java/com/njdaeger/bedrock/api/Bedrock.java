@@ -1,14 +1,14 @@
 package com.njdaeger.bedrock.api;
 
-import com.coalesce.core.Coalesce;
 import com.njdaeger.bedrock.api.chat.Close;
 import com.njdaeger.bedrock.api.chat.Display;
-import com.njdaeger.bedrock.config.ChannelConfig;
-import com.njdaeger.bedrock.config.MessageFile;
 import com.njdaeger.bedrock.api.chat.IChannel;
-import com.njdaeger.bedrock.api.command.BedrockCommand;
+import com.njdaeger.bedrock.api.command.Command;
 import com.njdaeger.bedrock.api.config.ISettings;
 import com.njdaeger.bedrock.api.user.IUser;
+import com.njdaeger.bedrock.config.ChannelConfig;
+import com.njdaeger.bedrock.config.MessageFile;
+import com.njdaeger.btu.Util;
 import com.sun.management.OperatingSystemMXBean;
 import org.bukkit.entity.Player;
 
@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.logging.Level;
 
 public final class Bedrock {
     
@@ -67,14 +68,14 @@ public final class Bedrock {
     }
     
     public static void debug(String message) {
-        if (getConf().debug()) getBedrock().getCoLogger().debug(message);
+        if (getConf().debug()) getBedrock().getLogger().log(Level.FINE, message);
     }
     
     public static void warn(String message) {
-        getBedrock().getCoLogger().warn(message);
+        getBedrock().getLogger().warning(message);
     }
     
-    public static void registerCommand(BedrockCommand... commands) {
+    public static void registerCommand(Command... commands) {
         bedrock.registerCommand(commands);
     }
     
@@ -122,11 +123,11 @@ public final class Bedrock {
         Field tpsField;
         double[] tps;
         try {
-            server = Coalesce.getNMSClass("MinecraftServer").getMethod("getServer").invoke(null);
+            server = Util.getNMSClass("MinecraftServer").getMethod("getServer").invoke(null);
             tpsField = server.getClass().getField("recentTps");
             tps = ((double[]) tpsField.get(server));
             return Double.valueOf(format.format(tps[1]));
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return 0;

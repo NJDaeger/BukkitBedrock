@@ -68,8 +68,8 @@ public class PlayerListener implements Listener {
                     event.getMessage(),
                     user.getName(),
                     user.getDisplayName(),
-                    user.get().getHealth(),
-                    user.get().getFoodLevel(),
+                    user.getBase().getHealth(),
+                    user.getBase().getFoodLevel(),
                     user.getWorld().getName());
             event.setFormat(formatted);
         } else {

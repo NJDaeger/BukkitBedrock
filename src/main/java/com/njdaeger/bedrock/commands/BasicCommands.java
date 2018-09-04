@@ -1,13 +1,14 @@
 package com.njdaeger.bedrock.commands;
 
-import com.coalesce.core.SenderType;
+import com.njdaeger.bci.SenderType;
+import com.njdaeger.bci.base.BCIException;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.Message;
 import com.njdaeger.bedrock.api.SpeedType;
-import com.njdaeger.bedrock.api.command.BedrockCommand;
-import com.njdaeger.bedrock.api.command.BedrockCommandContext;
-import com.njdaeger.bedrock.api.command.BedrockTabContext;
+import com.njdaeger.bedrock.api.command.BedrockBuilder;
+import com.njdaeger.bedrock.api.command.Command;
+import com.njdaeger.bedrock.api.command.CommandContext;
 import com.njdaeger.bedrock.api.user.IUser;
 
 import static com.njdaeger.bedrock.api.Message.*;
@@ -16,7 +17,7 @@ import static com.njdaeger.bedrock.api.Permission.*;
 public final class BasicCommands {
     
     public BasicCommands() {
-        BedrockCommand afkCommand = BedrockCommand.builder("afk")
+        Command afkCommand = BedrockBuilder.builder("afk")
                 .description(AFK_DESC)
                 .usage(AFK_USAGE)
                 .senders(SenderType.PLAYER)
@@ -25,18 +26,18 @@ public final class BasicCommands {
                 .executor(this::afk)
                 .build();
         
-        BedrockCommand healCommand = BedrockCommand.builder("heal")
+        Command healCommand = BedrockBuilder.builder("heal")
                 .senders(SenderType.PLAYER, SenderType.CONSOLE)
                 .permission(COMMAND_HEAL, COMMAND_HEAL_OTHER)
                 .description(HEAL_DESC)
                 .usage(HEAL_USAGE)
-                .completer(this::healTab)
+                //.completer(this::healTab)
                 .aliases("fillhearts")
                 .executor(this::heal)
                 .maxArgs(1)
                 .build();
         
-        BedrockCommand gamemodeCommand = BedrockCommand.builder("gamemode")
+        /*BedrockCommand gamemodeCommand = BedrockCommand.builder("gamemode")
                 .senders(SenderType.PLAYER, SenderType.CONSOLE)
                 .permission(COMMAND_GAMEMODE)
                 .description(GAMEMODE_DESC)
@@ -88,8 +89,8 @@ public final class BasicCommands {
                 .maxArgs(0)
                 .executor(this::infoBoard)
                 .build();
-        
-        Bedrock.registerCommand(afkCommand, healCommand, gamemodeCommand, speedCommand, backCommand, nickCommand, infoBoardCommand);
+        */
+        Bedrock.registerCommand(afkCommand/*, healCommand, gamemodeCommand, speedCommand, backCommand, nickCommand, infoBoardCommand*/);
         
     }
     
@@ -97,7 +98,7 @@ public final class BasicCommands {
      * afk command
      * @param context command context
      */
-    private void afk(BedrockCommandContext context) {
+    private void afk(CommandContext context) {
         
         String message = Bedrock.translate(AFK_AWAY_MESSAGE, context.getDisplayName());
         
@@ -106,16 +107,16 @@ public final class BasicCommands {
                 message = Bedrock.translate(AFK_AWAY_MESSAGE_MOREINFO, context.getDisplayName(), context.joinArgs());
             }
         }
-        if (!context.getUser().isAfk()) {
-            context.getUser().setAfk(true, message);
+        if (!context.asUser().isAfk()) {
+            context.asUser().setAfk(true, message);
         }
     }
     
     /**
      * heal command
-     * @param context command context
+     * @command /heal [user]
      */
-    private void heal(BedrockCommandContext context) {
+    private void heal(CommandContext context) throws BCIException {
         
         //If the sender was the console, we dont need to continue executing this command.
         if (context.subCommand(SenderType.CONSOLE, this::healConsole)) return;
@@ -130,20 +131,20 @@ public final class BasicCommands {
                 context.noPermission(COMMAND_HEAL_OTHER);
                 return;
             }
-            user = context.getUser(context.argAt(0));
+            user = context.userAt(0);
             
             if (user == null) {
                 context.userNotFound(context.argAt(0));
                 return;
             }
             
-            user.get().setHealth(20);
+            user.getBase().setHealth(20);
             user.pluginMessage(HEAL_OTHER_MESSAGE_RECEIVER, context.getDisplayName());
             context.pluginMessage(HEAL_OTHER_MESSAGE_SENDER, user.getDisplayName());
             return;
         }
-        user = context.getUser();
-        user.get().setHealth(20);
+        user = context.asUser();
+        user.getBase().setHealth(20);
         user.pluginMessage(HEAL_SELF_MESSAGE);
     }
     
@@ -151,36 +152,34 @@ public final class BasicCommands {
      * heal command for console
      * @param context command context
      */
-    private void healConsole(BedrockCommandContext context) {
+    private void healConsole(CommandContext context) throws BCIException {
         //Since the command is already set to not be allowed to have more than 1 we know it has less than 1
-        if (!context.isLength(1)) {
-            context.notEnoughArgs(1, 0);
-            return;
-        }
+        if (!context.isLength(1)) context.notEnoughArgs();
+        
         IUser user = context.getUser(context.argAt(0));
         if (user == null) {
             context.userNotFound(context.argAt(0));
             return;
         }
-        user.get().setHealth(20);
+        user.getBase().setHealth(20);
         user.pluginMessage(HEAL_OTHER_MESSAGE_RECEIVER, context.getDisplayName());
         context.pluginMessage(HEAL_OTHER_MESSAGE_SENDER, user.getDisplayName());
     }
-    
-    /**
+/*
+    *//**
      * tab completion for heal command
      * @param context tab context
-     */
+     *//*
     private void healTab(BedrockTabContext context) {
         if (context.hasPermission(COMMAND_HEAL_OTHER)) {
             context.playerCompletion(0);
         }
     }
     
-    /**
+    *//**
      * gamemode command
      * @param context command context
-     */
+     *//*
     private void gamemode(BedrockCommandContext context) {
         if (context.subCommand(SenderType.CONSOLE, this::gamemodeConsole)) return;
         
@@ -232,10 +231,10 @@ public final class BasicCommands {
         
     }
     
-    /**
+    *//**
      * gamemode command for console
      * @param context command context
-     */
+     *//*
     private void gamemodeConsole(BedrockCommandContext context) {
         if (context.isLength(1)) {
             context.notEnoughArgs(2, 1);
@@ -252,10 +251,10 @@ public final class BasicCommands {
         context.pluginMessage(GAMEMODE_OTHER_SENDER, user.getDisplayName(), mode.getNicename());
     }
     
-    /**
+    *//**
      * gamemode tab completion
      * @param context tab context
-     */
+     *//*
     private void gamemodeTab(BedrockTabContext context) {
         context.gamemodeCompletionAt(0);
         if (context.hasPermission(COMMAND_GAMEMODE_OTHER)) {
@@ -406,5 +405,5 @@ public final class BasicCommands {
         context.pluginMessage(msg);
         
     }
-    
+    */
 }

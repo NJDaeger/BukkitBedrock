@@ -1,13 +1,11 @@
 package com.njdaeger.bedrock.api.user;
 
-import com.coalesce.core.session.ISession;
-import com.njdaeger.bedrock.api.Permission;
-import com.njdaeger.bedrock.api.chat.Close;
-import com.njdaeger.bedrock.api.chat.Display;
+import com.njdaeger.bci.Utils;
 import com.njdaeger.bedrock.api.Gamemode;
-import com.njdaeger.bedrock.api.Message;
-import com.njdaeger.bedrock.api.SpeedType;
 import com.njdaeger.bedrock.api.IBedrock;
+import com.njdaeger.bedrock.api.Message;
+import com.njdaeger.bedrock.api.Permission;
+import com.njdaeger.bedrock.api.SpeedType;
 import com.njdaeger.bedrock.api.chat.IChannel;
 import com.njdaeger.bedrock.api.config.IHome;
 import org.bukkit.Location;
@@ -18,10 +16,11 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public interface IUser extends ISession<Player> {
+public interface IUser {
+    
+    Player getBase();
     
     /**
      * Get the name of the user
@@ -93,7 +92,7 @@ public interface IUser extends ISession<Player> {
      * @return True if the user has the given permission
      */
     default boolean hasPermission(String permission) {
-        return get().hasPermission(permission);
+        return getBase().hasPermission(permission);
     }
     
     /**
@@ -105,8 +104,7 @@ public interface IUser extends ISession<Player> {
         return hasPermission(permission.toString());
     }
     
-    @Override
-    IBedrock getSessionOwner();
+    IBedrock getPlugin();
     
     /**
      * Set the users gamemode
@@ -275,7 +273,7 @@ public interface IUser extends ISession<Player> {
      */
     default String listHomes() {
         StringBuilder builder = new StringBuilder();
-        getHomes().forEach(home -> builder.append(getSessionOwner().translate(Message.LISTHOMES_FORMAT, home.getName())));
+        getHomes().forEach(home -> builder.append(getPlugin().translate(Message.LISTHOMES_FORMAT, home.getName())));
         return builder.toString();
     }
     
@@ -348,7 +346,7 @@ public interface IUser extends ISession<Player> {
      * @param location The teleport location
      */
     default void teleport(Location location) {
-        get().teleport(location);
+        getBase().teleport(location);
     }
     
     /**
@@ -364,7 +362,7 @@ public interface IUser extends ISession<Player> {
      * @param message the message to send
      */
     default void sendMessage(String message) {
-        get().sendMessage(message);
+        getBase().sendMessage(message);
     }
     
     /**
@@ -373,7 +371,7 @@ public interface IUser extends ISession<Player> {
      * @param placeholders The placeholders
      */
     default void sendMessage(String message, Object... placeholders) {
-        sendMessage(getSessionOwner().getCoFormatter().formatString(message, placeholders));
+        sendMessage(Utils.formatString(message, placeholders));
     }
     
     /**
@@ -382,7 +380,7 @@ public interface IUser extends ISession<Player> {
      * @param placeholder The message placeholders
      */
     default void sendMessage(Message message, Object... placeholder) {
-        sendMessage(getSessionOwner().translate(message, placeholder));
+        sendMessage(getPlugin().translate(message, placeholder));
     }
     
     /**
@@ -390,7 +388,8 @@ public interface IUser extends ISession<Player> {
      * @param message The message to send
      */
     default void pluginMessage(String message) {
-        sendMessage(getSessionOwner().getCoFormatter().format(message));
+        sendMessage(message);
+        //sendMessage(getSessionOwner().getCoFormatter().format(message));
     }
     
     /**
@@ -399,7 +398,8 @@ public interface IUser extends ISession<Player> {
      * @param placeholders the placeholders
      */
     default void pluginMessage(String message, Object... placeholders) {
-        sendMessage(getSessionOwner().getCoFormatter().format(message, placeholders));
+        sendMessage(message);
+        //sendMessage(getSessionOwner().getCoFormatter().format(message, placeholders));
     }
     
     /**
@@ -408,7 +408,8 @@ public interface IUser extends ISession<Player> {
      * @param placeholder The message placeholders
      */
     default void pluginMessage(Message message, Object... placeholder) {
-        sendMessage(getSessionOwner().pluginTranslate(message, placeholder));
+        sendMessage(message);
+        //sendMessage(getSessionOwner().pluginTranslate(message, placeholder));
     }
     
 }

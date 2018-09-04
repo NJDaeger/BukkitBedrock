@@ -1,26 +1,21 @@
 package com.njdaeger.bedrock;
 
-import com.coalesce.core.CoPlugin;
-import com.coalesce.core.Color;
-import com.coalesce.core.session.NamespacedSessionStore;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.chat.IChannel;
+import com.njdaeger.bedrock.api.command.CommandStore;
 import com.njdaeger.bedrock.api.config.ISettings;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.commands.BasicCommands;
 import com.njdaeger.bedrock.commands.ChatCommands;
 import com.njdaeger.bedrock.commands.HomeCommands;
 import com.njdaeger.bedrock.config.ChannelConfig;
-import com.njdaeger.bedrock.config.Settings;
 import com.njdaeger.bedrock.config.MessageFile;
+import com.njdaeger.bedrock.config.Settings;
 import com.njdaeger.bedrock.listeners.PlayerListener;
-import com.njdaeger.bedrock.user.User;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,71 +23,71 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-public class BedrockPlugin extends CoPlugin implements IBedrock {
+public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
     
-    private NamespacedSessionStore<IUser> userNameSpace;
+    private CommandStore commandStore;
     private ChannelConfig channelConfig;
     private MessageFile messageFile;
     private ISettings configuration;
     
     @Override
-    public void onPluginLoad() throws Exception {
+    public void onLoad() {
         
-        //This moves all the currently existing language files to lang folder
-        File langFolder = new File(getDataFolder() + File.separator + "lang");
-        if (!getDataFolder().exists()) getDataFolder().createNewFile();
-        if (!langFolder.exists()) langFolder.mkdir();
+        try {
+            //This moves all the currently existing language files to lang folder
+            File langFolder = new File(getDataFolder() + File.separator + "lang");
+            if (!getDataFolder().exists()) getDataFolder().createNewFile();
+            if (!langFolder.exists()) langFolder.mkdir();
+    
+            for (MessageFile.Language language : MessageFile.Language.values()) {
+                File langFile = new File(langFolder + File.separator + language.getFileName() + ".yml");
+                if (!langFile.exists()) {
+                    langFile.createNewFile();
+                }
         
-        for (MessageFile.Language language : MessageFile.Language.values()) {
-            File langFile = new File(langFolder + File.separator + language.getFileName() + ".yml");
-            if (!langFile.exists()) {
-                langFile.createNewFile();
+                InputStream stream;
+                OutputStream resStreamOut;
+        
+                stream = getClass().getResourceAsStream("/" + language.getFileName() + ".yml");
+        
+                int readBytes;
+                byte[] buffer = new byte[4096];
+                resStreamOut = new FileOutputStream(langFile);
+                while ((readBytes = stream.read(buffer)) > 0) {
+                    resStreamOut.write(buffer, 0, readBytes);
+                }
+                stream.close();
+                resStreamOut.close();
             }
-    
-            InputStream stream;
-            OutputStream resStreamOut;
-    
-            stream = getClass().getResourceAsStream("/" + language.getFileName() + ".yml");
-    
-            int readBytes;
-            byte[] buffer = new byte[4096];
-            resStreamOut = new FileOutputStream(langFile);
-            while ((readBytes = stream.read(buffer)) > 0) {
-                resStreamOut.write(buffer, 0, readBytes);
-            }
-            stream.close();
-            resStreamOut.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     
     @Override
-    public void onPluginEnable() throws Exception {
-        setDisplayName("BukkitBedrock");
-        setPluginColor(Color.GREEN);
+    public void onEnable() {
+        this.commandStore = new CommandStore(this);
     
         Bedrock.setBedrock(this);
-        this.userNameSpace = new NamespacedSessionStore<>("users", IUser.class);
+        //this.userNameSpace = new NamespacedSessionStore<>("users", IUser.class);
         this.configuration = new Settings(this);
         this.channelConfig = new ChannelConfig(this);
         this.messageFile = new MessageFile(this);
-        this.configuration.create();
         
-        registerListener(this);
-        registerListener(new PlayerListener(this));
-    
-        updateCheck("NJDaeger", "BukkitBedrock", configuration.autoUpdate());
+        Bukkit.getPluginManager().registerEvents(this, this);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
         
         new BasicCommands();
         new HomeCommands();
         new ChatCommands();
         
-        for (Player player : Bukkit.getOnlinePlayers()) {
+        /*for (Player player : Bukkit.getOnlinePlayers()) {
             userNameSpace.addSession(new User(this, userNameSpace, player.getName(), player)).login();
-        }
+        }*/
     }
     
-    @Override
-    public void onPluginDisable() throws Exception {
+    /*@Override
+    public void onDisable() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             userNameSpace.removeSession(player.getName()).logout();
         }
@@ -106,16 +101,16 @@ public class BedrockPlugin extends CoPlugin implements IBedrock {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         userNameSpace.removeSession(event.getPlayer().getName()).logout();
-    }
+    }*/
     
     @Override
     public IUser getUser(String name) {
-        return userNameSpace.getSession(name);
+        return null;
     }
     
     @Override
     public List<IUser> getUsers() {
-        return userNameSpace.getSessions();
+        return null;
     }
     
     @Override
@@ -134,7 +129,16 @@ public class BedrockPlugin extends CoPlugin implements IBedrock {
     }
     
     @Override
+    public IChannel getChannel(String name) {
+        return null;
+    }
+    
+    @Override
     public ChannelConfig getChannelConfig() {
         return this.channelConfig;
+    }
+
+    public CommandStore getCommandStore() {
+        return commandStore;
     }
 }

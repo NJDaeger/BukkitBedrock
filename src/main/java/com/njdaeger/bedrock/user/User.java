@@ -2,8 +2,6 @@ package com.njdaeger.bedrock.user;
 
 import com.coalesce.core.Color;
 import com.coalesce.core.scoreboard.StaticScoreboard;
-import com.coalesce.core.session.AbstractSession;
-import com.coalesce.core.session.NamespacedSessionStore;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.IBedrock;
@@ -35,7 +33,7 @@ import static com.njdaeger.bedrock.api.Bedrock.translate;
 import static com.njdaeger.bedrock.api.Message.*;
 import static com.njdaeger.bedrock.user.UserPath.*;
 
-public class User extends AbstractSession<Player> implements IUser {
+public class User implements IUser {
     
     private boolean afk;
     private double flySpeed;
@@ -51,20 +49,25 @@ public class User extends AbstractSession<Player> implements IUser {
     private boolean channelDisplay;
     private IChannel currentChannel;
     private final IUserFile userFile;
-    private StaticScoreboard chanDisplay;
+    //private StaticScoreboard chanDisplay;
     private final Map<String, IHome> homes;
     private final LinkedList<IChannel> channels;
     
-    public User(IBedrock bedrock, NamespacedSessionStore<IUser> namespace, String sessionKey, Player type) {
-        super(bedrock, namespace, sessionKey, type);
-        
-        this.name = sessionKey;
+    private final Player player;
+    
+    public User(IBedrock bedrock, Player player) {
         this.bedrock = bedrock;
+        this.name = player.getName();
+        this.player = player;
         this.homes = new HashMap<>();
         this.channels = new LinkedList<>();
         
         this.userFile = new UserFile(bedrock, this);
-        this.userFile.create();
+    }
+    
+    @Override
+    public Player getBase() {
+        return player;
     }
     
     @Override
@@ -74,18 +77,18 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public UUID getId() {
-        return get().getUniqueId();
+        return getBase().getUniqueId();
     }
     
     @Override
-    public IBedrock getSessionOwner() {
+    public IBedrock getPlugin() {
         return bedrock;
     }
     
     @Override
     public void setGamemode(Gamemode gamemode) {
         this.gamemode = gamemode;
-        get().setGameMode(gamemode.getBukkitMode());
+        getBase().setGameMode(gamemode.getBukkitMode());
     }
     
     @Override
@@ -106,11 +109,11 @@ public class User extends AbstractSession<Player> implements IUser {
         
         if (type == SpeedType.FLYING) {
             this.flySpeed = speed;
-            get().setFlySpeed(Float.parseFloat(Double.toString(speed/10)));
+            getBase().setFlySpeed(Float.parseFloat(Double.toString(speed/10)));
         } else {
             this.walkSpeed = speed;
             float walkSpeedF = Float.parseFloat(Double.toString(0.2 * Math.pow(speed, 0.69897)));
-            get().setWalkSpeed(walkSpeedF);
+            getBase().setWalkSpeed(walkSpeedF);
         }
     }
     
@@ -121,7 +124,7 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public SpeedType getMovementType() {
-        return get().isFlying() ? SpeedType.FLYING :  SpeedType.WALKING;
+        return getBase().isFlying() ? SpeedType.FLYING :  SpeedType.WALKING;
     }
     
     @Override
@@ -166,7 +169,7 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public void runInfobard(boolean value) {
-        this.infoBoard = value;
+        /*this.infoBoard = value;
         
         if (value) {
             StaticScoreboard scoreboard = new StaticScoreboard();
@@ -187,11 +190,11 @@ public class User extends AbstractSession<Player> implements IUser {
                     
                     scoreboard.send(get());
                 }
-            }.runTaskTimer(bedrock, 0L, 10); // Set timer*/
+            }.runTaskTimer(bedrock, 0L, 10); // Set timer
         } else {
             if (infotask != null) infotask.cancel();
-            get().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-        }
+            getBase().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+        }*/
     }
     
     @Override
@@ -215,7 +218,7 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public void runChannelDisplay(boolean value) {
-        this.channelDisplay = value;
+        /*this.channelDisplay = value;
         this.chanDisplay = new StaticScoreboard();
         if (value) {
             chanDisplay.setTitle(Color.GREEN + "Chat Channels");
@@ -224,7 +227,7 @@ public class User extends AbstractSession<Player> implements IUser {
                 chanDisplay.send(get());
             }
             else updateChannelBoard();
-        }
+        }*/
     }
     
     @Override
@@ -259,10 +262,10 @@ public class User extends AbstractSession<Player> implements IUser {
     }
     
     private void updateChannelBoard() {
-        chanDisplay.removeAll();
+        /*chanDisplay.removeAll();
         chanDisplay.setLine(0);
         channels.forEach(c -> chanDisplay.addLine(c.getName()));
-        chanDisplay.send(get());
+        chanDisplay.send(get());*/
     }
     
     @Override
@@ -299,7 +302,7 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public Location getLocation() {
-        return get().getLocation();
+        return getBase().getLocation();
     }
     
     @Override
@@ -320,7 +323,7 @@ public class User extends AbstractSession<Player> implements IUser {
     @Override
     public void setDisplayName(String name) {
         this.displayName = Color.translate('&', name);
-        get().setDisplayName(displayName);
+        getBase().setDisplayName(displayName);
     }
     
     @Override
@@ -336,20 +339,20 @@ public class User extends AbstractSession<Player> implements IUser {
             }
         }
         
-        userFile.setEntry(NAME, get().getName());//no
+        userFile.setEntry(NAME, getBase().getName());//no
         userFile.addEntry(AFK, false);
-        userFile.addEntry(DISPLAYNAME, get().getDisplayName());
-        userFile.addEntry(WALKSPEED, Math.floor(get().getWalkSpeed()*-8)/(-1.8+get().getWalkSpeed()));
-        userFile.addEntry(FLYSPEED, get().getFlySpeed()*10);
-        userFile.addEntry(GAMEMODE, get().getGameMode().toString());
+        userFile.addEntry(DISPLAYNAME, getBase().getDisplayName());
+        userFile.addEntry(WALKSPEED, Math.floor(getBase().getWalkSpeed()*-8)/(-1.8+getBase().getWalkSpeed()));
+        userFile.addEntry(FLYSPEED, getBase().getFlySpeed()*10);
+        userFile.addEntry(GAMEMODE, getBase().getGameMode().toString());
         userFile.addEntry(INFOBOARD, false);
         
-        userFile.addEntry(LASTX, get().getLocation().getX());
-        userFile.addEntry(LASTY, get().getLocation().getY());
-        userFile.addEntry(LASTZ, get().getLocation().getZ());
-        userFile.addEntry(LASTYAW, get().getLocation().getYaw());
-        userFile.addEntry(LASTPITCH, get().getLocation().getPitch());
-        userFile.addEntry(LASTWORLD, get().getLocation().getWorld().getName());
+        userFile.addEntry(LASTX, getBase().getLocation().getX());
+        userFile.addEntry(LASTY, getBase().getLocation().getY());
+        userFile.addEntry(LASTZ, getBase().getLocation().getZ());
+        userFile.addEntry(LASTYAW, getBase().getLocation().getYaw());
+        userFile.addEntry(LASTPITCH, getBase().getLocation().getPitch());
+        userFile.addEntry(LASTWORLD, getBase().getLocation().getWorld().getName());
         
         this.afk = false;
         this.displayName = userFile.get(DISPLAYNAME);
@@ -358,17 +361,17 @@ public class User extends AbstractSession<Player> implements IUser {
         this.gamemode = userFile.get(GAMEMODE);
         this.infoBoard = userFile.get(INFOBOARD);
         this.lastLocation = new Location(
-                userFile.getWorld(LASTWORLD) == null ? get().getWorld() : userFile.getWorld(LASTWORLD),
+                userFile.getWorld(LASTWORLD) == null ? getBase().getWorld() : userFile.getWorld(LASTWORLD),
                 userFile.get(LASTX),
                 userFile.get(LASTY),
                 userFile.get(LASTZ),
                 userFile.get(LASTYAW),
                 userFile.get(LASTPITCH));
 
-        get().setDisplayName(displayName);
-        get().setWalkSpeed(Float.parseFloat(Double.toString(0.2 * Math.pow(walkSpeed, 0.69897))));
-        get().setFlySpeed((float)flySpeed/10);
-        get().setGameMode(gamemode.getBukkitMode());
+        getBase().setDisplayName(displayName);
+        getBase().setWalkSpeed(Float.parseFloat(Double.toString(0.2 * Math.pow(walkSpeed, 0.69897))));
+        getBase().setFlySpeed((float)flySpeed/10);
+        getBase().setGameMode(gamemode.getBukkitMode());
         runInfobard(infoBoard);
         
         
@@ -379,7 +382,7 @@ public class User extends AbstractSession<Player> implements IUser {
     
     @Override
     public void logout() {
-        userFile.setEntry(NAME, getSessionKey());
+        userFile.setEntry(NAME, getName());
         userFile.setEntry(AFK, false);
         userFile.setEntry(DISPLAYNAME, displayName);
         userFile.setEntry(WALKSPEED, walkSpeed);

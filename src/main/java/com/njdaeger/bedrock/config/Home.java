@@ -1,6 +1,7 @@
 package com.njdaeger.bedrock.config;
 
-import com.coalesce.core.config.YmlConfig;
+import com.njdaeger.bcm.Configuration;
+import com.njdaeger.bcm.base.ConfigType;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.config.IHome;
 import com.njdaeger.bedrock.api.user.IUser;
@@ -10,7 +11,7 @@ import org.bukkit.World;
 
 import java.io.File;
 
-public final class Home extends YmlConfig implements IHome {
+public final class Home extends Configuration implements IHome {
     
     private final IUser user;
     private final String name;
@@ -22,7 +23,7 @@ public final class Home extends YmlConfig implements IHome {
     private World world;
     
     public Home(IBedrock bedrock, IUser user, String name) {
-        super("users" + File.separator + user.getId().toString() + File.separator +  "homes" + File.separator + name, bedrock);
+        super(bedrock, ConfigType.YML, "users" + File.separator + user.getId().toString() + File.separator +  "homes" + File.separator + name);
         
         this.user = user;
         this.name = name;

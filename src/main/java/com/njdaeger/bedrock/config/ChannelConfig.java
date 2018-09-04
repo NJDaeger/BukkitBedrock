@@ -1,23 +1,24 @@
 package com.njdaeger.bedrock.config;
 
-import com.coalesce.core.config.YmlConfig;
-import com.coalesce.core.config.base.ISection;
+import com.njdaeger.bcm.Configuration;
+import com.njdaeger.bcm.base.ConfigType;
+import com.njdaeger.bcm.base.ISection;
 import com.njdaeger.bedrock.api.Bedrock;
+import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.chat.Close;
 import com.njdaeger.bedrock.api.chat.Display;
-import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.chat.IChannel;
 import com.njdaeger.bedrock.chat.Channel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChannelConfig extends YmlConfig {
+public class ChannelConfig extends Configuration {
     
     private final List<IChannel> channels;
     
     public ChannelConfig(IBedrock bedrock) {
-        super("channels", bedrock);
+        super(bedrock, ConfigType.YML, "channels");
         this.channels = new ArrayList<>();
         
         if (!contains("channels", false)) {

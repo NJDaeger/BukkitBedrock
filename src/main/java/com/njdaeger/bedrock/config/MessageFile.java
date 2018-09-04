@@ -1,6 +1,7 @@
 package com.njdaeger.bedrock.config;
 
-import com.coalesce.core.config.YmlConfig;
+import com.njdaeger.bcm.Configuration;
+import com.njdaeger.bcm.base.ConfigType;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.Message;
@@ -11,13 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MessageFile extends YmlConfig {
+public class MessageFile extends Configuration {
     
     private Language language;
     private Map<Message, String> messages;
     
     public MessageFile(IBedrock plugin) {
-        super("lang" + File.separator + plugin.getLanguage().getFileName(), plugin);
+        super(plugin, ConfigType.YML,"lang" + File.separator + plugin.getLanguage().getFileName());
         this.language = plugin.getLanguage();
         this.messages = new HashMap<>();
         List<String> missing = new ArrayList<>();

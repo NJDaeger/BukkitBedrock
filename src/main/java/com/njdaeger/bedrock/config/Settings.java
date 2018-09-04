@@ -1,10 +1,11 @@
 package com.njdaeger.bedrock.config;
 
-import com.coalesce.core.config.YmlConfig;
+import com.njdaeger.bcm.Configuration;
+import com.njdaeger.bcm.base.ConfigType;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.config.ISettings;
 
-public class Settings extends YmlConfig implements ISettings {
+public class Settings extends Configuration implements ISettings {
     
     private boolean autoUpdate;
     private boolean debug;
@@ -15,7 +16,7 @@ public class Settings extends YmlConfig implements ISettings {
     private String channelFormat;
     
     public Settings(IBedrock plugin) {
-        super("config", plugin);
+        super(plugin, ConfigType.YML, "config");
         
         addEntry("language", "en_us");
         addEntry("auto-update", true);

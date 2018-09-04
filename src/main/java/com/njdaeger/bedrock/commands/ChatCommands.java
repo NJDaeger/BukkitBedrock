@@ -1,23 +1,9 @@
 package com.njdaeger.bedrock.commands;
 
-import com.coalesce.core.SenderType;
-import com.njdaeger.bedrock.api.Bedrock;
-import com.njdaeger.bedrock.api.IBedrock;
-import com.njdaeger.bedrock.api.Message;
-import com.njdaeger.bedrock.api.chat.Close;
-import com.njdaeger.bedrock.api.chat.Display;
-import com.njdaeger.bedrock.api.chat.IChannel;
-import com.njdaeger.bedrock.api.command.BedrockCommand;
-import com.njdaeger.bedrock.api.command.BedrockCommandContext;
-import com.njdaeger.bedrock.api.command.BedrockTabContext;
-import com.njdaeger.bedrock.api.user.IUser;
-
 import static com.njdaeger.bedrock.api.Bedrock.translate;
-import static com.njdaeger.bedrock.api.Message.*;
-import static com.njdaeger.bedrock.api.Permission.*;
 
 public final class ChatCommands {
-
+/*
     private final IBedrock bedrock;
     
     public ChatCommands() {
@@ -145,23 +131,6 @@ public final class ChatCommands {
         else context.pluginMessage(CHANNEL_DISPLAY_ENABLE); //Enabling
         context.getUser().runChannelDisplay(!hasDisplay);
     }
-    
-        /*
-        
-        Create a new channel, delete a channel, list of channels
-        
-        
-        /channel new <name> <prefix> <display> [permission]     Creates a new channel saved by the server
-        /channel temp <name> <prefix> <display> [permission]    Creates a new temp channel which is removed when empty
-        /channel delete <name>                                  Deletes a channel. Channel must be made by a user or the user must have permission
-        /channel join <name>                                    Puts a channel back in this users channel selection list
-        /channel leave <name>                                   Removes a channel from the channel selection list
-        /channel kick <user> [channel]                          Kicks a user from a channel. If none is specified, the user is kicked from the senders current channel
-        /channel add <user> [channel]                           Adds a user to a channel. If no channel is specified, the user is added to the senders current channel.
-        /channel select <name>                                  Sets the given channel to the currently selected channel.
-        /channel display                                        Toggles the channel scoreboard display
-        
-         */
     
     private void kickOrAddUser(BedrockCommandContext context) {
         IUser user = context.getUser(1);
@@ -437,31 +406,5 @@ public final class ChatCommands {
         
         bedrock.removeChannel(name);
         context.pluginMessage(CHANNEL_DELETE, name);
-    }
-    
-    /*
-     * Chat channel system
-     *
-     * Channels will be stored in the channels.yml
-     *
-     *
-     * channelname:
-     *      commandName: "" (String)
-     *      owner: "" (UUID nullable)
-     *      prefix: "" (String nullable)
-     *      display: PREFIX, NAME, NONE   (What to display in chat before the users name. PREFIX being the channel prefix if it exists, NAME being the channel name, and NONE being nothing.)
-     *      permission: "" (String nullable)
-     *      closeOnExit: false (Whether to close the channel when the owner leaves, the channel must have an owner in order for this to work)
-     *
-     * Messages: CHANNEL_MESSAGE_FORMAT - "&7[&4{0}&7]&r{1}&7: &r{2}"
-     *
-     * Commands:
-     *
-     *      /[channelname] <message> //Send a message to this channel if the sender has permission to be in this channel
-     *      /[channelname] //Will join or leave the channel.
-     *
-     *
-     */
-    
-
+    }*/
 }
