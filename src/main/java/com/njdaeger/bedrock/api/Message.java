@@ -5,103 +5,102 @@ public enum Message {
     /**
      * {0} - The thing that isnt a number
      */
-    ERROR_NOT_A_NUMBER("errorNotANumber"),
-    
+    ERROR_NOT_A_NUMBER("errors.notANumber", "GIVEN"),
     /**
      * {0} - Array of permissions
      */
-    ERROR_NO_PERMISSION("errorNoPermission"),
+    ERROR_NO_PERMISSION("errors.noPermission", "PERMISSIONS"),
     /**
      * {0} - Minimum<p>
      * {1} - Given
      */
-    ERROR_NOT_ENOUGH_ARGS("errorNotEnoughArgs"),
+    ERROR_NOT_ENOUGH_ARGS("errors.notEnoughArgs", "MINIMUM", "GIVEN"),
     /**
      * {0} - Maximum<p>
      * {1} - Given
      */
-    ERROR_TOO_MANY_ARGS("errorTooManyArgs"),
+    ERROR_TOO_MANY_ARGS("errors.tooManyArgs", "MAXIMUM", "GIVEN"),
     /**
      * {0} - Array of allowed senders
      */
-    ERROR_INCORRECT_SENDER("errorIncorrectSender"),
+    ERROR_INCORRECT_SENDER("errors.incorrectSender", "SENDERS"),
     /**
      * {0} - The user that was trying to be found
      */
-    ERROR_USER_NOT_FOUND("errorUserNotFound"),
+    ERROR_USER_NOT_FOUND("errors.userNotFound", "USER"),
     
     /**
      * {0} - Home trying to be found
-     * {1} - User home trying to be found from
+     * {1} - User who's home trying to be found from
      */
-    ERROR_HOME_NOT_FOUND("errorHomeNotFound"),
+    ERROR_HOME_NOT_EXIST("errors.homeNotExist", "HOME"),
     
     /**
      * No placeholders
      */
-    ERROR_USER_NOT_SPECIFIED("errorUserNotSpecified"),
+    ERROR_USER_NOT_SPECIFIED("errors.userNotSpecified"),
     
     /**
      * {0} - User that doesn't have any homes
      */
-    ERROR_NO_HOMES("errorNoHomes"),
+    ERROR_NO_HOMES("errors.noHomes"),
     
     /**
      * {0} - Name of the home trying to be created
      */
-    ERROR_HOME_EXISTS("errorHomeExists"),
+    ERROR_HOME_EXISTS("errors.homeExists"),
     
     /**
      * {0} - Name of the home that couldnt be deleted
      */
-    ERROR_HOME_NOT_DELETED("errorHomeNotDeleted"),
+    ERROR_HOME_NOT_DELETED("errors.homeNotDeleted"),
     
     /**
      * {0} - The unknown argument
      */
-    ERROR_UNKNOWN_ARGUMENT("errorArgumentUnknown"),
+    ERROR_UNKNOWN_ARGUMENT("errors.argumentUnknown"),
     
     /**
      * {0} - Name of the channel that already exists
      */
-    ERROR_CHANNEL_EXISTS("errorChannelExists"),
+    ERROR_CHANNEL_EXISTS("errors.channelExists"),
     
     /**
      * {0} - Name of the channel that could not be found
      */
-    ERROR_CHANNEL_NOT_FOUND("errorChannelNotFound"),
+    ERROR_CHANNEL_NOT_FOUND("errors.channelNotFound"),
     
     /**
      * {0} - Name of the display that wasn't known
      */
-    ERROR_UNKNOWN_DISPLAY("errorUnknownDisplay"),
+    ERROR_UNKNOWN_DISPLAY("errors.unknownDisplay"),
     
     /**
      * {0} - The channel the user is already in
      */
-    ERROR_ALREADY_IN_CHANNEL("errorAlreadyInChannel"),
+    ERROR_ALREADY_IN_CHANNEL("errors.alreadyInChannel"),
     
     /**
      * {0} - The channel the user is not in
      */
-    ERROR_NOT_IN_CHANNEL("errorNotInChannel"),
+    ERROR_NOT_IN_CHANNEL("errors.notInChannel"),
     
     /**
      * {0} - The name of the user
      * {1} - The name of the channel
      */
-    ERROR_USER_NOT_IN_CHANNEL("errorUserNotInChannel"),
+    ERROR_USER_NOT_IN_CHANNEL("errors.userNotInChannel"),
     
     /**
      * {0} - The name of the user
      * {1} - The name of the channel
      */
-    ERROR_USER_ALREADY_IN_CHANNEL("errorUserAlreadyInChannel"),
+    ERROR_USER_ALREADY_IN_CHANNEL("errors.userAlreadyInChannel"),
     
     /**
      * {0} - The channel thats already selected
      */
-    ERROR_CHANNEL_SELECTED("errorChannelSelected"),
+    ERROR_CHANNEL_SELECTED("errors.channelSelected"),
     
     /**
      * No placeholders
@@ -554,13 +553,25 @@ public enum Message {
     CHANNEL_DISPLAY_DISABLE("channelDisplayDisable");
 
     private final String key;
-    
-    Message(String key) {
+    private final String[] placeholders;
+
+    Message(String key, String... placeholders) {
+        this.placeholders = placeholders;
         this.key = key;
     }
     
-    public String key() {
+    public String getKey() {
         return key;
     }
-    
+
+    public String[] getPlaceholders() {
+        return placeholders;
+    }
+
+    public String get(Object... placeholders) {
+        if (placeholders == null) {
+            Bedrock.getMessageFile().translate()
+        }
+    }
+
 }

@@ -81,7 +81,7 @@ public final class HomeCommands {
             home = context.getUser().getHome(context.argAt(0));
     
             if (home == null) {
-                context.pluginMessage(ERROR_HOME_NOT_FOUND, context.getDisplayName(), context.argAt(0));
+                context.pluginMessage(ERROR_HOME_NOT_EXIST, context.getDisplayName(), context.argAt(0));
                 return;
             }
             context.pluginMessage(HOME_SENDER_TO_OWN, home.getName());
@@ -108,7 +108,7 @@ public final class HomeCommands {
             home = context.getUser().getHome(context.argAt(0));
     
             if (home == null) {
-                context.pluginMessage(ERROR_HOME_NOT_FOUND, context.getDisplayName(), context.argAt(0));
+                context.pluginMessage(ERROR_HOME_NOT_EXIST, context.getDisplayName(), context.argAt(0));
                 return;
             }
             
@@ -159,7 +159,7 @@ public final class HomeCommands {
                 home = user.getHome(second[1]);
             
                 if (home == null) {
-                    context.pluginMessage(ERROR_HOME_NOT_FOUND, context.getDisplayName(), second[1]);
+                    context.pluginMessage(ERROR_HOME_NOT_EXIST, context.getDisplayName(), second[1]);
                     return;
                 }
                 user.pluginMessage(HOME_RECEIVER_SEND_OTHER, context.getDisplayName(), home.getName());
@@ -193,7 +193,7 @@ public final class HomeCommands {
             home = otherUser.getHome(second[1]);
     
             if (home == null) {
-                context.pluginMessage(ERROR_HOME_NOT_FOUND, otherUser.getDisplayName(), second[1]);
+                context.pluginMessage(ERROR_HOME_NOT_EXIST, otherUser.getDisplayName(), second[1]);
                 return;
             }
             user.pluginMessage(HOME_RECEIVER_OTHER_TO_OTHER, context.getDisplayName(), home.getOwner().getDisplayName(), home.getName());
@@ -218,7 +218,7 @@ public final class HomeCommands {
         home = context.getUser(name).getHome(context.argAt(1));
     
         if (home == null) {
-            context.pluginMessage(ERROR_HOME_NOT_FOUND, user.getDisplayName(), context.argAt(0));
+            context.pluginMessage(ERROR_HOME_NOT_EXIST, user.getDisplayName(), context.argAt(0));
             return;
         }
         context.pluginMessage(HOME_SENDER_TO_OTHER, home.getOwner().getDisplayName(), home.getName());
@@ -256,7 +256,7 @@ public final class HomeCommands {
             home = user1.getHome(arg[1]);
             
             if (home == null) {
-                context.pluginMessage(ERROR_HOME_NOT_FOUND, arg[1], user1.getDisplayName());
+                context.pluginMessage(ERROR_HOME_NOT_EXIST, arg[1], user1.getDisplayName());
                 return;
             }
             user1.pluginMessage(HOME_RECEIVER_SEND_OTHER, context.getDisplayName(), home.getName());
@@ -271,7 +271,7 @@ public final class HomeCommands {
         }
         home = user2.getHome(arg[1]);
         if (home == null) {
-            context.pluginMessage(ERROR_HOME_NOT_FOUND, arg[1], user1.getDisplayName());
+            context.pluginMessage(ERROR_HOME_NOT_EXIST, arg[1], user1.getDisplayName());
             return;
         }
         user1.pluginMessage(HOME_RECEIVER_OTHER_TO_OTHER, context.getDisplayName(), home.getOwner().getDisplayName(), home.getName());
@@ -375,7 +375,7 @@ public final class HomeCommands {
             home = context.getUser().getHome(context.argAt(0));
             
             if (home == null) {
-                context.pluginMessage(ERROR_HOME_NOT_FOUND, context.argAt(0), context.getDisplayName());
+                context.pluginMessage(ERROR_HOME_NOT_EXIST, context.argAt(0), context.getDisplayName());
                 return;
             }
             if (!context.getUser().deleteHome(home.getName())) {
@@ -403,7 +403,7 @@ public final class HomeCommands {
         home = user.getHome(context.argAt(1));
     
         if (home == null) {
-            context.pluginMessage(ERROR_HOME_NOT_FOUND, context.argAt(0), user.getDisplayName());
+            context.pluginMessage(ERROR_HOME_NOT_EXIST, context.argAt(0), user.getDisplayName());
             return;
         }
         

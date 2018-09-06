@@ -24,9 +24,9 @@ public class MessageFile extends Configuration {
         List<String> missing = new ArrayList<>();
         
         for (Message message : Message.values()) {
-            if (contains(message.key(), true)) {
-                messages.put(message, getString(message.key()));
-            } else missing.add(message.key());
+            if (contains(message.getKey(), true)) {
+                messages.put(message, getString(message.getKey()));
+            } else missing.add(message.getKey());
         }
         
         missing.forEach(k -> Bedrock.warn("Could not find key \"" + k + "\" in " + language.getFileName() + ".yml"));
