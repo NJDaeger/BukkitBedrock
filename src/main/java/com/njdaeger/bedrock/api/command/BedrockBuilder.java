@@ -22,6 +22,7 @@ public class BedrockBuilder extends AbstractCommandBuilder<CommandContext, TabCo
     public BedrockBuilder(IBedrock plugin, String name) {
         super(name);
         this.bedrock = plugin;
+        this.command = new Command(name);
     }
     
     public static BedrockBuilder builder(String name) {

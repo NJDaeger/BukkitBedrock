@@ -2,8 +2,8 @@ package com.njdaeger.bedrock.api.command;
 
 import com.njdaeger.bci.base.AbstractCommandContext;
 import com.njdaeger.bci.base.BCICommand;
-import com.njdaeger.bci.base.BCIException;
 import com.njdaeger.bedrock.api.Bedrock;
+import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.Message;
 import com.njdaeger.bedrock.api.Permission;
@@ -82,16 +82,28 @@ public class CommandContext extends AbstractCommandContext<CommandContext, TabCo
     
     @Override
     public void notEnoughArgs() throws BedrockException {
-        throw new NotEnoughArgsException(command.getMinArgs(), getLength());
+        notEnoughArgs(command.getMinArgs(), getLength());
     }
-    
+
+    public void notEnoughArgs(int minimum, int given) throws BedrockException {
+        throw new NotEnoughArgsException(minimum, given);
+    }
+
     @Override
     public void tooManyArgs() throws BedrockException {
-        throw new TooManyArgsException(command.getMaxArgs(), getLength());
+        tooManyArgs(command.getMaxArgs(), getLength());
     }
-    
+
+    public void tooManyArgs(int maximum, int given) throws BedrockException {
+        throw new TooManyArgsException(maximum, given);
+    }
+
     public void userNotFound(String user) throws BedrockException {
         throw new UserNotFoundException(user);
+    }
+    
+    public void userNotFound(int index) throws BedrockException {
+        userNotFound(argAt(index));
     }
     
     @Override
@@ -101,6 +113,11 @@ public class CommandContext extends AbstractCommandContext<CommandContext, TabCo
     
     public void noPermission(Permission permission) throws BedrockException {
         throw new NoPermissionException(permission.toString());
+    }
+    
+    public Gamemode gamemodeAt(int index) {
+        if (hasArgAt(index)) return Gamemode.resolveGamemode(argAt(index));
+        return null;
     }
     
 }

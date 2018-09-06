@@ -79,7 +79,7 @@ public interface IUser {
     /**
      * Runs login process.
      */
-    void login();
+    IUser login();
     
     /**
      * Runs logout process.

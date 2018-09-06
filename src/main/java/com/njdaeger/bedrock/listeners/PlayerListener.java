@@ -13,7 +13,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import static com.njdaeger.bedrock.api.Bedrock.translate;
@@ -24,6 +26,16 @@ public class PlayerListener implements Listener {
     
     public PlayerListener(IBedrock bedrock) {
         this.bedrock = bedrock;
+    }
+    
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        bedrock.getUserMap().addUser(event.getPlayer());
+    }
+    
+    @EventHandler
+    public void onLeave(PlayerQuitEvent event) {
+        bedrock.getUserMap().removeUser(event.getPlayer());
     }
     
     @EventHandler

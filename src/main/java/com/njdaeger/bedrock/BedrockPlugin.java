@@ -13,8 +13,13 @@ import com.njdaeger.bedrock.config.ChannelConfig;
 import com.njdaeger.bedrock.config.MessageFile;
 import com.njdaeger.bedrock.config.Settings;
 import com.njdaeger.bedrock.listeners.PlayerListener;
+import com.njdaeger.bedrock.user.UserMap;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -25,6 +30,7 @@ import java.util.List;
 
 public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
     
+    private UserMap userMap;
     private CommandStore commandStore;
     private ChannelConfig channelConfig;
     private MessageFile messageFile;
@@ -36,7 +42,7 @@ public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
         try {
             //This moves all the currently existing language files to lang folder
             File langFolder = new File(getDataFolder() + File.separator + "lang");
-            if (!getDataFolder().exists()) getDataFolder().createNewFile();
+            if (!getDataFolder().exists()) getDataFolder().mkdirs();
             if (!langFolder.exists()) langFolder.mkdir();
     
             for (MessageFile.Language language : MessageFile.Language.values()) {
@@ -67,50 +73,30 @@ public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
     @Override
     public void onEnable() {
         this.commandStore = new CommandStore(this);
-    
+        this.userMap = new UserMap(this);
+        
         Bedrock.setBedrock(this);
-        //this.userNameSpace = new NamespacedSessionStore<>("users", IUser.class);
+
         this.configuration = new Settings(this);
         this.channelConfig = new ChannelConfig(this);
         this.messageFile = new MessageFile(this);
-        
-        Bukkit.getPluginManager().registerEvents(this, this);
+
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
         
         new BasicCommands();
         new HomeCommands();
         new ChatCommands();
         
-        /*for (Player player : Bukkit.getOnlinePlayers()) {
-            userNameSpace.addSession(new User(this, userNameSpace, player.getName(), player)).login();
-        }*/
-    }
-    
-    /*@Override
-    public void onDisable() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            userNameSpace.removeSession(player.getName()).logout();
+            userMap.addUser(player);
         }
     }
     
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        userNameSpace.addSession(new User(this, userNameSpace, event.getPlayer().getName(), event.getPlayer())).login();
-    }
-    
-    @EventHandler
-    public void onLeave(PlayerQuitEvent event) {
-        userNameSpace.removeSession(event.getPlayer().getName()).logout();
-    }*/
-    
     @Override
-    public IUser getUser(String name) {
-        return null;
-    }
-    
-    @Override
-    public List<IUser> getUsers() {
-        return null;
+    public void onDisable() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            userMap.removeUser(player);
+        }
     }
     
     @Override
@@ -140,5 +126,10 @@ public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
 
     public CommandStore getCommandStore() {
         return commandStore;
+    }
+    
+    @Override
+    public UserMap getUserMap() {
+        return userMap;
     }
 }

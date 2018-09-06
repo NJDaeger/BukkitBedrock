@@ -1,8 +1,5 @@
 package com.njdaeger.bedrock.user;
 
-import com.coalesce.core.Color;
-import com.coalesce.core.scoreboard.StaticScoreboard;
-import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.SpeedType;
@@ -14,9 +11,9 @@ import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.api.user.IUserFile;
 import com.njdaeger.bedrock.config.Home;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
@@ -29,8 +26,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static com.njdaeger.bedrock.api.Bedrock.debug;
-import static com.njdaeger.bedrock.api.Bedrock.translate;
-import static com.njdaeger.bedrock.api.Message.*;
+import static com.njdaeger.bedrock.api.Bedrock.registerCommand;
 import static com.njdaeger.bedrock.user.UserPath.*;
 
 public class User implements IUser {
@@ -322,12 +318,12 @@ public class User implements IUser {
     
     @Override
     public void setDisplayName(String name) {
-        this.displayName = Color.translate('&', name);
+        this.displayName = ChatColor.translateAlternateColorCodes('&', name);
         getBase().setDisplayName(displayName);
     }
     
     @Override
-    public void login() {
+    public IUser login() {
 
         long start = System.currentTimeMillis();
         
@@ -377,7 +373,7 @@ public class User implements IUser {
         
         long finish = System.currentTimeMillis();
         debug("User " + getName() + " loaded in " + (finish-start) + " milliseconds.");
-        
+        return this;
     }
     
     @Override

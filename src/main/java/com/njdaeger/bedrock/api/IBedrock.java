@@ -12,6 +12,7 @@ import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.chat.Channel;
 import com.njdaeger.bedrock.config.ChannelConfig;
 import com.njdaeger.bedrock.config.MessageFile;
+import com.njdaeger.bedrock.user.UserMap;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -22,7 +23,17 @@ import java.util.stream.Collectors;
 
 public interface IBedrock extends Plugin {
     
+    /**
+     * Get the plugin command store
+     * @return The plugin command store
+     */
     CommandStore getCommandStore();
+    
+    /**
+     * Gets the plugin UserMap
+     * @return The plugin UserMap
+     */
+    UserMap getUserMap();
     
     /**
      * Get the plugin configuration
@@ -35,6 +46,18 @@ public interface IBedrock extends Plugin {
      * @return The server chat channels
      */
     List<IChannel> getChannels();
+    
+    /**
+     * Get the channel configuration file
+     * @return The channel config file
+     */
+    ChannelConfig getChannelConfig();
+    
+    /**
+     * Get the current message file. Language dependant.
+     * @return The message file.
+     */
+    MessageFile getMessageFile();
     
     /**
      * Get a specific channel
@@ -53,12 +76,6 @@ public interface IBedrock extends Plugin {
     default boolean hasChannel(String name) {
         return getChannel(name) != null;
     }
-    
-    /**
-     * Get the channel configuration file
-     * @return The channel config file
-     */
-    ChannelConfig getChannelConfig();
     
     /**
      * Create a new channel
@@ -124,11 +141,13 @@ public interface IBedrock extends Plugin {
     }
     
     /**
-     * Get an online user by name
-     * @param name The name of the user
+     * Get an online user by name or display name
+     * @param name The name or display name of the user
      * @return The user if they exist, null otherwise.
      */
-    IUser getUser(String name);
+    default IUser getUser(String name) {
+        return getUserMap().getUser(name);
+    }
     
     /**
      * Get an online user via its bukkit player object
@@ -140,10 +159,21 @@ public interface IBedrock extends Plugin {
     }
     
     /**
+     * Get an online user by name
+     * @param name The exact name of the user
+     * @return The user if they exist, or null otherwise.
+     */
+    default IUser getUserExact(String name) {
+        return getUserMap().getUserExact(name);
+    }
+    
+    /**
      * Get a list of all the users currently online
      * @return The online users
      */
-    List<IUser> getUsers();
+    default List<IUser> getUsers() {
+        return getUserMap().getUsers();
+    }
     
     /**
      * Get all the users that match the predicate
@@ -153,12 +183,6 @@ public interface IBedrock extends Plugin {
     default List<IUser> getUsers(Predicate<IUser> predicate) {
         return getUsers().stream().filter(predicate).collect(Collectors.toList());
     }
-    
-    /**
-     * Get the current message file. Language dependant.
-     * @return The message file.
-     */
-    MessageFile getMessageFile();
     
     /**
      * Get the language this plugin is currently using

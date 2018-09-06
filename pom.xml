@@ -10,6 +10,14 @@
 
     <build>
         <plugins>
+
+            <!--Javadoc Generation-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0-M1</version>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -18,6 +26,53 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+
+            <!--Source Generation-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--Shade Dependencies-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>com.njdaeger.bci</pattern>
+                            <shadedPattern>com.njdaeger.libs.bci</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.njdaeger.btu</pattern>
+                            <shadedPattern>com.njdaeger.libs.btu</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.njdaeger.bcm</pattern>
+                            <shadedPattern>com.njdaeger.libs.bcm</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+            </plugin>
+
         </plugins>
 
         <resources>
@@ -60,9 +115,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
             <version>1.13.1-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

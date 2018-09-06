@@ -12,6 +12,6 @@ public class CommandStore extends AbstractCommandStore<CommandContext, TabContex
     
     @Override
     public void registerCommand(BCICommand<CommandContext, TabContext> bciCommand) {
-        registerCommand(new CommandWrapper(plugin, bciCommand));
+        registerCommand(new CommandWrapper(plugin, (Command)bciCommand));
     }
 }

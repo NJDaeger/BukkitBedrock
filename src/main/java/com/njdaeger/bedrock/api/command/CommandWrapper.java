@@ -1,7 +1,6 @@
 package com.njdaeger.bedrock.api.command;
 
 import com.njdaeger.bci.base.AbstractCommandWrapper;
-import com.njdaeger.bci.base.BCICommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
@@ -9,7 +8,7 @@ import java.util.List;
 
 public class CommandWrapper extends AbstractCommandWrapper<CommandContext, TabContext> {
     
-    public CommandWrapper(Plugin plugin, BCICommand<CommandContext, TabContext> command) {
+    public CommandWrapper(Plugin plugin, Command command) {
         super(plugin, command);
     }
     
