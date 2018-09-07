@@ -8,10 +8,11 @@ import com.njdaeger.bedrock.api.command.Command;
 import com.njdaeger.bedrock.api.command.CommandStore;
 import com.njdaeger.bedrock.api.command.CommandWrapper;
 import com.njdaeger.bedrock.api.config.ISettings;
+import com.njdaeger.bedrock.api.lang.Message;
+import com.njdaeger.bedrock.api.lang.MessageFile;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.chat.Channel;
 import com.njdaeger.bedrock.config.ChannelConfig;
-import com.njdaeger.bedrock.config.MessageFile;
 import com.njdaeger.bedrock.user.UserMap;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -185,14 +186,6 @@ public interface IBedrock extends Plugin {
     }
     
     /**
-     * Get the language this plugin is currently using
-     * @return The plugin language
-     */
-    default MessageFile.Language getLanguage() {
-        return getSettings().getLanguage();
-    }
-    
-    /**
      * Translates a string's placeholders
      * @param message The message to translate
      * @param placeholders The placeholders
@@ -209,7 +202,7 @@ public interface IBedrock extends Plugin {
      * @return The string colored, translated, and placeholders replaced.
      */
     default String translate(Message message, Object... placeholders) {
-        return translate(getMessageFile().translate(message), placeholders);
+        return ChatColor.translateAlternateColorCodes('&', message.translate(placeholders));
     }
     
     /**
@@ -219,7 +212,7 @@ public interface IBedrock extends Plugin {
      * @return The string colored, translated, formatted, and placeholders replaced.
      */
     default String pluginTranslate(Message message, Object... placeholders) {
-        return translate(ChatColor.GRAY + "[" + ChatColor.GREEN + "BukkitBedrock" + ChatColor.GRAY + "]" + ChatColor.RESET + getMessageFile().translate(message), placeholders);
+        return ChatColor.translateAlternateColorCodes('&', "&7[&aBukkitBedrock&7]&r " + message.translate(placeholders));
     }
     
     /**

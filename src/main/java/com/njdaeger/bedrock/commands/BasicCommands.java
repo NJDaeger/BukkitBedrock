@@ -13,7 +13,7 @@ import com.njdaeger.bedrock.api.user.IUser;
 
 import java.util.stream.Stream;
 
-import static com.njdaeger.bedrock.api.Message.*;
+import static com.njdaeger.bedrock.api.lang.Message.*;
 import static com.njdaeger.bedrock.api.Permission.*;
 
 public final class BasicCommands {

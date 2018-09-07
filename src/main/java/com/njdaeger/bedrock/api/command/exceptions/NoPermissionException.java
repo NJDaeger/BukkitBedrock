@@ -1,7 +1,7 @@
 package com.njdaeger.bedrock.api.command.exceptions;
 
 import com.njdaeger.bedrock.api.Bedrock;
-import com.njdaeger.bedrock.api.Message;
+import com.njdaeger.bedrock.api.lang.Message;
 import com.njdaeger.bedrock.api.Permission;
 
 import java.util.Arrays;

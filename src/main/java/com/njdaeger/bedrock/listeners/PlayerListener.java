@@ -1,7 +1,7 @@
 package com.njdaeger.bedrock.listeners;
 
 import com.njdaeger.bedrock.api.Bedrock;
-import com.njdaeger.bedrock.api.Message;
+import com.njdaeger.bedrock.api.lang.Message;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.chat.Display;
 import com.njdaeger.bedrock.api.user.IUser;

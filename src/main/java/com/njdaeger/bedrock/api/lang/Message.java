@@ -1,4 +1,9 @@
-package com.njdaeger.bedrock.api;
+package com.njdaeger.bedrock.api.lang;
+
+import com.njdaeger.bedrock.api.Bedrock;
+import com.njdaeger.bedrock.api.IBedrock;
+
+import java.util.function.Function;
 
 public enum Message {
     
@@ -31,7 +36,6 @@ public enum Message {
     
     /**
      * {0} - Home trying to be found
-     * {1} - User who's home trying to be found from
      */
     ERROR_HOME_NOT_EXIST("errors.homeNotExist", "HOME"),
     
@@ -105,24 +109,24 @@ public enum Message {
     /**
      * No placeholders
      */
-    AFK_DESC("afkCommandDesc"),
+    AFK_DESC("afk.commandDesc"),
     /**
      * No placeholders
      */
-    AFK_USAGE("afkCommandUsage"),
+    AFK_USAGE("afk.commandUsage"),
     /**
      * {0} - User going afk
      */
-    AFK_AWAY_MESSAGE("afkAwayMessage"),
+    AFK_AWAY_MESSAGE("afk.awayMessage"),
     /**
      * {0} - User coming back
      */
-    AFK_BACK_MESSAGE("afkBackMessage"),
+    AFK_BACK_MESSAGE("afk.backMessage"),
     /**
      * {0} - User going afk <p>
      * {1} - The user's reasoning to going afk
      */
-    AFK_AWAY_MESSAGE_MOREINFO("afkMessageMoreInfo"),
+    AFK_AWAY_MESSAGE_MOREINFO("afk.messageMoreInfo"),
     
     /**
      * No placeholders
@@ -554,9 +558,17 @@ public enum Message {
 
     private final String key;
     private final String[] placeholders;
+    private final Function<IBedrock, String> alternate;
+
+    Message(String key, Function<IBedrock, String> alternate, String... placeholders) {
+        this.key = key;
+        this.alternate = alternate;
+        this.placeholders = placeholders;
+    }
 
     Message(String key, String... placeholders) {
         this.placeholders = placeholders;
+        this.alternate = null;
         this.key = key;
     }
     
@@ -568,10 +580,35 @@ public enum Message {
         return placeholders;
     }
 
-    public String get(Object... placeholders) {
-        if (placeholders == null) {
-            Bedrock.getMessageFile().translate()
+    String format() {
+        String message = null;
+        if (alternate != null) {
+            message = alternate.apply(Bedrock.getBedrock());
         }
+        if (message == null) {
+            if (Bedrock.getMessageFile().contains(getKey(), true)) {
+                message = Bedrock.getMessageFile().getString(getKey());
+            }
+            if (message == null) message = "null";
+        }
+        if (placeholders != null) {
+            for (int i = 0; i < placeholders.length; i++) {
+                message = message.replace(placeholders[i], "{" + i + "}");
+            }
+        }
+        return message;
+    }
+
+    public String getRaw() {
+        return Bedrock.getMessageFile().get(this);
+    }
+
+    public String translate(Object... placeholders) {
+        String message = getRaw();
+        for (int i = 0; i < placeholders.length; i++) {
+            message = message.replace("{" + i + "}", placeholders[i] != null ? placeholders[i].toString() : "null");
+        }
+        return message;
     }
 
 }

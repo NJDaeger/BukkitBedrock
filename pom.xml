@@ -86,6 +86,7 @@
             <resource>
                 <directory>src/main/messages</directory>
                 <filtering>false</filtering>
+                <targetPath>lang/</targetPath>
             </resource>
         </resources>
 

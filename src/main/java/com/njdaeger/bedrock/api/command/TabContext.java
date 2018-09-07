@@ -3,7 +3,7 @@ package com.njdaeger.bedrock.api.command;
 import com.njdaeger.bci.base.AbstractTabContext;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.IBedrock;
-import com.njdaeger.bedrock.api.Message;
+import com.njdaeger.bedrock.api.lang.Message;
 import com.njdaeger.bedrock.api.Permission;
 import com.njdaeger.bedrock.api.command.exceptions.BedrockException;
 import com.njdaeger.bedrock.api.command.exceptions.NoPermissionException;

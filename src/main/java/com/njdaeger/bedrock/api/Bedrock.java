@@ -5,9 +5,10 @@ import com.njdaeger.bedrock.api.chat.Display;
 import com.njdaeger.bedrock.api.chat.IChannel;
 import com.njdaeger.bedrock.api.command.Command;
 import com.njdaeger.bedrock.api.config.ISettings;
+import com.njdaeger.bedrock.api.lang.Message;
+import com.njdaeger.bedrock.api.lang.MessageFile;
 import com.njdaeger.bedrock.api.user.IUser;
 import com.njdaeger.bedrock.config.ChannelConfig;
-import com.njdaeger.bedrock.config.MessageFile;
 import com.njdaeger.btu.Util;
 import com.sun.management.OperatingSystemMXBean;
 import org.bukkit.entity.Player;
@@ -63,12 +64,8 @@ public final class Bedrock {
         return bedrock.getMessageFile();
     }
     
-    public static ISettings getConf() {
-        return bedrock.getSettings();
-    }
-    
     public static void debug(String message) {
-        if (getConf().debug()) getBedrock().getLogger().log(Level.FINE, message);
+        if (getSettings().debug()) getBedrock().getLogger().log(Level.FINE, message);
     }
     
     public static void warn(String message) {

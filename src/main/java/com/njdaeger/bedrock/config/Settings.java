@@ -9,7 +9,7 @@ public class Settings extends Configuration implements ISettings {
     
     private boolean autoUpdate;
     private boolean debug;
-    private MessageFile.Language language;
+    private String langFile;
     private String rawMessageFormat;
     private String rawChannelFormat;
     private String messageFormat;
@@ -18,7 +18,7 @@ public class Settings extends Configuration implements ISettings {
     public Settings(IBedrock plugin) {
         super(plugin, ConfigType.YML, "config");
         
-        addEntry("language", "en_us");
+        addEntry("language-file", "messages-en-us");
         addEntry("auto-update", true);
         addEntry("debug", false);
         addEntry("messageFormat", "&7{DISPLAYNAME}:&r {MESSAGE}");
@@ -26,7 +26,8 @@ public class Settings extends Configuration implements ISettings {
         
         autoUpdate = getBoolean("auto-update");
         debug = getBoolean("debug");
-        language = getValueAs("language", MessageFile.Language.class);
+
+        langFile = getString("language-file");
         
         messageFormat = getString("messageFormat");
         rawMessageFormat = messageFormat;
@@ -53,8 +54,8 @@ public class Settings extends Configuration implements ISettings {
     
     
     @Override
-    public MessageFile.Language getLanguage() {
-        return language;
+    public String getLang() {
+        return langFile;
     }
     
     @Override

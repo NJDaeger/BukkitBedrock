@@ -3,7 +3,7 @@ package com.njdaeger.bedrock.api.user;
 import com.njdaeger.bci.Utils;
 import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.IBedrock;
-import com.njdaeger.bedrock.api.Message;
+import com.njdaeger.bedrock.api.lang.Message;
 import com.njdaeger.bedrock.api.Permission;
 import com.njdaeger.bedrock.api.SpeedType;
 import com.njdaeger.bedrock.api.chat.IChannel;

@@ -3,7 +3,7 @@ package com.njdaeger.bedrock.api.command;
 import com.njdaeger.bci.base.AbstractCommandBuilder;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.IBedrock;
-import com.njdaeger.bedrock.api.Message;
+import com.njdaeger.bedrock.api.lang.Message;
 import com.njdaeger.bedrock.api.Permission;
 
 import java.util.HashSet;

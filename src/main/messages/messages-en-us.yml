@@ -1,8 +1,9 @@
-afkCommandDesc: "Mark yourself as away from keyboard."
-afkCommandUsage: "/afk [message]"
-afkAwayMessage: "&7* &r{0}&7 is now AFK."
-afkBackMessage: "&7* &r{0}&7 is no longer AFK."
-afkMessageMoreInfo: "&7* &r{0}&7 is now AFK. &o[{1}]"
+afk:
+  commandDesc: "Mark yourself as away from keyboard."
+  commandUsage: "/afk [message]"
+  awayMessage: "&7* &r{0}&7 is now AFK."
+  backMessage: "&7* &r{0}&7 is no longer AFK."
+  messageMoreInfo: "&7* &r{0}&7 is now AFK. &o[{1}]"
 errors:
   noPermission: "&cYou do not have sufficient permission to run this command! Permission(s) required: &7{PERMISSIONS}"
   notEnoughArgs: "&cNot enough arguments supplied to run command! Minimum: &7{MINIMUM} &cGiven: &7{GIVEN}"
@@ -10,7 +11,7 @@ errors:
   incorrectSender: "&cYou are not the correct sender type to run this command! You must be one of the following: &7{SENDERS}"
   userNotFound: "&cCannot find user &7{USER}"
   notANumber: "&7{GIVEN}&c could not be parsed as a number."
-  homeNotFound: "&cHome &7{0}&c could not be found for user &7{USER}"
+  homeNotExist: "&cHome &7{0}&c could not be found."
   userNotSpecified: "&cA user must be specified in order for this command to work. &oe.g.'u:NJDaeger'"
   noHomes: "&cUser &7{0}&c doesn't have have any homes."
   homeExists: "&cHome &7{0}&c already exists."
