@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
@@ -33,10 +34,17 @@ public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
     @Override
     public void onLoad() {
         File langFolder = new File(getDataFolder() + File.separator + "lang");
+        File config = new File(getDataFolder() + File.separator + "config.yml");
         getDataFolder().mkdirs();
+        try {
+            config.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         langFolder.mkdirs();
 
         new ExtractJarContent("/lang/", langFolder);
+        saveResource("config.yml", false);
     }
     
     @Override

@@ -22,6 +22,9 @@ public class MessageFile extends Configuration {
         this.langfile = langfile;
     }
 
+    /**
+     * Reloads the messages map
+     */
     public void reloadMap() {
         messages.clear();
         List<String> missing = new ArrayList<>();
@@ -35,10 +38,19 @@ public class MessageFile extends Configuration {
         missing.forEach(k -> Bedrock.warn("Missing key \"" + k + "\" in " + langfile + ".yml"));
     }
 
+    /**
+     * Gets the current language selected
+     * @return The current language
+     */
     public String getLang() {
         return langfile;
     }
 
+    /**
+     * Get a translated message
+     * @param message The message to get
+     * @return The message if it exists, or null if it was not found
+     */
     public String get(Message message) {
         return messages.get(message);
     }

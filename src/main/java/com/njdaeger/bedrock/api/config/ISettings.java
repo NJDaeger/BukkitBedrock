@@ -6,16 +6,16 @@ public interface ISettings extends IConfig {
     
     String getLang();
     
-    boolean autoUpdate();
-    
-    boolean debug();
-    
-    String getRawMessageFormat();
-    
-    String getRawDefaultChannelFormat();
-    
-    String getMessageFormat();
-    
-    String getDefaultChannelFormat();
+    boolean isDebugMode();
+
+    String getAfkJoinFormat();
+
+    boolean hasAfkJoinMessage();
+
+    String getAfkLeaveMessage();
+
+    boolean hasAfkLeaveMessage();
+
+    boolean isAfkMoreInfoEnabled();
     
 }

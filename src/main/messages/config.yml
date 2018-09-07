@@ -1,0 +1,38 @@
+#
+# Main configuration for BukkitBedrock
+#
+
+###--------------------------------###
+### G E N E R A L  S E T T I N G S ###
+###--------------------------------###
+
+# The name of the message file to use when this plugin is in use.
+# This cannot have the file extension attached to the end.
+language-file: "messages-en-us"
+
+# Whether to have the debug messages printed to console
+debug: false
+
+###--------------------------------###
+### C O M M A N D  S E T T I N G S ###
+###--------------------------------###
+
+# All settings related to the afk command.
+afk:
+  ### What should the message look like when going afk?
+  ###
+  ### Supported keywords:
+  ### USERNAME, DISPLAYNAME, BLOCKX, BLOCKY, BLOCKZ, WORLD
+  ###
+  ### Comment out to use format set by the language file. Set to %none% to disable
+  #join-format: "&7* &a{USERNAME}&7 is now afk."
+
+  ### What should the message look like when going un-afk?
+  ###
+  ### Supported keywords:
+  ### USERNAME, DISPLAYNAME, BLOCKX, BLOCKY, BLOCKZ, WORLD
+  ###
+  ### Comment out to use format set by language file. Set to %none% to disable
+  #leave-format: "&7* &a{USERNAME}&7 is no longer afk."
+
+  allow-more-info: false
