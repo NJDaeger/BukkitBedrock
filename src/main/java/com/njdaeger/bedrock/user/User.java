@@ -26,7 +26,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static com.njdaeger.bedrock.api.Bedrock.debug;
-import static com.njdaeger.bedrock.api.Bedrock.registerCommand;
 import static com.njdaeger.bedrock.user.UserPath.*;
 
 public class User implements IUser {
@@ -275,18 +274,23 @@ public class User implements IUser {
     }
     
     @Override
-    public void setAfk(boolean value, String message) {
+    public void setAfk(boolean value, boolean hasReason, String message) {
+
+        if (value) {
+            if ((hasReason && !bedrock.getSettings().hasAfkAwayMoreInfoMessage()) || !bedrock.getSettings().hasAfkAwayMessage()) message = null;
+        } else {
+            if (!bedrock.getSettings().hasAfkBackMessage()) message = null;
+        }
+
         UserAfkStatusEvent event = new UserAfkStatusEvent(this, value, message);
         Bukkit.getPluginManager().callEvent(event);
         
         //Check if the event was cancelled
         if (event.isCancelled()) return;
-        
-        if (value) {
-            this.afkLocation = getLocation();
-        } else this.afkLocation = null;
-        
-        Bukkit.broadcastMessage(event.getMessage());
+
+        this.afkLocation = value ? getLocation() : null;
+
+        if (event.getMessage() != null) Bukkit.broadcastMessage(event.getMessage());
         
         this.afk = value;
     }

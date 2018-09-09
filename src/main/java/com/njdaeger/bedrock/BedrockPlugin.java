@@ -20,7 +20,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
@@ -30,21 +29,21 @@ public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
     private ChannelConfig channelConfig;
     private MessageFile messageFile;
     private ISettings settings;
-    
+
     @Override
     public void onLoad() {
         File langFolder = new File(getDataFolder() + File.separator + "lang");
-        File config = new File(getDataFolder() + File.separator + "config.yml");
         getDataFolder().mkdirs();
-        try {
+        File config = new File(getDataFolder() + File.separator + "config.yml");
+        /*try {
             config.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         langFolder.mkdirs();
 
         new ExtractJarContent("/lang/", langFolder);
-        saveResource("config.yml", false);
+        if (!config.exists()) saveResource("config.yml", false);
     }
     
     @Override
@@ -52,11 +51,16 @@ public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
         Bedrock.setBedrock(this);
         this.commandStore = new CommandStore(this);
         this.userMap = new UserMap(this);
-        this.settings = new Settings(this);
-        this.channelConfig = new ChannelConfig(this);
-        this.messageFile = new MessageFile(this, settings.getLang());
 
-        messageFile.reloadMap();
+        //Loading settings
+        this.settings = new Settings(this);
+        settings.reloadSettings();
+
+        //this.channelConfig = new ChannelConfig(this);
+
+        //Loading messages
+        this.messageFile = new MessageFile(this, settings.getLang());
+        messageFile.reloadMessages();
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
         
@@ -75,7 +79,7 @@ public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
             userMap.removeUser(player);
         }
     }
-    
+
     @Override
     public MessageFile getMessageFile() {
         return messageFile;

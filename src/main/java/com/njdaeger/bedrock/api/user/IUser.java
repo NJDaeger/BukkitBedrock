@@ -49,9 +49,20 @@ public interface IUser {
     /**
      * Set the user afk
      * @param value True marks the user afk
+     * @param hasReason True says this user went afk for a reason
+     * @param message The message to send
      */
-    void setAfk(boolean value, String message);
-    
+    void setAfk(boolean value, boolean hasReason, String message);
+
+    /**
+     * Set the user afk
+     * @param value True marks the user afk
+     * @param message The message to send
+     */
+    default void setAfk(boolean value, String message) {
+        setAfk(value, false, message);
+    }
+
     /**
      * Get the location where the user went afk originally
      * @return The user's afk location.
@@ -371,7 +382,7 @@ public interface IUser {
      * @param placeholders The placeholders
      */
     default void sendMessage(String message, Object... placeholders) {
-        sendMessage(Utils.formatString(message, placeholders));
+        sendMessage(getPlugin().translate(message, placeholders));
     }
     
     /**
@@ -388,8 +399,7 @@ public interface IUser {
      * @param message The message to send
      */
     default void pluginMessage(String message) {
-        sendMessage(message);
-        //sendMessage(getSessionOwner().getCoFormatter().format(message));
+        sendMessage(getPlugin().pluginTranslate(message));
     }
     
     /**
@@ -398,18 +408,16 @@ public interface IUser {
      * @param placeholders the placeholders
      */
     default void pluginMessage(String message, Object... placeholders) {
-        sendMessage(message);
-        //sendMessage(getSessionOwner().getCoFormatter().format(message, placeholders));
+        sendMessage(getPlugin().pluginTranslate(message, placeholders));
     }
     
     /**
      * Send the user a translated formatted message
      * @param message The message to send
-     * @param placeholder The message placeholders
+     * @param placeholders The message placeholders
      */
-    default void pluginMessage(Message message, Object... placeholder) {
-        sendMessage(message);
-        //sendMessage(getSessionOwner().pluginTranslate(message, placeholder));
+    default void pluginMessage(Message message, Object... placeholders) {
+        sendMessage(getPlugin().pluginTranslate(message, placeholders));
     }
     
 }

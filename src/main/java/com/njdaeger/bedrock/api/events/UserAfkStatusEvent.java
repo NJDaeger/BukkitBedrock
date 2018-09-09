@@ -13,7 +13,7 @@ public class UserAfkStatusEvent extends Event implements Cancellable{
     private boolean status;
     private IUser user;
     
-    public UserAfkStatusEvent(IUser user, boolean status,  String message) {
+    public UserAfkStatusEvent(IUser user, boolean status, String message) {
         this.user = user;
         this.status = status;
         this.afkMessage = message;

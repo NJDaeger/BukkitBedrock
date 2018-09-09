@@ -11,7 +11,6 @@ import com.njdaeger.bedrock.api.config.ISettings;
 import com.njdaeger.bedrock.api.lang.Message;
 import com.njdaeger.bedrock.api.lang.MessageFile;
 import com.njdaeger.bedrock.api.user.IUser;
-import com.njdaeger.bedrock.chat.Channel;
 import com.njdaeger.bedrock.config.ChannelConfig;
 import com.njdaeger.bedrock.user.UserMap;
 import org.bukkit.ChatColor;
@@ -20,10 +19,16 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public interface IBedrock extends Plugin {
-    
+
+    @Override
+    default Logger getLogger() {
+        return Logger.getLogger("Bedrock");
+    }
+
     /**
      * Get the plugin command store
      * @return The plugin command store
@@ -35,7 +40,7 @@ public interface IBedrock extends Plugin {
      * @return The plugin UserMap
      */
     UserMap getUserMap();
-    
+
     /**
      * Get the plugin configuration
      * @return The plugin config.
@@ -87,7 +92,8 @@ public interface IBedrock extends Plugin {
      * @param whenToClose When to close this channel
      */
     default boolean createChannel(String name, String prefix, Display display, String permission, Close whenToClose) {
-        return createChannel(new Channel(name, prefix, display, permission, getSettings().getDefaultChannelFormat(), whenToClose, !whenToClose.equals(Close.CHANNEL_EMPTY)));
+        return false;
+        //return createChannel(new Channel(name, prefix, display, permission, getSettings().getDefaultChannelFormat(), whenToClose, !whenToClose.equals(Close.CHANNEL_EMPTY)));
     }
     
     /**
@@ -184,7 +190,16 @@ public interface IBedrock extends Plugin {
     default List<IUser> getUsers(Predicate<IUser> predicate) {
         return getUsers().stream().filter(predicate).collect(Collectors.toList());
     }
-    
+
+    /**
+     * Translates color codes in a message
+     * @param message The message to translate
+     * @return The colored string.
+     */
+    default String translate(String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
     /**
      * Translates a string's placeholders
      * @param message The message to translate
@@ -192,7 +207,7 @@ public interface IBedrock extends Plugin {
      * @return The string, colored, translated, and placeholders replaced.
      */
     default String translate(String message, Object... placeholders) {
-        return ChatColor.translateAlternateColorCodes('&', Utils.formatString(message, placeholders));
+        return translate(Utils.formatString(message, placeholders));
     }
     
     /**
@@ -202,9 +217,17 @@ public interface IBedrock extends Plugin {
      * @return The string colored, translated, and placeholders replaced.
      */
     default String translate(Message message, Object... placeholders) {
-        return ChatColor.translateAlternateColorCodes('&', message.translate(placeholders));
+        return translate(message.translate(placeholders));
     }
-    
+
+    default String pluginTranslate(String message) {
+        return translate("&7[&aBukkitBedrock&7]&r " + message);
+    }
+
+    default String pluginTranslate(String message, Object... placeholders) {
+        return pluginTranslate(translate(message, placeholders));
+    }
+
     /**
      * Get a translated string colored and formatted
      * @param message The message to translate
@@ -212,7 +235,7 @@ public interface IBedrock extends Plugin {
      * @return The string colored, translated, formatted, and placeholders replaced.
      */
     default String pluginTranslate(Message message, Object... placeholders) {
-        return ChatColor.translateAlternateColorCodes('&', "&7[&aBukkitBedrock&7]&r " + message.translate(placeholders));
+        return pluginTranslate(message.translate(placeholders));
     }
     
     /**

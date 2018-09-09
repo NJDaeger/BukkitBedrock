@@ -18,7 +18,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.logging.Level;
 
 public final class Bedrock {
     
@@ -47,7 +46,11 @@ public final class Bedrock {
     public static List<IUser> getUsers() {
         return bedrock.getUsers();
     }
-    
+
+    public static String translate(String message) {
+        return bedrock.translate(message);
+    }
+
     public static String translate(String string, Object... placeholders) {
         return bedrock.translate(string, placeholders);
     }
@@ -63,9 +66,9 @@ public final class Bedrock {
     public static MessageFile getMessageFile() {
         return bedrock.getMessageFile();
     }
-    
-    public static void debug(String message) {
-        if (getSettings().debug()) getBedrock().getLogger().log(Level.FINE, message);
+
+    public static void debug(Object object) {
+        if (getSettings().isDebugMode()) bedrock.getLogger().info("[DEBUG] " + object.toString());
     }
     
     public static void warn(String message) {

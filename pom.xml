@@ -84,6 +84,13 @@
                 </includes>
             </resource>
             <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>config.yml</include>
+                </includes>
+            </resource>
+            <resource>
                 <directory>src/main/messages</directory>
                 <filtering>false</filtering>
                 <targetPath>lang/</targetPath>

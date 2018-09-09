@@ -25,7 +25,7 @@ public class MessageFile extends Configuration {
     /**
      * Reloads the messages map
      */
-    public void reloadMap() {
+    public void reloadMessages() {
         messages.clear();
         List<String> missing = new ArrayList<>();
 

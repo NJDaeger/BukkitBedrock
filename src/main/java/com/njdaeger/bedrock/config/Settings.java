@@ -2,24 +2,59 @@ package com.njdaeger.bedrock.config;
 
 import com.njdaeger.bcm.Configuration;
 import com.njdaeger.bcm.base.ConfigType;
+import com.njdaeger.bcm.base.ISection;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.config.ISettings;
 
+import java.util.function.BiFunction;
+
+import static com.njdaeger.bedrock.api.Bedrock.debug;
 import static com.njdaeger.bedrock.config.Settings.Setting.*;
 
 public class Settings extends Configuration implements ISettings {
 
     private static final String NONE = "%none%";
-    private final transient boolean debug;
-    private final transient String langFile;
+
+    private transient boolean hasGamemodeSpecificPerms;
+    private transient boolean hasAfkAwayMessage;
+    private transient boolean hasAfkBackMessage;
+    private transient boolean hasAfkAwayMoreInfoMessage;
+    private transient boolean isAfkMoreInfoEnabled;
+    private transient String afkAwayMoreInfoFormat;
+    private transient String afkAwayFormat;
+    private transient String afkBackFormat;
+    private transient String langFile;
+    private transient boolean debug;
     
     public Settings(IBedrock plugin) {
         super(plugin, ConfigType.YML, "config");
+    }
 
-        this.langFile = (String)LANG_FILE.get();
-        this.debug = (boolean)DEBUG.get();
+    @Override
+    public void reloadSettings() {
+        this.langFile = LANG_FILE.getString();
+        this.debug = DEBUG.getBoolean();
 
+        //afk more info options
+        this.isAfkMoreInfoEnabled = AFK_MORE_INFO.getBoolean();
+        this.hasAfkAwayMoreInfoMessage = isAfkMoreInfoEnabled && (AFK_AWAY_MORE_INFO_MESSAGE.get() == null || !AFK_AWAY_MORE_INFO_MESSAGE.get().equals(NONE));
+        this.afkAwayMoreInfoFormat = hasAfkAwayMoreInfoMessage ? AFK_AWAY_MORE_INFO_MESSAGE.getString() : null;
+        debug("AFK More Info Enabled: " + isAfkMoreInfoEnabled);
+        debug("AFK More Info Format: " + (hasAfkAwayMoreInfoMessage ? "custom" : "default"));
+
+        //afk back options
+        this.hasAfkBackMessage = AFK_BACK_MESSAGE.get() == null || AFK_BACK_MESSAGE.get().equals(NONE);
+        this.afkBackFormat = hasAfkBackMessage ? AFK_BACK_MESSAGE.getString() : null;
+        debug("AFK Back Message: " + hasAfkBackMessage);
+
+        //afk away options
+        this.hasAfkAwayMessage = AFK_AWAY_MESSAGE.get() == null || AFK_AWAY_MESSAGE.get().equals(NONE);
+        this.afkAwayFormat = hasAfkAwayMessage ? AFK_AWAY_MESSAGE.getString() : null;
+        debug("AFK Away Message: " + hasAfkAwayMessage);
+
+        this.hasGamemodeSpecificPerms = GAMEMODE_SPECIFIC_PERMISSIONS.getBoolean();
+        debug("Gamemode Specific Perms: " + hasGamemodeSpecificPerms);
 
     }
 
@@ -34,54 +69,90 @@ public class Settings extends Configuration implements ISettings {
     }
 
     @Override
-    public String getAfkJoinFormat() {
-        return null;
+    public String getAfkAwayFormat() {
+        return afkAwayFormat;
     }
 
     @Override
-    public boolean hasAfkJoinMessage() {
-        return AFK_JOIN_MESSAGE.get() != null && !AFK_JOIN_MESSAGE.get().equals(NONE);
+    public boolean hasAfkAwayMessage() {
+        return hasAfkAwayMessage;
     }
 
     @Override
-    public String getAfkLeaveMessage() {
-        return null;
+    public String getAfkBackMessage() {
+        return afkBackFormat;
     }
 
     @Override
-    public boolean hasAfkLeaveMessage() {
-        return AFK_LEAVE_MESSAGE.get() != null && !AFK_LEAVE_MESSAGE.get().equals(NONE);
+    public boolean hasAfkBackMessage() {
+        return hasAfkBackMessage;
+    }
+
+    @Override
+    public String getAfkAwayMoreInfoMessage() {
+        return afkAwayMoreInfoFormat;
+    }
+
+    @Override
+    public boolean hasAfkAwayMoreInfoMessage() {
+        return hasAfkAwayMoreInfoMessage;
     }
 
     @Override
     public boolean isAfkMoreInfoEnabled() {
-        return false;
+        return isAfkMoreInfoEnabled;
     }
 
-    //Any settings which dont have a default value means the setting can be commented out.
+    @Override
+    public boolean hasGamemodeSpecificPermissions() {
+        return hasGamemodeSpecificPerms;
+    }
+
     enum Setting {
 
-        AFK_LEAVE_MESSAGE("afk.leave-message"),
-        AFK_JOIN_MESSAGE("afk.join-message"),
+        AFK_MORE_INFO("afk.allow-more-info", false),
+        AFK_BACK_MESSAGE("afk.back-format"),
+        AFK_AWAY_MESSAGE("afk.away-format"),
+        AFK_AWAY_MORE_INFO_MESSAGE("afk.away-more-info-format"),
+
+        GAMEMODE_SPECIFIC_PERMISSIONS("gamemode.gamemode-specific-permissions", true),
+
         DEBUG("debug", false),
         LANG_FILE("language-file", "messages-en-us");
 
         private final String key;
         private final Object defVal;
 
-        Setting(String key, Object... defVal) {
+        Setting(String key) {
+            this.key = key;
+            this.defVal = null;
+        }
+
+        Setting(String key, Object defVal) {
             this.key = key;
             this.defVal = defVal;
         }
 
-        private Object getDefault() {
-            return defVal;
+        private <T> T get(BiFunction<ISettings, String, T> function) {
+            ISettings settings = Bedrock.getSettings();
+            if (settings.contains(key)) {
+                return function.apply(settings, key);
+            }
+            return (T)defVal;
         }
 
         private Object get() {
-            Object val =  Bedrock.getSettings().getValue(key);
-            return val == null ? defVal : val;
+            return get(ISection::getValue);
         }
+
+        private String getString() {
+            return get(ISettings::getString);
+        }
+
+        private boolean getBoolean() {
+            return get(ISection::getBoolean);
+        }
+
 
     }
 

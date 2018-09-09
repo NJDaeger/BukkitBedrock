@@ -9,14 +9,19 @@ import com.njdaeger.bedrock.api.command.CommandContext;
 import com.njdaeger.bedrock.api.command.TabContext;
 import com.njdaeger.bedrock.api.command.exceptions.BedrockException;
 import com.njdaeger.bedrock.api.command.exceptions.UnknownGamemodeException;
+import com.njdaeger.bedrock.api.config.ISettings;
 import com.njdaeger.bedrock.api.user.IUser;
+import org.bukkit.Location;
 
 import java.util.stream.Stream;
 
-import static com.njdaeger.bedrock.api.lang.Message.*;
+import static com.njdaeger.bedrock.api.Bedrock.translate;
 import static com.njdaeger.bedrock.api.Permission.*;
+import static com.njdaeger.bedrock.api.lang.Message.*;
 
 public final class BasicCommands {
+
+    private final ISettings settings = Bedrock.getBedrock().getSettings();
 
     public BasicCommands() {
         BedrockBuilder.builder("afk")
@@ -105,15 +110,30 @@ public final class BasicCommands {
      */
     private void afk(CommandContext context) {
 
-        String message = Bedrock.translate(AFK_AWAY_MESSAGE, context.getDisplayName());
+        Location location = context.getLocation();
+        String message = AFK_AWAY_MESSAGE.translate(
+                context.getName(),
+                context.getDisplayName(),
+                location.getBlockX(),
+                location.getBlockY(),
+                location.getBlockZ(),
+                location.getWorld().getName());
 
-        if (context.hasArgs()) {
-            if (context.hasPermission(COMMAND_AFK_MESSAGE)) {
-                message = Bedrock.translate(AFK_AWAY_MESSAGE_MOREINFO, context.getDisplayName(), context.joinArgs());
-            }
+        boolean hasReason = context.hasArgs() && settings.isAfkMoreInfoEnabled() && context.hasPermission(COMMAND_AFK_MESSAGE);
+
+        if (hasReason) {
+            message = AFK_AWAY_MESSAGE_MOREINFO.translate(
+                    context.getName(),
+                    context.getDisplayName(),
+                    location.getBlockX(),
+                    location.getBlockY(),
+                    location.getBlockZ(),
+                    location.getWorld().getName(),
+                    context.joinArgs());
+
         }
         if (!context.asUser().isAfk()) {
-            context.asUser().setAfk(true, message);
+            context.asUser().setAfk(true, hasReason, translate(message));
         }
     }
 
@@ -192,13 +212,13 @@ public final class BasicCommands {
 
         Gamemode mode = context.gamemodeAt(0);
         if (mode == null) throw new UnknownGamemodeException(context.argAt(0));
-        if (!context.hasPermission(mode.getPermission())) context.noPermission(mode.getPermission());
+        if (settings.hasGamemodeSpecificPermissions() && !context.hasPermission(mode.getPermission())) context.noPermission(mode.getPermission());
 
         user.setGamemode(mode);
 
         if (context.isLength(2)) {
-            user.pluginMessage(GAMEMODE_OTHER_RECEIVER, context.getDisplayName(), mode.getNicename());
-            context.pluginMessage(GAMEMODE_OTHER_SENDER, user.getDisplayName(), mode.getNicename());
+            user.pluginMessage(GAMEMODE_OTHER_RECEIVER, context.getName(), context.getDisplayName(), mode.getNicename());
+            context.pluginMessage(GAMEMODE_OTHER_SENDER, user.getName(), user.getDisplayName(), mode.getNicename());
         } else context.pluginMessage(GAMEMODE_SELF, mode.getNicename());
 
 
@@ -219,8 +239,8 @@ public final class BasicCommands {
         if (mode == null) throw new UnknownGamemodeException(context.argAt(0));
 
         user.setGamemode(mode);
-        user.pluginMessage(GAMEMODE_OTHER_RECEIVER, context.getDisplayName(), mode.getNicename());
-        context.pluginMessage(GAMEMODE_OTHER_SENDER, user.getDisplayName(), mode.getNicename());
+        user.pluginMessage(GAMEMODE_OTHER_RECEIVER, context.getName(), context.getDisplayName(), mode.getNicename());
+        context.pluginMessage(GAMEMODE_OTHER_SENDER, user.getName(), user.getDisplayName(), mode.getNicename());
     }
 
     /**
@@ -229,7 +249,12 @@ public final class BasicCommands {
      * @param context tab context
      */
     private void gamemodeTab(TabContext context) {
-        context.completionAt(0, Stream.of(Gamemode.values()).map(Gamemode::getNicename).toArray(String[]::new));
+        String[] gamemodes =
+                settings.hasGamemodeSpecificPermissions() ?
+                        Stream.of(Gamemode.values()).filter(g -> context.hasPermission(g.getPermission())).map(Gamemode::getNicename).toArray(String[]::new) :
+                        Stream.of(Gamemode.values()).map(Gamemode::getNicename).toArray(String[]::new);
+
+        context.completionAt(0, gamemodes);
         context.playerCompletionIf(c -> c.hasPermission(COMMAND_GAMEMODE_OTHER) && c.isLength(1));
     }
 }

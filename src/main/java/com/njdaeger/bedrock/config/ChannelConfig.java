@@ -36,7 +36,7 @@ public class ChannelConfig extends Configuration {
             Close whenToClose = channel.getValueAs("close", Close.class);
             Display type = channel.getValueAs("display", Display.class);
             
-            channels.add(new Channel(channel.getName(), prefix, type, permission, (format == null ? bedrock.getSettings().getDefaultChannelFormat() : format), whenToClose, true));
+            //channels.add(new Channel(channel.getName(), prefix, type, permission, (format == null ? bedrock.getSettings().getDefaultChannelFormat() : format), whenToClose, true));
         }
     }
     

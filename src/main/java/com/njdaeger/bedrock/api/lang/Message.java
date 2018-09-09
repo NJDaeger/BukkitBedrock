@@ -2,35 +2,36 @@ package com.njdaeger.bedrock.api.lang;
 
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.IBedrock;
+import com.njdaeger.bedrock.api.config.ISettings;
 
 import java.util.function.Function;
 
 public enum Message {
     
     /**
-     * {0} - The thing that isnt a number
+     * GIVEN - What input was given
      */
     ERROR_NOT_A_NUMBER("errors.notANumber", "GIVEN"),
     /**
-     * {0} - Array of permissions
+     * PERMISSIONS - List of permissions this user needs
      */
     ERROR_NO_PERMISSION("errors.noPermission", "PERMISSIONS"),
     /**
-     * {0} - Minimum<p>
-     * {1} - Given
+     * MINIMUM - Minimum args allowed<p>
+     * GIVEN - Amount given
      */
     ERROR_NOT_ENOUGH_ARGS("errors.notEnoughArgs", "MINIMUM", "GIVEN"),
     /**
-     * {0} - Maximum<p>
-     * {1} - Given
+     * MAXIMUM - Maximum args allowed<p>
+     * GIVEN - Amount given
      */
     ERROR_TOO_MANY_ARGS("errors.tooManyArgs", "MAXIMUM", "GIVEN"),
     /**
-     * {0} - Array of allowed senders
+     * SENDERS - List of allowed senders
      */
     ERROR_INCORRECT_SENDER("errors.incorrectSender", "SENDERS"),
     /**
-     * {0} - The user that was trying to be found
+     * USER - The user that was trying to be found
      */
     ERROR_USER_NOT_FOUND("errors.userNotFound", "USER"),
     
@@ -115,18 +116,33 @@ public enum Message {
      */
     AFK_USAGE("afk.commandUsage"),
     /**
-     * {0} - User going afk
+     * USERNAME - The users name<p>
+     * DISPLAYNAME - The users display name<p>
+     * BLOCKX - The users x pos<p>
+     * BLOCKY - The users y pos<p>
+     * BLOCKZ - The users z pos<p>
+     * WORLD - The users world name
      */
-    AFK_AWAY_MESSAGE("afk.awayMessage"),
+    AFK_AWAY_MESSAGE("afk.awayMessage", ISettings::getAfkAwayFormat, "USERNAME", "DISPLAYNAME", "BLOCKX", "BLOCKY", "BLOCKZ", "WORLD"),
     /**
-     * {0} - User coming back
+     * USERNAME - The users name<p>
+     * DISPLAYNAME - The users display name<p>
+     * BLOCKX - The users x pos<p>
+     * BLOCKY - The users y pos<p>
+     * BLOCKZ - The users z pos<p>
+     * WORLD - The users world name
      */
-    AFK_BACK_MESSAGE("afk.backMessage"),
+    AFK_BACK_MESSAGE("afk.backMessage", ISettings::getAfkBackMessage, "USERNAME", "DISPLAYNAME", "BLOCKX", "BLOCKY", "BLOCKZ", "WORLD"),
     /**
-     * {0} - User going afk <p>
-     * {1} - The user's reasoning to going afk
+     * USERNAME - The users name<p>
+     * DISPLAYNAME - The users display name<p>
+     * BLOCKX - The users x pos<p>
+     * BLOCKY - The users y pos<p>
+     * BLOCKZ - The users z pos<p>
+     * WORLD - The users world name<p>
+     * REASON - Reason for going afk
      */
-    AFK_AWAY_MESSAGE_MOREINFO("afk.messageMoreInfo"),
+    AFK_AWAY_MESSAGE_MOREINFO("afk.awayMessageMoreInfo", ISettings::getAfkAwayMoreInfoMessage, "USERNAME", "DISPLAYNAME", "BLOCKX", "BLOCKY", "BLOCKZ", "WORLD", "REASON"),
     
     /**
      * No placeholders
@@ -152,29 +168,31 @@ public enum Message {
     /**
      * No placeholders
      */
-    GAMEMODE_DESC("gamemodeCommandDesc"),
+    GAMEMODE_DESC("gamemode.commandDesc"),
     
     /**
      * No placeholders
      */
-    GAMEMODE_USAGE("gamemodeCommandUsage"),
+    GAMEMODE_USAGE("gamemode.commandUsage"),
     
     /**
-     * {0} - New gamemode
+     * GAMEMODE - New gamemode
      */
-    GAMEMODE_SELF("gamemodeSelfMessage"),
+    GAMEMODE_SELF("gamemode.changeSelf", "GAMEMODE"),
     
     /**
-     * {0} - User running command<p>
-     * {1} - New gamemode
+     * USERNAME - The sender username
+     * DISPLAYNAME - The sender displayname
+     * GAMEMODE - The new gamemode
      */
-    GAMEMODE_OTHER_RECEIVER("gamemodeOtherReceiver"),
+    GAMEMODE_OTHER_RECEIVER("gamemode.changeOtherReceiver", "USERNAME", "DISPLAYNAME", "GAMEMODE"),
     
     /**
-     * {0} - User getting gamemode changed<p>
-     * {1} - New gamemode
+     * USERNAME - The recipients username
+     * DISPLAYNAME - The recipients displayname
+     * GAMEMODE - The new gamemode
      */
-    GAMEMODE_OTHER_SENDER("gamemodeOtherSender"),
+    GAMEMODE_OTHER_SENDER("gamemode.changeOtherSender", "USERNAME", "DISPLAYNAME", "GAMEMODE"),
     
     /**
      * No placeholders
@@ -558,9 +576,9 @@ public enum Message {
 
     private final String key;
     private final String[] placeholders;
-    private final Function<IBedrock, String> alternate;
+    private final Function<ISettings, String> alternate;
 
-    Message(String key, Function<IBedrock, String> alternate, String... placeholders) {
+    Message(String key, Function<ISettings, String> alternate, String... placeholders) {
         this.key = key;
         this.alternate = alternate;
         this.placeholders = placeholders;
@@ -576,14 +594,10 @@ public enum Message {
         return key;
     }
 
-    public String[] getPlaceholders() {
-        return placeholders;
-    }
-
     String format() {
         String message = null;
         if (alternate != null) {
-            message = alternate.apply(Bedrock.getBedrock());
+            message = alternate.apply(Bedrock.getSettings());
         }
         if (message == null) {
             if (Bedrock.getMessageFile().contains(getKey(), true)) {
@@ -593,7 +607,7 @@ public enum Message {
         }
         if (placeholders != null) {
             for (int i = 0; i < placeholders.length; i++) {
-                message = message.replace(placeholders[i], "{" + i + "}");
+                message = message.replace("{" + placeholders[i] + "}", "{" + i + "}");
             }
         }
         return message;
