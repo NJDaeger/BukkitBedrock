@@ -181,8 +181,8 @@ public enum Message {
     GAMEMODE_SELF("gamemode.changeSelf", "GAMEMODE"),
     
     /**
-     * USERNAME - The sender username
-     * DISPLAYNAME - The sender displayname
+     * USERNAME - The name of the command sender
+     * DISPLAYNAME - The display name of the command sender
      * GAMEMODE - The new gamemode
      */
     GAMEMODE_OTHER_RECEIVER("gamemode.changeOtherReceiver", "USERNAME", "DISPLAYNAME", "GAMEMODE"),
@@ -205,24 +205,26 @@ public enum Message {
     SPEED_USAGE("speedCommandUsage"),
     
     /**
-     * {0} - Type of speed<p>
-     * {1} - New speed
+     * SPEEDTYPE - The speed type being set<p>
+     * SPEED - The speed which was set
      */
-    SPEED_SELF("speedSelfMessage"),
+    SPEED_SELF("speedSelfMessage", "SPEEDTYPE", "SPEED"),
     
     /**
-     * {0} - User running command<p>
-     * {1} - Type of speed<p>
-     * {2} - New speed
+     * USERNAME - The name of the command sender<p>
+     * DISPLAYNAME - The display name of the command sender<p>
+     * SPEEDTYPE - The speed type being set<p>
+     * SPEED - The speed which was set
      */
-    SPEED_OTHER_RECEIVER("speedOtherReceiver"),
+    SPEED_OTHER_RECEIVER("speedOtherReceiver", "USERNAME", "DISPLAYNAME", "SPEEDTYPE", "SPEED"),
     
     /**
-     * {0} - User being affected<p>
-     * {1} - Type of speed<p>
-     * {2} - New speed
+     * USERNAME - The name of the recipient<p>
+     * DISPLAYNAME - The display name of the recipient<p>
+     * SPEEDTYPE - The speed type being set<p>
+     * SPEED - The speed which was set
      */
-    SPEED_OTHER_SENDER("speedOtherSender"),
+    SPEED_OTHER_SENDER("speedOtherSender", "USERNAME", "DISPLAYNAME", "SPEEDTYPE", "SPEED"),
     
     /**
      * No placeholders

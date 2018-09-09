@@ -2,12 +2,12 @@ package com.njdaeger.bedrock.api;
 
 public enum SpeedType {
     
-    FLYING("Flying"),
-    WALKING("Walking");
+    FLYING("Flying", Permission.COMMAND_SPEED_FLY),
+    WALKING("Walking", Permission.COMMAND_SPEED_WALK);
     
     private String niceName;
     
-    SpeedType(String nicename) {
+    SpeedType(String nicename, Permission permission) {
         this.niceName = nicename;
     }
     

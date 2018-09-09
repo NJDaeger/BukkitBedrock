@@ -16,6 +16,10 @@ public class Settings extends Configuration implements ISettings {
 
     private static final String NONE = "%none%";
 
+    private transient boolean hasSpeedSpecificPerms;
+    private transient boolean hasMaxSpeedBypass;
+    private transient float maxWalkSpeed;
+    private transient float maxFlySpeed;
     private transient boolean hasGamemodeSpecificPerms;
     private transient boolean hasAfkAwayMessage;
     private transient boolean hasAfkBackMessage;
@@ -55,6 +59,11 @@ public class Settings extends Configuration implements ISettings {
 
         this.hasGamemodeSpecificPerms = GAMEMODE_SPECIFIC_PERMISSIONS.getBoolean();
         debug("Gamemode Specific Perms: " + hasGamemodeSpecificPerms);
+
+        this.hasSpeedSpecificPerms = SPEED_SPECIFIC_PERMISSIONS.getBoolean();
+        this.hasMaxSpeedBypass = SPEED_BYPASS_MAX_PERMISSION.getBoolean();
+        this.maxWalkSpeed = SPEED_MAX_WALK.getFloat();
+        this.maxFlySpeed = SPEED_MAX_FLY.getFloat();
 
     }
 
@@ -108,6 +117,26 @@ public class Settings extends Configuration implements ISettings {
         return hasGamemodeSpecificPerms;
     }
 
+    @Override
+    public boolean hasSpeedSpecificPermissions() {
+        return false;
+    }
+
+    @Override
+    public boolean hasMaxSpeedBypass() {
+        return false;
+    }
+
+    @Override
+    public float getMaxWalkSpeed() {
+        return 0;
+    }
+
+    @Override
+    public float getMaxFlySpeed() {
+        return 0;
+    }
+
     enum Setting {
 
         AFK_MORE_INFO("afk.allow-more-info", false),
@@ -116,6 +145,11 @@ public class Settings extends Configuration implements ISettings {
         AFK_AWAY_MORE_INFO_MESSAGE("afk.away-more-info-format"),
 
         GAMEMODE_SPECIFIC_PERMISSIONS("gamemode.gamemode-specific-permissions", true),
+
+        SPEED_SPECIFIC_PERMISSIONS("speed.speed-type-permissions", true),
+        SPEED_BYPASS_MAX_PERMISSION("speed.allow-max-speed-bypass-permission", false),
+        SPEED_MAX_WALK("speed.max-walk-speed", 10.),
+        SPEED_MAX_FLY("speed.max-fly-speed", 10.),
 
         DEBUG("debug", false),
         LANG_FILE("language-file", "messages-en-us");
@@ -145,12 +179,16 @@ public class Settings extends Configuration implements ISettings {
             return get(ISection::getValue);
         }
 
+        private Float getFloat() {
+            return get(ISettings::getFloat);
+        }
+
         private String getString() {
             return get(ISettings::getString);
         }
 
         private boolean getBoolean() {
-            return get(ISection::getBoolean);
+            return get(ISettings::getBoolean);
         }
 
 

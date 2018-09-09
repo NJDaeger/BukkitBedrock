@@ -1,13 +1,12 @@
 package com.njdaeger.bedrock.api.user;
 
-import com.njdaeger.bci.Utils;
 import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.IBedrock;
-import com.njdaeger.bedrock.api.lang.Message;
 import com.njdaeger.bedrock.api.Permission;
 import com.njdaeger.bedrock.api.SpeedType;
 import com.njdaeger.bedrock.api.chat.IChannel;
 import com.njdaeger.bedrock.api.config.IHome;
+import com.njdaeger.bedrock.api.lang.Message;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -134,13 +133,13 @@ public interface IUser {
      * @param type The type of speed to set
      * @param speed The speed [0-10]
      */
-    void setSpeed(SpeedType type, double speed);
+    void setSpeed(SpeedType type, float speed);
     
     /**
      * Set the users speed according to whether they're flying or walking
      * @param speed The speed to set [0-10]
      */
-    void setSpeed(double speed);
+    void setSpeed(float speed);
     
     /**
      * Get whether the user is flying or walking
@@ -152,13 +151,13 @@ public interface IUser {
      * Get the users fly speed
      * @return The users fly speed
      */
-    double getFlySpeed();
+    float getFlySpeed();
     
     /**
      * Get the users walk speed
      * @return The users walk speed
      */
-    double getWalkSpeed();
+    float getWalkSpeed();
     
     /**
      * Get the users last location

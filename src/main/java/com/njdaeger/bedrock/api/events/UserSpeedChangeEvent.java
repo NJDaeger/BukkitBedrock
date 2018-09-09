@@ -9,20 +9,20 @@ import org.bukkit.event.HandlerList;
 public class UserSpeedChangeEvent extends Event implements Cancellable {
     
     private static final HandlerList handlerList = new HandlerList();
-    private final double previous;
+    private final float previous;
     private final IUser user;
     private boolean cancel;
     private SpeedType type;
-    private double speed;
+    private float speed;
     
-    public UserSpeedChangeEvent(IUser user, double speed, double previous, SpeedType type) {
+    public UserSpeedChangeEvent(IUser user, float speed, float previous, SpeedType type) {
         this.user = user;
         this.type = type;
         this.speed = speed;
         this.previous = previous;
     }
     
-    public double getPrevious() {
+    public float getOldSpeed() {
         return previous;
     }
     
@@ -30,11 +30,11 @@ public class UserSpeedChangeEvent extends Event implements Cancellable {
         return user;
     }
     
-    public double getNewSpeed() {
+    public float getNewSpeed() {
         return speed;
     }
     
-    public void setNewSpeed(double newSpeed) {
+    public void setNewSpeed(float newSpeed) {
         if (newSpeed > 10) newSpeed = 10;
         if (newSpeed < 0) newSpeed = 0;
         this.speed = newSpeed;

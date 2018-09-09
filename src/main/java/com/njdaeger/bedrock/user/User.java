@@ -31,8 +31,8 @@ import static com.njdaeger.bedrock.user.UserPath.*;
 public class User implements IUser {
     
     private boolean afk;
-    private double flySpeed;
-    private double walkSpeed;
+    private float flySpeed;
+    private float walkSpeed;
     private final String name;
     private boolean infoBoard;
     private Gamemode gamemode;
@@ -92,7 +92,7 @@ public class User implements IUser {
     }
     
     @Override
-    public void setSpeed(SpeedType type, double speed) {
+    public void setSpeed(SpeedType type, float speed) {
     
         UserSpeedChangeEvent event = new UserSpeedChangeEvent(this, speed, (type == SpeedType.FLYING ? getFlySpeed() : getWalkSpeed()), type);
         Bukkit.getPluginManager().callEvent(event);
@@ -113,7 +113,7 @@ public class User implements IUser {
     }
     
     @Override
-    public void setSpeed(double speed) {
+    public void setSpeed(float speed) {
         setSpeed(getMovementType(), speed);
     }
     
@@ -123,12 +123,12 @@ public class User implements IUser {
     }
     
     @Override
-    public double getFlySpeed() {
+    public float getFlySpeed() {
         return flySpeed;
     }
     
     @Override
-    public double getWalkSpeed() {
+    public float getWalkSpeed() {
         return walkSpeed;
     }
     

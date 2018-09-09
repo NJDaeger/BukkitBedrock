@@ -4,6 +4,7 @@ import com.njdaeger.bci.SenderType;
 import com.njdaeger.bci.base.BCIException;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.Gamemode;
+import com.njdaeger.bedrock.api.SpeedType;
 import com.njdaeger.bedrock.api.command.BedrockBuilder;
 import com.njdaeger.bedrock.api.command.CommandContext;
 import com.njdaeger.bedrock.api.command.TabContext;
@@ -58,19 +59,20 @@ public final class BasicCommands {
                       .aliases("gmode", "gm")
                       .build()
                       .register();
+
+        BedrockBuilder.builder("speed")
+                      .senders(SenderType.PLAYER, SenderType.CONSOLE)
+                      .permission(COMMAND_SPEED, COMMAND_SPEED_OTHER)
+                      .description(SPEED_DESC)
+                      .usage(SPEED_USAGE)
+                      //.completer(this::speedTab)
+                      .executor(this::speed)
+                      .minArgs(1)
+                      .maxArgs(2)
+                      .aliases("walkspeed", "flyspeed")
+                      .build()
+                      .register();
         /*
-        BedrockCommand speedCommand = BedrockCommand.builder("speed")
-                .senders(SenderType.PLAYER, SenderType.CONSOLE)
-                .permission(COMMAND_SPEED, COMMAND_SPEED_OTHER)
-                .description(SPEED_DESC)
-                .usage(SPEED_USAGE)
-                .completer(this::speedTab)
-                .executor(this::speed)
-                .minArgs(1)
-                .maxArgs(2)
-                .aliases("walkspeed", "flyspeed")
-                .build();
-                
         BedrockCommand backCommand = BedrockCommand.builder("back")
                 .senders(SenderType.PLAYER)
                 .permission(COMMAND_BACK)
@@ -257,9 +259,53 @@ public final class BasicCommands {
         context.completionAt(0, gamemodes);
         context.playerCompletionIf(c -> c.hasPermission(COMMAND_GAMEMODE_OTHER) && c.isLength(1));
     }
+
+    private void speed(CommandContext context) throws BCIException {
+
+        float speed = context.floatAt(0, 1.F);
+
+        if (context.subCommand(SenderType.CONSOLE, this::speedConsole)) return;
+
+
+        IUser user;
+        if (context.isLength(1)) user = context.asUser();
+        if (!context.isUserAt(1)) context.noPermission();
+        else  user = context.userAt(1);
+
+        SpeedType type;
+        if (context.getAlias().equalsIgnoreCase("walkspeed")) type = SpeedType.WALKING;
+        else if (context.getAlias().equalsIgnoreCase("flyspeed")) type = SpeedType.FLYING;
+        else type = user.getMovementType();
+
+        user.setSpeed(type, speed);
+
+        if (context.isLength(1)) context.pluginMessage(SPEED_SELF, type.getNicename(), speed);
+        else {
+            context.pluginMessage(SPEED_OTHER_SENDER, user.getName(), user.getDisplayName(), type, speed);
+            user.pluginMessage(SPEED_OTHER_RECEIVER, context.getName(), context.getDisplayName(), type, speed);
+        }
+
+    }
+
+    private void speedConsole(CommandContext context) throws BedrockException {
+        if (context.isLength(1)) context.notEnoughArgs(2, 1);
+
+        float speed = context.floatAt(0, 1.F);
+
+        if (!context.isUserAt(1)) context.userNotFound(1);
+        IUser user = context.userAt(1);
+
+        SpeedType type;
+        if (context.getAlias().equalsIgnoreCase("walkspeed")) type = SpeedType.WALKING;
+        else if (context.getAlias().equalsIgnoreCase("flyspeed")) type = SpeedType.FLYING;
+        else type = user.getMovementType();
+
+        user.setSpeed(type, speed);
+    }
 }
+
     /*
-    private void speed(BedrockCommandContext context) {
+    private void speed1(CommandContext context) {
         
         IUser user;
         double speed;
@@ -339,7 +385,7 @@ public final class BasicCommands {
         
         user.setSpeed(type, Float.parseFloat(Double.toString(speed)));
     }
-    
+    /*
     private void speedTab(BedrockTabContext context) {
         context.completionAt(0, 0, 10);
         context.playerCompletion(1);

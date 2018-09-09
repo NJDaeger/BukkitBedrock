@@ -69,5 +69,28 @@ public interface ISettings extends IConfig {
      */
     boolean hasGamemodeSpecificPermissions();
 
-    
+    /**
+     * Check whether speed specific permissions are enabled.
+     * @return True if speed specific permissions, false otherwise.
+     */
+    boolean hasSpeedSpecificPermissions();
+
+    /**
+     * Whether the max speed bypass permission is enabled or not
+     * @return True if enabled, false otherwise
+     */
+    boolean hasMaxSpeedBypass();
+
+    /**
+     * Get the max walk speed
+     * @return The max walk speed
+     */
+    float getMaxWalkSpeed();
+
+    /**
+     * Get the max fly speed
+     * @return The max fly speed
+     */
+    float getMaxFlySpeed();
+
 }
