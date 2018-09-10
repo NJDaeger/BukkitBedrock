@@ -101,10 +101,10 @@ public class User implements IUser {
         
         type = event.getType();
         speed = event.getNewSpeed();
-        
+
         if (type == SpeedType.FLYING) {
             this.flySpeed = speed;
-            getBase().setFlySpeed(Float.parseFloat(Double.toString(speed/10)));
+            getBase().setFlySpeed(speed/10);
         } else {
             this.walkSpeed = speed;
             float walkSpeedF = Float.parseFloat(Double.toString(0.2 * Math.pow(speed, 0.69897)));

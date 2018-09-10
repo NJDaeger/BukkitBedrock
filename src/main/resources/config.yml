@@ -61,3 +61,77 @@ gamemode:
   ###
   ### Default is true.
   gamemode-specific-permissions: true
+
+### All settings related to the speed command
+speed:
+  ### Should each speed type have its own permissions? (walking/flying)
+  ###
+  ### If true, whenever a speed is set the user will be checked if they have the
+  ### permission to change that specific speed type
+  ###
+  ### Default is true
+  speed-type-permissions: true
+
+  ### Should users with this permission be able to bypass maximum speed restrictions?
+  ###
+  ### If true, users with this permission will be able to set their speed higher
+  ### than the set max speed
+  ###
+  ### Default is false
+  max-speed-bypass-permission: false
+
+  ### Should users with this permission be able to bypass minimum speed restrictions?
+  ###
+  ### If true, users with this permission will be able to set their speed lower
+  ### than the set min speed
+  ###
+  ### Default is false
+  min-speed-bypass-permission: false
+
+  ### What is the max walk speed we want users to have?
+  ###
+  ### A float between 0 and 10. This is the max walk speed able to be set.
+  ### If the amount being set is higher than this, it will be set to this value.
+  ###
+  ### Default is 10
+  max-walk-speed: 10.0
+
+  ### What is the min walk speed we want the users to have?
+  ###
+  ### A float between -10 and 10. This is the min walk speed able to be set.
+  ### If the amount being set is lower than this, it will be set to this value.
+  ###
+  ### Default is -10
+  min-walk-speed: -10
+
+  ### What is the max fly speed we want users to have?
+  ###
+  ### A float between 0 and 10. This is the max fly speed able to be set.
+  ### If the amount being set is higher than this, it will be set to this value.
+  ###
+  ### Default is 10
+  max-fly-speed: 10.0
+
+  ### What is the min fly speed we want the users to have?
+  ###
+  ### A float between -10 and 10. This is the min fly speed able to be set.
+  ### If the amount being set is lower than this, it will be set to this value.
+  ###
+  ### Default is -10
+  min-fly-speed: -10
+
+  ### Should the user be allowed to set their speed below 0?
+  ###
+  ### If true, users will be able to set their speed below 0.
+  ###
+  ### Default is true
+  allow-negative-speed: true
+
+  ### If negative speed is allowed, should the users be required to have
+  ### a specific permission in order to access it?
+  ###
+  ### If true, the users will be checked if hey have permission to set their
+  ### speed below 0.
+  ###
+  ### Default is true
+  negative-permission: true

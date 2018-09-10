@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 
 public interface IBedrock extends Plugin {
 
+    void reload();
+
     @Override
     default Logger getLogger() {
         return Logger.getLogger("Bedrock");

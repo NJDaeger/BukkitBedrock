@@ -176,5 +176,9 @@ public final class Bedrock {
     public static void closeChannel(IChannel channel) {
         bedrock.closeChannel(channel);
     }
-    
+
+    public static void reload() {
+        bedrock.reload();
+    }
+
 }

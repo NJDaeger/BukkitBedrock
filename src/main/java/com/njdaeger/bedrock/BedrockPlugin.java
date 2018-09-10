@@ -10,6 +10,7 @@ import com.njdaeger.bedrock.api.lang.MessageFile;
 import com.njdaeger.bedrock.commands.BasicCommands;
 import com.njdaeger.bedrock.commands.ChatCommands;
 import com.njdaeger.bedrock.commands.HomeCommands;
+import com.njdaeger.bedrock.commands.ServerCommands;
 import com.njdaeger.bedrock.config.ChannelConfig;
 import com.njdaeger.bedrock.config.Settings;
 import com.njdaeger.bedrock.listeners.PlayerListener;
@@ -67,17 +68,14 @@ public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
         new BasicCommands();
         new HomeCommands();
         new ChatCommands();
-        
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            userMap.addUser(player);
-        }
+        new ServerCommands();
+
+        loadPlayers();
     }
     
     @Override
     public void onDisable() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            userMap.removeUser(player);
-        }
+        unloadPlayers();
     }
 
     @Override
@@ -105,6 +103,14 @@ public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
         return this.channelConfig;
     }
 
+    @Override
+    public void reload() {
+        unloadPlayers();
+        settings.reloadSettings();
+        messageFile.reloadMessages();
+        loadPlayers();
+    }
+
     public CommandStore getCommandStore() {
         return commandStore;
     }
@@ -113,4 +119,17 @@ public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
     public UserMap getUserMap() {
         return userMap;
     }
+
+    private void unloadPlayers() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            userMap.removeUser(player);
+        }
+    }
+
+    private void loadPlayers() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            userMap.addUser(player);
+        }
+    }
+
 }

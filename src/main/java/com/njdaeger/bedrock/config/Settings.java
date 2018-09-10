@@ -16,8 +16,13 @@ public class Settings extends Configuration implements ISettings {
 
     private static final String NONE = "%none%";
 
+    private transient boolean allowNegativeSpeed;
+    private transient boolean hasNegativeSpeedPerm;
     private transient boolean hasSpeedSpecificPerms;
+    private transient boolean hasMinSpeedBypass;
     private transient boolean hasMaxSpeedBypass;
+    private transient float minWalkSpeed;
+    private transient float minFlySpeed;
     private transient float maxWalkSpeed;
     private transient float maxFlySpeed;
     private transient boolean hasGamemodeSpecificPerms;
@@ -30,7 +35,7 @@ public class Settings extends Configuration implements ISettings {
     private transient String afkBackFormat;
     private transient String langFile;
     private transient boolean debug;
-    
+
     public Settings(IBedrock plugin) {
         super(plugin, ConfigType.YML, "config");
     }
@@ -42,7 +47,9 @@ public class Settings extends Configuration implements ISettings {
 
         //afk more info options
         this.isAfkMoreInfoEnabled = AFK_MORE_INFO.getBoolean();
-        this.hasAfkAwayMoreInfoMessage = isAfkMoreInfoEnabled && (AFK_AWAY_MORE_INFO_MESSAGE.get() == null || !AFK_AWAY_MORE_INFO_MESSAGE.get().equals(NONE));
+        this.hasAfkAwayMoreInfoMessage = isAfkMoreInfoEnabled && (AFK_AWAY_MORE_INFO_MESSAGE.get() == null || !AFK_AWAY_MORE_INFO_MESSAGE
+                .get()
+                .equals(NONE));
         this.afkAwayMoreInfoFormat = hasAfkAwayMoreInfoMessage ? AFK_AWAY_MORE_INFO_MESSAGE.getString() : null;
         debug("AFK More Info Enabled: " + isAfkMoreInfoEnabled);
         debug("AFK More Info Format: " + (hasAfkAwayMoreInfoMessage ? "custom" : "default"));
@@ -60,6 +67,11 @@ public class Settings extends Configuration implements ISettings {
         this.hasGamemodeSpecificPerms = GAMEMODE_SPECIFIC_PERMISSIONS.getBoolean();
         debug("Gamemode Specific Perms: " + hasGamemodeSpecificPerms);
 
+        this.hasMinSpeedBypass = SPEED_BYPASS_MIN_PERMISSION.getBoolean();
+        this.minWalkSpeed = SPEED_MIN_WALK.getFloat();
+        this.minFlySpeed = SPEED_MIN_FLY.getFloat();
+        this.hasNegativeSpeedPerm = SPEED_NEGATIVE_PERMISSION.getBoolean();
+        this.allowNegativeSpeed = SPEED_ALLOW_NEGATIVE.getBoolean();
         this.hasSpeedSpecificPerms = SPEED_SPECIFIC_PERMISSIONS.getBoolean();
         this.hasMaxSpeedBypass = SPEED_BYPASS_MAX_PERMISSION.getBoolean();
         this.maxWalkSpeed = SPEED_MAX_WALK.getFloat();
@@ -71,7 +83,7 @@ public class Settings extends Configuration implements ISettings {
     public String getLang() {
         return langFile;
     }
-    
+
     @Override
     public boolean isDebugMode() {
         return debug;
@@ -119,22 +131,47 @@ public class Settings extends Configuration implements ISettings {
 
     @Override
     public boolean hasSpeedSpecificPermissions() {
-        return false;
+        return hasSpeedSpecificPerms;
     }
 
     @Override
     public boolean hasMaxSpeedBypass() {
-        return false;
+        return hasMaxSpeedBypass;
     }
 
     @Override
     public float getMaxWalkSpeed() {
-        return 0;
+        return maxWalkSpeed;
     }
 
     @Override
     public float getMaxFlySpeed() {
-        return 0;
+        return maxFlySpeed;
+    }
+
+    @Override
+    public boolean allowNegativeSpeed() {
+        return allowNegativeSpeed;
+    }
+
+    @Override
+    public boolean hasNegativeSpeedPermission() {
+        return hasNegativeSpeedPerm;
+    }
+
+    @Override
+    public boolean hasMinSpeedBypass() {
+        return hasMinSpeedBypass;
+    }
+
+    @Override
+    public float getMinWalkSpeed() {
+        return minWalkSpeed;
+    }
+
+    @Override
+    public float getMinFlySpeed() {
+        return minFlySpeed;
     }
 
     enum Setting {
@@ -146,10 +183,16 @@ public class Settings extends Configuration implements ISettings {
 
         GAMEMODE_SPECIFIC_PERMISSIONS("gamemode.gamemode-specific-permissions", true),
 
+
         SPEED_SPECIFIC_PERMISSIONS("speed.speed-type-permissions", true),
-        SPEED_BYPASS_MAX_PERMISSION("speed.allow-max-speed-bypass-permission", false),
-        SPEED_MAX_WALK("speed.max-walk-speed", 10.),
-        SPEED_MAX_FLY("speed.max-fly-speed", 10.),
+        SPEED_BYPASS_MAX_PERMISSION("speed.max-speed-bypass-permission", false),
+        SPEED_BYPASS_MIN_PERMISSION("speed.min-speed-bypass-permission", false),
+        SPEED_MAX_WALK("speed.max-walk-speed", 10.F),
+        SPEED_MIN_WALK("speed.min-walk-speed", -10.F),
+        SPEED_MAX_FLY("speed.max-fly-speed", 10.F),
+        SPEED_MIN_FLY("speed.min-fly-speed", -10.F),
+        SPEED_ALLOW_NEGATIVE("speed.allow-negative-speed", true),
+        SPEED_NEGATIVE_PERMISSION("speed.negative-permission", true),
 
         DEBUG("debug", false),
         LANG_FILE("language-file", "messages-en-us");

@@ -93,4 +93,33 @@ public interface ISettings extends IConfig {
      */
     float getMaxFlySpeed();
 
+    /**
+     * Whether to allow negative speed or not.
+     * @return True if enabled, false otherwise.
+     */
+    boolean allowNegativeSpeed();
+
+    /**
+     * Whether to require a permission to use negative speed
+     * @return True if enabled, false otherwise.
+     */
+    boolean hasNegativeSpeedPermission();
+
+    /**
+     * Whether the min speed bypass permission is enabled or not
+     * @return True if enabled, false otherwise
+     */
+    boolean hasMinSpeedBypass();
+
+    /**
+     * Gets the minimum walk speed allowed to be set
+     * @return The minimum walk speed
+     */
+    float getMinWalkSpeed();
+
+    /**
+     * Gets the minimum fly speed allowed to be set
+     * @return The minimum fly speed
+     */
+    float getMinFlySpeed();
 }

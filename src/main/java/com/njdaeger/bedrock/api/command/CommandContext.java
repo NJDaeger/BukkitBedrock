@@ -81,37 +81,37 @@ public class CommandContext extends AbstractCommandContext<CommandContext, TabCo
     }
     
     @Override
-    public void notEnoughArgs() throws BedrockException {
+    public final void notEnoughArgs() throws BedrockException {
         notEnoughArgs(command.getMinArgs(), getLength());
     }
 
-    public void notEnoughArgs(int minimum, int given) throws BedrockException {
+    public final void notEnoughArgs(int minimum, int given) throws BedrockException {
         throw new NotEnoughArgsException(minimum, given);
     }
 
     @Override
-    public void tooManyArgs() throws BedrockException {
+    public final void tooManyArgs() throws BedrockException {
         tooManyArgs(command.getMaxArgs(), getLength());
     }
 
-    public void tooManyArgs(int maximum, int given) throws BedrockException {
+    public final void tooManyArgs(int maximum, int given) throws BedrockException {
         throw new TooManyArgsException(maximum, given);
     }
 
-    public void userNotFound(String user) throws BedrockException {
+    public final void userNotFound(String user) throws BedrockException {
         throw new UserNotFoundException(user);
     }
     
-    public void userNotFound(int index) throws BedrockException {
-        userNotFound(argAt(index));
+    public final void userNotFound(int index) throws UserNotFoundException {
+        throw new UserNotFoundException(argAt(index));
     }
     
     @Override
-    public void noPermission() throws BedrockException {
+    public final void noPermission() throws BedrockException {
         throw new NoPermissionException(command.getPermissions());
     }
     
-    public void noPermission(Permission permission) throws BedrockException {
+    public final void noPermission(Permission permission) throws BedrockException {
         throw new NoPermissionException(permission.toString());
     }
     

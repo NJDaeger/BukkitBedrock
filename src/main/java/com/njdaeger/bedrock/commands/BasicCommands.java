@@ -262,23 +262,51 @@ public final class BasicCommands {
 
     private void speed(CommandContext context) throws BCIException {
 
-        float speed = context.floatAt(0, 1.F);
-
+        //Send the speed off to the console if the console is sending it.
         if (context.subCommand(SenderType.CONSOLE, this::speedConsole)) return;
 
+        //Get the speed from the command arguments
+        float speed = context.floatAt(0, 1.F);
 
-        IUser user;
+        //Doing the pre checks on the speed to keep it within bounds.
+        //If the speed is greater than 10 or less than -10 we need to set
+        //the speed to 10 (for greater than 10) or -10 (for less than 10)
+        speed = (speed > 10 || speed < -10 ? ((speed < -10) ? -10 : 10) : speed);
+
+        //Retrieving the user if possible. or throwing an error. that works too
+        IUser user = null;
         if (context.isLength(1)) user = context.asUser();
-        if (!context.isUserAt(1)) context.noPermission();
-        else  user = context.userAt(1);
+        else if (context.isUserAt(1)) user = context.userAt(1);
+        else context.userNotFound(1);
 
+        //Retrieving the speed type being set.
         SpeedType type;
         if (context.getAlias().equalsIgnoreCase("walkspeed")) type = SpeedType.WALKING;
         else if (context.getAlias().equalsIgnoreCase("flyspeed")) type = SpeedType.FLYING;
         else type = user.getMovementType();
 
-        user.setSpeed(type, speed);
+        //Check if the user has the permissions to change the specific speed types
+        if (settings.hasSpeedSpecificPermissions() && !context.hasPermission(type.getPermission())) context.noPermission(type.getPermission());
 
+        //negative speed checks
+        if (speed < 0) {
+
+            float min = type == SpeedType.FLYING ? settings.getMinFlySpeed() : settings.getMinWalkSpeed();
+
+            //Just set the speed to 0 if negatives arent allowed
+            if (!settings.allowNegativeSpeed()) speed = 0;
+            else if (settings.hasNegativeSpeedPermission() && !context.hasPermission(COMMAND_SPEED_NEGATIVE)) context.noPermission(COMMAND_SPEED_NEGATIVE);
+
+            //If the speed is below the minimum and the bypass is either not enabled or is enabled and the user doesnt have permission, set the speed to the min.
+            if ((speed < min) && (!settings.hasMinSpeedBypass() || (settings.hasMinSpeedBypass() && !context.hasPermission(COMMAND_SPEED_MIN_BYPASS)))) speed = min;
+
+        }
+
+        float max = type == SpeedType.FLYING ? settings.getMaxFlySpeed() : settings.getMaxWalkSpeed();
+
+        if (speed > max && (!settings.hasMaxSpeedBypass() || (settings.hasMaxSpeedBypass() && !context.hasPermission(COMMAND_SPEED_MAX_BYPASS)))) speed = max;
+
+        user.setSpeed(type, speed);
         if (context.isLength(1)) context.pluginMessage(SPEED_SELF, type.getNicename(), speed);
         else {
             context.pluginMessage(SPEED_OTHER_SENDER, user.getName(), user.getDisplayName(), type, speed);
@@ -301,6 +329,8 @@ public final class BasicCommands {
         else type = user.getMovementType();
 
         user.setSpeed(type, speed);
+        context.pluginMessage(SPEED_OTHER_SENDER, user.getName(), user.getDisplayName(), type, speed);
+        user.pluginMessage(SPEED_OTHER_RECEIVER, context.getName(), context.getDisplayName(), type, speed);
     }
 }
 
