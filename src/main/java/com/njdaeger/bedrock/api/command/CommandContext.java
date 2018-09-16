@@ -5,6 +5,7 @@ import com.njdaeger.bci.base.BCICommand;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.IBedrock;
+import com.njdaeger.bedrock.api.config.ISettings;
 import com.njdaeger.bedrock.api.lang.Message;
 import com.njdaeger.bedrock.api.Permission;
 import com.njdaeger.bedrock.api.command.exceptions.BedrockException;
@@ -63,7 +64,11 @@ public class CommandContext extends AbstractCommandContext<CommandContext, TabCo
     public IBedrock getPlugin() {
         return (IBedrock)plugin;
     }
-    
+
+    public ISettings getSettings() {
+        return getPlugin().getSettings();
+    }
+
     public boolean hasPermission(Permission permission) {
         return hasPermission(permission.toString());
     }

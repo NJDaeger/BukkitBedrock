@@ -1,7 +1,6 @@
 package com.njdaeger.bedrock.api.lang;
 
 import com.njdaeger.bedrock.api.Bedrock;
-import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.config.ISettings;
 
 import java.util.function.Function;
@@ -147,23 +146,25 @@ public enum Message {
     /**
      * No placeholders
      */
-    HEAL_DESC("healCommandDesc"),
+    HEAL_DESC("heal.commandDesc"),
     /**
      * No placeholders
      */
-    HEAL_USAGE("healCommandUsage"),
+    HEAL_USAGE("heal.commandUsage"),
     /**
      * No placeholders
      */
-    HEAL_SELF_MESSAGE("healSelfMessage"),
+    HEAL_SELF_MESSAGE("heal.selfHeal"),
     /**
-     * {0} - User healed
+     * USERNAME - The users name<p>
+     * DISPLAYNAME - The users display name
      */
-    HEAL_OTHER_MESSAGE_SENDER("healOtherSender"),
+    HEAL_OTHER_MESSAGE_SENDER("heal.otherSender"),
     /**
-     * {0} - The healer
+     * USERNAME - The users name<p>
+     * DISPLAYNAME - The users display name
      */
-    HEAL_OTHER_MESSAGE_RECEIVER("healOtherReceiver"),
+    HEAL_OTHER_MESSAGE_RECEIVER("heal.otherReceiver"),
     
     /**
      * No placeholders
@@ -181,15 +182,15 @@ public enum Message {
     GAMEMODE_SELF("gamemode.changeSelf", "GAMEMODE"),
     
     /**
-     * USERNAME - The name of the command sender
-     * DISPLAYNAME - The display name of the command sender
+     * USERNAME - The name of the command sender<p>
+     * DISPLAYNAME - The display name of the command sender<p>
      * GAMEMODE - The new gamemode
      */
     GAMEMODE_OTHER_RECEIVER("gamemode.changeOtherReceiver", "USERNAME", "DISPLAYNAME", "GAMEMODE"),
     
     /**
-     * USERNAME - The recipients username
-     * DISPLAYNAME - The recipients displayname
+     * USERNAME - The recipients username<p>
+     * DISPLAYNAME - The recipients displayname<p>
      * GAMEMODE - The new gamemode
      */
     GAMEMODE_OTHER_SENDER("gamemode.changeOtherSender", "USERNAME", "DISPLAYNAME", "GAMEMODE"),
@@ -197,18 +198,18 @@ public enum Message {
     /**
      * No placeholders
      */
-    SPEED_DESC("speedCommandDesc"),
+    SPEED_DESC("speed.commandDesc"),
     
     /**
      * No placeholders
      */
-    SPEED_USAGE("speedCommandUsage"),
+    SPEED_USAGE("speed.commandUsage"),
     
     /**
      * SPEEDTYPE - The speed type being set<p>
      * SPEED - The speed which was set
      */
-    SPEED_SELF("speedSelfMessage", "SPEEDTYPE", "SPEED"),
+    SPEED_SELF("speed.selfSpeed", "SPEEDTYPE", "SPEED"),
     
     /**
      * USERNAME - The name of the command sender<p>
@@ -216,7 +217,7 @@ public enum Message {
      * SPEEDTYPE - The speed type being set<p>
      * SPEED - The speed which was set
      */
-    SPEED_OTHER_RECEIVER("speedOtherReceiver", "USERNAME", "DISPLAYNAME", "SPEEDTYPE", "SPEED"),
+    SPEED_OTHER_RECEIVER("speed.otherReceiver", "USERNAME", "DISPLAYNAME", "SPEEDTYPE", "SPEED"),
     
     /**
      * USERNAME - The name of the recipient<p>
@@ -224,7 +225,7 @@ public enum Message {
      * SPEEDTYPE - The speed type being set<p>
      * SPEED - The speed which was set
      */
-    SPEED_OTHER_SENDER("speedOtherSender", "USERNAME", "DISPLAYNAME", "SPEEDTYPE", "SPEED"),
+    SPEED_OTHER_SENDER("speed.otherSender", "USERNAME", "DISPLAYNAME", "SPEEDTYPE", "SPEED"),
     
     /**
      * No placeholders
@@ -351,59 +352,76 @@ public enum Message {
     /**
      * No placeholders
      */
-    BACK_DESC("backDesc"),
+    BACK_DESC("back.commandDesc"),
     
     /**
      * No placeholders
      */
-    BACK_USAGE("backUsage"),
+    BACK_USAGE("back.commandUsage"),
+    
+    /**
+     * USERNAME - The user name of the user<p>
+     * DISPLAYNAME - The display name of the user<p>
+     * BLOCKX - The users block x position<p>
+     * BLOCKY - The users block y position<p>
+     * BLOCKZ - The users block z position<p>
+     * WORLD - The name of the world the user is in
+     */
+    BACK_MESSAGE("back.backMessage", "USERNAME", "DISPLAYNAME", "BLOCKX", "BLOCKY", "BLOCKZ", "WORLD"),
     
     /**
      * No placeholders
      */
-    BACK_MESSAGE("backMessage"),
+    NICK_DESC("nick.commandDesc"),
     
     /**
      * No placeholders
      */
-    NICK_DESC("nickDesc"),
+    NICK_USAGE("nick.commandUsage"),
     
     /**
-     * No placeholders
+     * OLDNICK - The users old nickname<p>
+     * NEWNICK - The users new nickname
      */
-    NICK_USAGE("nickUsage"),
+    NICK_SELF_MESSAGE("nick.selfNick", "OLDNICK", "NEWNICK"),
     
     /**
-     * {0} - New nickname
+     * OLDNICK - The old nickname<p>
+     * NEWNICK - The new nickname<p>
+     * USERNAME - The user name of the command sender<p>
+     * DISPLAYNAME - The display name of the command sender
      */
-    NICK_SELF_MESSAGE("nickSelf"),
+    NICK_OTHER_RECEIVER("nick.otherReceiver", "OLDNICK", "NEWNICK", "USERNAME", "DISPLAYNAME"),
     
     /**
-     * {0} - User changing nickname
-     * {1} - New nickname
+     * OLDNICK - The old nickname<p>
+     * NEWNICK - The new nickname<p>
+     * USERNAME - The user name of the receiver<p>
+     * DISPLAYNAME - The display name of the receiver
      */
-    NICK_OTHER_RECEIVER("nickOtherReceiver"),
+    NICK_OTHER_SENDER("nick.otherSender", "OLDNICK", "NEWNICK", "USERNAME", "DISPLAYNAME"),
     
     /**
-     * {0} - User whos nickname is being set
-     * {1} - New nickname
+     * OLDNICK - The old nickname<p>
+     * NEWNICK - The new nickname
      */
-    NICK_OTHER_SENDER("nickOtherSender"),
+    NICK_RESET_SELF("nick.selfReset", "OLDNICK", "NEWNICK"),
     
     /**
-     * No placeholders
+     * OLDNICK - The old nickname<p>
+     * NEWNICK - The new nickname<p>
+     * USERNAME - The user name of the command sender<p>
+     * DISPLAYNAME - The display name of the command sender
      */
-    NICK_RESET_SELF("nickResetSelf"),
+    NICK_RESET_OTHER_RECEIVER("nick.otherResetReceiver", "OLDNICK", "NEWNICK", "USERNAME", "DISPLAYNAME"),
     
     /**
-     * {0} - User who reset the user's nickname
+     * OLDNICK - The old nickname<p>
+     * NEWNICK - The new nickname<p>
+     * USERNAME - The user name of the receiver<p>
+     * DISPLAYNAME - The display name of the receiver
      */
-    NICK_RESET_OTHER_RECEIVER("nickResetOtherReceiver"),
-    
-    /**
-     * {0} - User whos nickname was reset
-     */
-    NICK_RESET_OTHER_SENDER("nickResetOtherSender"),
+    NICK_RESET_OTHER_SENDER("nick.otherOtherSender", "OLDNICK", "NEWNICK", "USERNAME", "DISPLAYNAME"),
     
     /**
      * No placeholders

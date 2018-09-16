@@ -12,7 +12,7 @@ import java.io.File;
 
 import static com.njdaeger.bedrock.user.UserPath.*;
 
-public class UserFile extends Configuration implements IUserFile {
+public final class UserFile extends Configuration implements IUserFile {
     
     public UserFile(IBedrock plugin, IUser user) {
         super(plugin, ConfigType.YML,"users" + File.separator + user.getId().toString() + File.separator + "data");

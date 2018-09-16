@@ -51,6 +51,7 @@ public class Settings extends Configuration implements ISettings {
                 .get()
                 .equals(NONE));
         this.afkAwayMoreInfoFormat = hasAfkAwayMoreInfoMessage ? AFK_AWAY_MORE_INFO_MESSAGE.getString() : null;
+        System.out.println(afkAwayMoreInfoFormat);
         debug("AFK More Info Enabled: " + isAfkMoreInfoEnabled);
         debug("AFK More Info Format: " + (hasAfkAwayMoreInfoMessage ? "custom" : "default"));
 

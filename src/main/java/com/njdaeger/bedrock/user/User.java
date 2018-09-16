@@ -28,7 +28,7 @@ import java.util.UUID;
 import static com.njdaeger.bedrock.api.Bedrock.debug;
 import static com.njdaeger.bedrock.user.UserPath.*;
 
-public class User implements IUser {
+public final class User implements IUser {
     
     private boolean afk;
     private float flySpeed;

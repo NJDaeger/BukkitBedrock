@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class UserMap implements Iterable<IUser> {
+public final class UserMap implements Iterable<IUser> {
     
     private final Map<String, IUser> users;
     private final IBedrock bedrock;

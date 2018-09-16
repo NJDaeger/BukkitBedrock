@@ -14,6 +14,8 @@ import com.njdaeger.bedrock.api.config.ISettings;
 import com.njdaeger.bedrock.api.user.IUser;
 import org.bukkit.Location;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.njdaeger.bedrock.api.Bedrock.translate;
@@ -22,9 +24,8 @@ import static com.njdaeger.bedrock.api.lang.Message.*;
 
 public final class BasicCommands {
 
-    private final ISettings settings = Bedrock.getBedrock().getSettings();
-
     public BasicCommands() {
+
         BedrockBuilder.builder("afk")
                       .description(AFK_DESC)
                       .usage(AFK_USAGE)
@@ -65,34 +66,36 @@ public final class BasicCommands {
                       .permission(COMMAND_SPEED, COMMAND_SPEED_OTHER)
                       .description(SPEED_DESC)
                       .usage(SPEED_USAGE)
-                      //.completer(this::speedTab)
+                      .completer(this::speedTab)
                       .executor(this::speed)
                       .minArgs(1)
                       .maxArgs(2)
                       .aliases("walkspeed", "flyspeed")
                       .build()
                       .register();
+
+        BedrockBuilder.builder("back")
+                      .senders(SenderType.PLAYER)
+                      .permission(COMMAND_BACK)
+                      .description(BACK_DESC)
+                      .usage(BACK_USAGE)
+                      .executor(this::back)
+                      .maxArgs(0)
+                      .build()
+                      .register();
+
+        BedrockBuilder.builder("nick")
+                      .senders(SenderType.PLAYER, SenderType.CONSOLE)
+                      .description(NICK_DESC)
+                      .usage(NICK_USAGE)
+                      .permission(COMMAND_NICK_OTHER, COMMAND_NICK)
+                      .aliases("setnick", "nickname", "displayname")
+                      .minArgs(1)
+                      .maxArgs(2)
+                      .executor(this::nick)
+                      .build()
+                      .register();
         /*
-        BedrockCommand backCommand = BedrockCommand.builder("back")
-                .senders(SenderType.PLAYER)
-                .permission(COMMAND_BACK)
-                .description(BACK_DESC)
-                .usage(BACK_USAGE)
-                .executor(this::back)
-                .maxArgs(0)
-                .build();
-               
-        BedrockCommand nickCommand = BedrockCommand.builder("nick")
-                .senders(SenderType.PLAYER, SenderType.CONSOLE)
-                .description(NICK_DESC)
-                .usage(NICK_USAGE)
-                .permission(COMMAND_NICK_OTHER, COMMAND_NICK)
-                .aliases("setnick", "nickname", "displayname")
-                .minArgs(1)
-                .maxArgs(2)
-                .executor(this::nick)
-                .build();
-        
         BedrockCommand infoBoardCommand = BedrockCommand.builder("infoboard")
                 .senders(SenderType.PLAYER)
                 .description(INFOBOARD_DESC)
@@ -111,6 +114,8 @@ public final class BasicCommands {
      * @param context command context
      */
     private void afk(CommandContext context) {
+
+        ISettings settings = context.getSettings();
 
         Location location = context.getLocation();
         String message = AFK_AWAY_MESSAGE.translate(
@@ -203,6 +208,8 @@ public final class BasicCommands {
      */
     private void gamemode(CommandContext context) throws BCIException {
 
+        ISettings settings = context.getSettings();
+
         if (context.subCommand(SenderType.CONSOLE, this::gamemodeConsole)) return;
         IUser user = context.asUser();
 
@@ -251,6 +258,7 @@ public final class BasicCommands {
      * @param context tab context
      */
     private void gamemodeTab(TabContext context) {
+        ISettings settings = Bedrock.getSettings();
         String[] gamemodes =
                 settings.hasGamemodeSpecificPermissions() ?
                         Stream.of(Gamemode.values()).filter(g -> context.hasPermission(g.getPermission())).map(Gamemode::getNicename).toArray(String[]::new) :
@@ -261,6 +269,8 @@ public final class BasicCommands {
     }
 
     private void speed(CommandContext context) throws BCIException {
+
+        ISettings settings = context.getSettings();
 
         //Send the speed off to the console if the console is sending it.
         if (context.subCommand(SenderType.CONSOLE, this::speedConsole)) return;
@@ -273,7 +283,7 @@ public final class BasicCommands {
         //the speed to 10 (for greater than 10) or -10 (for less than 10)
         speed = (speed > 10 || speed < -10 ? ((speed < -10) ? -10 : 10) : speed);
 
-        //Retrieving the user if possible. or throwing an error. that works too
+        //Retrieving the user if possible... or throwing an error, that works too
         IUser user = null;
         if (context.isLength(1)) user = context.asUser();
         else if (context.isUserAt(1)) user = context.userAt(1);
@@ -309,8 +319,8 @@ public final class BasicCommands {
         user.setSpeed(type, speed);
         if (context.isLength(1)) context.pluginMessage(SPEED_SELF, type.getNicename(), speed);
         else {
-            context.pluginMessage(SPEED_OTHER_SENDER, user.getName(), user.getDisplayName(), type, speed);
-            user.pluginMessage(SPEED_OTHER_RECEIVER, context.getName(), context.getDisplayName(), type, speed);
+            context.pluginMessage(SPEED_OTHER_SENDER, user.getName(), user.getDisplayName(), type.getNicename(), speed);
+            user.pluginMessage(SPEED_OTHER_RECEIVER, context.getName(), context.getDisplayName(), type.getNicename(), speed);
         }
 
     }
@@ -332,142 +342,68 @@ public final class BasicCommands {
         context.pluginMessage(SPEED_OTHER_SENDER, user.getName(), user.getDisplayName(), type, speed);
         user.pluginMessage(SPEED_OTHER_RECEIVER, context.getName(), context.getDisplayName(), type, speed);
     }
-}
 
-    /*
-    private void speed1(CommandContext context) {
-        
-        IUser user;
-        double speed;
-        SpeedType type;
-        
-        //
-        //Checking who the sender is referring to
-        //
-        if (context.isLength(1)) {
-            if (context.getSender().getType() == SenderType.CONSOLE) {
-                context.notEnoughArgs(2, 1);
-                return;
-            }
-            user = context.getUser();
-        } else {
-            //We know the sender is affecting another player, do a permission check
-            if (!context.hasPermission(COMMAND_SPEED_OTHER)) {
-               context.noPermission(COMMAND_SPEED_OTHER);
-               return;
-            }
-            user = context.getUser(1);
-        }
-        
-        //Check if the user is null. It shouldnt be if the sender is acting upon themselves
-        if (user == null) {
-            context.userNotFound(context.argAt(1));
-            return;
-        }
-        
-        //
-        //Gotta check the alias to see if the type is specified
-        //
-        switch (context.getAlias().toLowerCase()) {
-        case "walkspeed":
-            if (!context.hasPermission(COMMAND_SPEED_WALK)) {
-                context.noPermission(COMMAND_SPEED_WALK);
-                return;
-            }
-            type = SpeedType.WALKING;
-            break;
-        case "flyspeed":
-            if (!context.hasPermission(COMMAND_SPEED_FLY)) {
-                context.noPermission(COMMAND_SPEED_FLY);
-                return;
-            }
-            type = SpeedType.FLYING;
-            break;
-        default:
-            //Nothing was specified, so we gotta get the type on our own
-            type = user.getMovementType();
-        }
-    
-        //Check if theyre trying to reset their speed.
-        if (context.isLength(1) && context.argAt(0).equalsIgnoreCase("reset")) {
-            speed = 1;
-        } else {
-            try {
-                speed = Double.parseDouble(context.argAt(0));
-            } catch (NumberFormatException e) {
-                context.pluginMessage(ERROR_NOT_A_NUMBER, context.argAt(0));
-                return;
-            }
-            if (speed > 10) {
-                speed = 10;
-            }
-            if (speed < 0) {
-                speed = 0;
-            }
-        }
-        
-        if (context.isLength(2)) {
-            user.pluginMessage(SPEED_OTHER_RECEIVER, context.getDisplayName(), type.getNicename(), speed);
-            context.pluginMessage(SPEED_OTHER_SENDER, user.getDisplayName(), type.getNicename(), speed);
-        } else {
-            context.pluginMessage(SPEED_SELF, type.getNicename(), speed);
-        }
-        
-        user.setSpeed(type, Float.parseFloat(Double.toString(speed)));
+    private void speedTab(TabContext context) {
+        context.completionAt(0, tabContext -> IntStream.rangeClosed(0, 10).mapToObj(Integer::toString).collect(Collectors.toList()));
+        context.playerCompletionAt(1);
     }
-    /*
-    private void speedTab(BedrockTabContext context) {
-        context.completionAt(0, 0, 10);
-        context.playerCompletion(1);
+
+    //todo: back history?
+    // history max recording
+    // save history
+    // forward
+    // back [user]
+    private void back(CommandContext context) {
+        IUser user = context.asUser();
+        context.asUser().teleport(user.getLastLocation());
+        context.pluginMessage(BACK_MESSAGE, user.getName(), user.getDisplayName(), user.getX(), user.getY(), user.getZ(), user.getWorld().getName());
     }
-    
-    private void back(BedrockCommandContext context) {
-        context.getUser().teleport(context.getUser().getLastLocation());
-        context.pluginMessage(BACK_MESSAGE);
-    }
-    
-    //Remake this entire command it looks like shit
-    private void nick(BedrockCommandContext context) {
+
+    /* todo options:
+
+        characterWhitelist
+        inverseWhitelist
+        maxlength
+        multisame
+        resetwords
+
+
+     */
+    private void nick(CommandContext context) throws BedrockException {
         
         boolean reset = context.argAt(0).equalsIgnoreCase("off") || context.argAt(0).equalsIgnoreCase("reset");
         IUser user;
         
         if (context.isLength(1)) {
-            if (context.isConsole()) {
-                context.notEnoughArgs(2, 1);
-                return;
-            }
-            user = context.getUser();
+            if (context.isConsole()) context.notEnoughArgs(2, 1);
+
+            user = context.asUser();
             if (reset) {
+                user.pluginMessage(NICK_RESET_SELF, user.getDisplayName(), user.getName());
                 user.setDisplayName(user.getName());
-                user.pluginMessage(NICK_RESET_SELF);
                 return;
             }
+            context.pluginMessage(NICK_SELF_MESSAGE, user.getDisplayName(), context.argAt(0));
             user.setDisplayName(context.argAt(0));
-            context.pluginMessage(NICK_SELF_MESSAGE, context.argAt(0));
             return;
         }
-        
-        user = context.getUser(1);
-        
-        if (user == null) {
-            context.userNotFound(context.argAt(1));
-            return;
-        }
+
+        if (!context.isUserAt(1)) context.userNotFound(1);
+        user = context.userAt(1);
         
         if (reset) {
+            user.pluginMessage(NICK_RESET_OTHER_RECEIVER, user.getDisplayName(), user.getName(), context.getName(), context.getDisplayName());
+            context.pluginMessage(NICK_RESET_OTHER_SENDER, user.getDisplayName(), user.getName(), user.getName(), user.getDisplayName());
             user.setDisplayName(user.getName());
-            user.pluginMessage(NICK_RESET_OTHER_RECEIVER, context.getDisplayName());
-            context.pluginMessage(NICK_RESET_OTHER_SENDER, user.getDisplayName());
             return;
         }
     
-        user.pluginMessage(NICK_OTHER_RECEIVER, context.getDisplayName(), context.argAt(0));
-        context.pluginMessage(NICK_OTHER_SENDER, user.getDisplayName(), context.argAt(0));
+        user.pluginMessage(NICK_OTHER_RECEIVER, user.getDisplayName(), context.argAt(0), context.getName(), context.getDisplayName());
+        context.pluginMessage(NICK_OTHER_SENDER, user.getDisplayName(), context.argAt(0), user.getName(), user.getDisplayName());
         user.setDisplayName(context.argAt(0));
     }
     
-    private void infoBoard(BedrockCommandContext context) {
+    /*private void infoBoard(BedrockCommandContext context) {
         boolean run = true;
         Message msg = Message.INFOBOARD_ENABLED;
         if (context.getUser().hasInfobard()) {
@@ -477,5 +413,5 @@ public final class BasicCommands {
         context.getUser().runInfobard(run);
         context.pluginMessage(msg);
         
-    }
-}*/
+    }*/
+}
