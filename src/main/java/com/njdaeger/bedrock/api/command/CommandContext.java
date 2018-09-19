@@ -5,7 +5,7 @@ import com.njdaeger.bci.base.BCICommand;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.Gamemode;
 import com.njdaeger.bedrock.api.IBedrock;
-import com.njdaeger.bedrock.api.config.ISettings;
+import com.njdaeger.bedrock.api.settings.ISettings;
 import com.njdaeger.bedrock.api.lang.Message;
 import com.njdaeger.bedrock.api.Permission;
 import com.njdaeger.bedrock.api.command.exceptions.BedrockException;

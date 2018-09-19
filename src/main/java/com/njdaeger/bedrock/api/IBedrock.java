@@ -7,7 +7,7 @@ import com.njdaeger.bedrock.api.chat.IChannel;
 import com.njdaeger.bedrock.api.command.Command;
 import com.njdaeger.bedrock.api.command.CommandStore;
 import com.njdaeger.bedrock.api.command.CommandWrapper;
-import com.njdaeger.bedrock.api.config.ISettings;
+import com.njdaeger.bedrock.api.settings.ISettings;
 import com.njdaeger.bedrock.api.lang.Message;
 import com.njdaeger.bedrock.api.lang.MessageFile;
 import com.njdaeger.bedrock.api.user.IUser;

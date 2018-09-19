@@ -1,7 +1,7 @@
 package com.njdaeger.bedrock.api.lang;
 
 import com.njdaeger.bedrock.api.Bedrock;
-import com.njdaeger.bedrock.api.config.ISettings;
+import com.njdaeger.bedrock.api.settings.ISettings;
 
 import java.util.function.Function;
 

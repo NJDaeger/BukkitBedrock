@@ -10,7 +10,7 @@ import com.njdaeger.bedrock.api.command.CommandContext;
 import com.njdaeger.bedrock.api.command.TabContext;
 import com.njdaeger.bedrock.api.command.exceptions.BedrockException;
 import com.njdaeger.bedrock.api.command.exceptions.UnknownGamemodeException;
-import com.njdaeger.bedrock.api.config.ISettings;
+import com.njdaeger.bedrock.api.settings.ISettings;
 import com.njdaeger.bedrock.api.user.IUser;
 import org.bukkit.Location;
 

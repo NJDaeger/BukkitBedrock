@@ -1,22 +1,16 @@
 package com.njdaeger.bedrock;
 
-import com.njdaeger.bci.base.BCICommand;
 import com.njdaeger.bedrock.api.Bedrock;
 import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.chat.IChannel;
-import com.njdaeger.bedrock.api.command.Command;
-import com.njdaeger.bedrock.api.command.CommandContext;
 import com.njdaeger.bedrock.api.command.CommandStore;
-import com.njdaeger.bedrock.api.command.TabContext;
-import com.njdaeger.bedrock.api.config.ISettings;
+import com.njdaeger.bedrock.api.settings.ISettings;
 import com.njdaeger.bedrock.api.lang.ExtractJarContent;
 import com.njdaeger.bedrock.api.lang.MessageFile;
 import com.njdaeger.bedrock.commands.BasicCommands;
-import com.njdaeger.bedrock.commands.ChatCommands;
-import com.njdaeger.bedrock.commands.HomeCommands;
 import com.njdaeger.bedrock.commands.ServerCommands;
 import com.njdaeger.bedrock.config.ChannelConfig;
-import com.njdaeger.bedrock.config.Settings;
+import com.njdaeger.bedrock.settings.Settings;
 import com.njdaeger.bedrock.listeners.PlayerListener;
 import com.njdaeger.bedrock.user.UserMap;
 import org.bukkit.Bukkit;
@@ -26,7 +20,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class BedrockPlugin extends JavaPlugin implements IBedrock, Listener {
     

@@ -6,7 +6,7 @@ import com.njdaeger.bedrock.api.IBedrock;
 import com.njdaeger.bedrock.api.command.BedrockBuilder;
 import com.njdaeger.bedrock.api.command.CommandContext;
 import com.njdaeger.bedrock.api.command.TabContext;
-import com.njdaeger.bedrock.api.config.ISettings;
+import com.njdaeger.bedrock.api.settings.ISettings;
 
 public class ServerCommands {
 

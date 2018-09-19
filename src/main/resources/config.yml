@@ -135,3 +135,27 @@ speed:
   ###
   ### Default is true
   negative-permission: true
+
+###
+nick:
+
+  ### What characters should be able to be used in a nickname?
+  ###
+  ### This value accepts regular expressions. If the regular expression is
+  ### invalid, the value will default to the regular Minecraft username pattern
+  ###
+  ### Default is "([0-z]\w+)"
+  character-whitelist: "([0-z]\w+)"
+
+
+  inverse-whitelist: false
+
+  allow-chatcolor: true
+
+  chatcolor-permission: true
+
+  maxlength: 16
+
+  allow-reuse: false
+
+  reuse-permission: true
