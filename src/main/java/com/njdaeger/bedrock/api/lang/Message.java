@@ -131,7 +131,7 @@ public enum Message {
      * BLOCKZ - The users z pos<p>
      * WORLD - The users world name
      */
-    AFK_BACK_MESSAGE("afk.backMessage", ISettings::getAfkBackMessage, "USERNAME", "DISPLAYNAME", "BLOCKX", "BLOCKY", "BLOCKZ", "WORLD"),
+    AFK_BACK_MESSAGE("afk.backMessage", ISettings::getAfkBackFormat, "USERNAME", "DISPLAYNAME", "BLOCKX", "BLOCKY", "BLOCKZ", "WORLD"),
     /**
      * USERNAME - The users name<p>
      * DISPLAYNAME - The users display name<p>
@@ -141,7 +141,7 @@ public enum Message {
      * WORLD - The users world name<p>
      * REASON - Reason for going afk
      */
-    AFK_AWAY_MESSAGE_MOREINFO("afk.awayMessageMoreInfo", ISettings::getAfkAwayMoreInfoMessage, "USERNAME", "DISPLAYNAME", "BLOCKX", "BLOCKY", "BLOCKZ", "WORLD", "REASON"),
+    AFK_AWAY_MESSAGE_MOREINFO("afk.awayMessageMoreInfo", ISettings::getAfkAwayMoreInfoFormat, "USERNAME", "DISPLAYNAME", "BLOCKX", "BLOCKY", "BLOCKZ", "WORLD", "REASON"),
     
     /**
      * No placeholders

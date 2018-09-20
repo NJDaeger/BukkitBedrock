@@ -157,7 +157,7 @@ public interface ISettings {
      * Get the custom afk back message format
      * @return The format if set or enabled. Null otherwise.
      */
-    String getAfkBackMessage();
+    String getAfkBackFormat();
 
     /**
      * Check whether the afk back message is enabled or not
@@ -169,7 +169,7 @@ public interface ISettings {
      * Get the custom afk away more info message format
      * @return THe format if set or enabled. Null otherwise
      */
-    String getAfkAwayMoreInfoMessage();
+    String getAfkAwayMoreInfoFormat();
 
     /**
      * Check whether the afk away more info is enabled or not

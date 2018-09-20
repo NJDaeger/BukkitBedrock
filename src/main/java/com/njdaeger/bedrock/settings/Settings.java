@@ -14,39 +14,39 @@ public final class Settings extends Configuration implements ISettings {
 
     static final String NONE = "%none%";
 
-    private transient boolean hasGamemodeSpecificPerms;
+    private transient boolean gamemodeSpecificPermissions;
     private transient String lang;
     private transient boolean debugMode;
 
-    private transient boolean hasAfkAwayMessage;
+    private transient boolean afkAwayMessage;
     private transient boolean hasAfkBackMessage;
-    private transient boolean hasAfkAwayMoreInfoMessage;
-    private transient boolean isAfkMoreInfoEnabled;
+    private transient boolean afkAwayMoreInfoMessage;
+    private transient boolean afkMoreInfoEnabled;
     private transient String afkAwayMoreInfoFormat;
     private transient String afkAwayFormat;
     private transient String afkBackFormat;
 
     private transient int historyRecordLimit;
-    private transient boolean saveHistory;
+    private transient boolean saveHistoryLog;
     private transient int maxSaveHistory;
 
-    private transient Pattern characterPattern;
-    private transient boolean invertedWhitelist;
-    private transient boolean allowChatColor;
-    private transient boolean chatColorPerm;
-    private transient int maxLength;
-    private transient boolean allowReuse;
-    private transient boolean reusePermission;
+    private transient Pattern nickCharacterWhitelist;
+    private transient boolean nickInversedWhitelist;
+    private transient boolean allowNickColor;
+    private transient boolean nickColorPermission;
+    private transient int maxNickLength;
+    private transient boolean allowNickDuplicates;
+    private transient boolean nickDuplicatePermission;
 
-    private transient boolean speedSpecificPerms;
+    private transient boolean speedSpecificPermissions;
     private transient boolean maxSpeedBypass;
-    private transient float maxWalk;
-    private transient float maxFly;
-    private transient boolean allowNegative;
-    private transient boolean negativePerm;
+    private transient float maxWalkSpeed;
+    private transient float maxFlySpeed;
+    private transient boolean allowNegativeSpeed;
+    private transient boolean negativeSpeedPermission;
     private transient boolean minSpeedBypass;
-    private transient float minWalk;
-    private transient float minFly;
+    private transient float minWalkSpeed;
+    private transient float minFlySpeed;
 
     public Settings(IBedrock plugin) {
         super(plugin, ConfigType.YML, "config");
@@ -56,18 +56,18 @@ public final class Settings extends Configuration implements ISettings {
     public void reloadSettings() {
         this.lang = LANG_FILE.getString();
         this.debugMode = DEBUG.getBoolean();
-        this.hasGamemodeSpecificPerms = GAMEMODE_SPECIFIC_PERMISSIONS.getBoolean();
-        debug("Gamemode Specific Perms: " + hasGamemodeSpecificPerms);
+        this.gamemodeSpecificPermissions = GAMEMODE_SPECIFIC_PERMISSIONS.getBoolean();
+        debug("Gamemode Specific Perms: " + gamemodeSpecificPermissions);
 
         //afk more info options
-        this.isAfkMoreInfoEnabled = AFK_MORE_INFO.getBoolean();
-        this.hasAfkAwayMoreInfoMessage = isAfkMoreInfoEnabled && (AFK_AWAY_MORE_INFO_MESSAGE.get() == null || !AFK_AWAY_MORE_INFO_MESSAGE
+        this.afkMoreInfoEnabled = AFK_MORE_INFO.getBoolean();
+        this.afkAwayMoreInfoMessage = afkMoreInfoEnabled && (AFK_AWAY_MORE_INFO_MESSAGE.get() == null || !AFK_AWAY_MORE_INFO_MESSAGE
                 .get()
                 .equals(NONE));
-        this.afkAwayMoreInfoFormat = hasAfkAwayMoreInfoMessage ? AFK_AWAY_MORE_INFO_MESSAGE.getString() : null;
+        this.afkAwayMoreInfoFormat = afkAwayMoreInfoMessage ? AFK_AWAY_MORE_INFO_MESSAGE.getString() : null;
         System.out.println(afkAwayMoreInfoFormat);
-        debug("AFK More Info Enabled: " + isAfkMoreInfoEnabled);
-        debug("AFK More Info Format: " + (hasAfkAwayMoreInfoMessage ? "custom" : "default"));
+        debug("AFK More Info Enabled: " + afkMoreInfoEnabled);
+        debug("AFK More Info Format: " + (afkAwayMoreInfoMessage ? "custom" : "default"));
 
         //afk back options
         this.hasAfkBackMessage = AFK_BACK_MESSAGE.get() == null || AFK_BACK_MESSAGE.get().equals(NONE);
@@ -75,31 +75,31 @@ public final class Settings extends Configuration implements ISettings {
         debug("AFK Back Message: " + hasAfkBackMessage);
 
         //afk away options
-        this.hasAfkAwayMessage = AFK_AWAY_MESSAGE.get() == null || AFK_AWAY_MESSAGE.get().equals(NONE);
-        this.afkAwayFormat = hasAfkAwayMessage ? AFK_AWAY_MESSAGE.getString() : null;
-        debug("AFK Away Message: " + hasAfkAwayMessage);
+        this.afkAwayMessage = AFK_AWAY_MESSAGE.get() == null || AFK_AWAY_MESSAGE.get().equals(NONE);
+        this.afkAwayFormat = afkAwayMessage ? AFK_AWAY_MESSAGE.getString() : null;
+        debug("AFK Away Message: " + afkAwayMessage);
 
         this.maxSaveHistory = BACK_SAVE_HISTORY_MAX.getInt();
         this.historyRecordLimit = BACK_MAX_RECORD.getInt();
-        this.saveHistory = BACK_SAVE_HISTORY.getBoolean();
+        this.saveHistoryLog = BACK_SAVE_HISTORY.getBoolean();
 
-        this.characterPattern = Pattern.compile(NICK_CHARACTER_WHITELIST.getString());
-        this.invertedWhitelist = NICK_INVERSE_WHITELIST.getBoolean();
-        this.allowChatColor = NICK_CHATCOLOR.getBoolean();
-        this.chatColorPerm = allowChatColor && NICK_COLOR_PERMISSION.getBoolean();
-        this.maxLength = NICK_MAXLENGTH.getInt();
-        this.allowReuse = NICK_REUSE.getBoolean();
-        this.reusePermission = allowReuse && NICK_REUSE_PERMiSSION.getBoolean();
+        this.nickCharacterWhitelist = Pattern.compile(NICK_CHARACTER_WHITELIST.getString());
+        this.nickInversedWhitelist = NICK_INVERSE_WHITELIST.getBoolean();
+        this.allowNickColor = NICK_CHATCOLOR.getBoolean();
+        this.nickColorPermission = allowNickColor && NICK_COLOR_PERMISSION.getBoolean();
+        this.maxNickLength = NICK_MAXLENGTH.getInt();
+        this.allowNickDuplicates = NICK_REUSE.getBoolean();
+        this.nickDuplicatePermission = allowNickDuplicates && NICK_REUSE_PERMiSSION.getBoolean();
 
-        this.speedSpecificPerms = SPEED_SPECIFIC_PERMISSIONS.getBoolean();
+        this.speedSpecificPermissions = SPEED_SPECIFIC_PERMISSIONS.getBoolean();
         this.maxSpeedBypass = SPEED_BYPASS_MAX_PERMISSION.getBoolean();
         this.minSpeedBypass = SPEED_BYPASS_MIN_PERMISSION.getBoolean();
-        this.allowNegative = SPEED_ALLOW_NEGATIVE.getBoolean();
-        this.negativePerm = allowNegative && SPEED_NEGATIVE_PERMISSION.getBoolean();
-        this.minWalk = SPEED_MIN_WALK.getFloat();
-        this.maxWalk = SPEED_MAX_WALK.getFloat();
-        this.minFly = SPEED_MIN_FLY.getFloat();
-        this.maxFly = SPEED_MAX_FLY.getFloat();
+        this.allowNegativeSpeed = SPEED_ALLOW_NEGATIVE.getBoolean();
+        this.negativeSpeedPermission = allowNegativeSpeed && SPEED_NEGATIVE_PERMISSION.getBoolean();
+        this.minWalkSpeed = SPEED_MIN_WALK.getFloat();
+        this.maxWalkSpeed = SPEED_MAX_WALK.getFloat();
+        this.minFlySpeed = SPEED_MIN_FLY.getFloat();
+        this.maxFlySpeed = SPEED_MAX_FLY.getFloat();
 
     }
 
@@ -115,12 +115,12 @@ public final class Settings extends Configuration implements ISettings {
 
     @Override
     public boolean hasGamemodeSpecificPermissions() {
-        return hasGamemodeSpecificPerms;
+        return gamemodeSpecificPermissions;
     }
 
     @Override
     public boolean hasSpeedSpecificPermissions() {
-        return speedSpecificPerms;
+        return speedSpecificPermissions;
     }
 
     @Override
@@ -130,22 +130,22 @@ public final class Settings extends Configuration implements ISettings {
 
     @Override
     public float getMaxWalkSpeed() {
-        return maxWalk;
+        return maxWalkSpeed;
     }
 
     @Override
     public float getMaxFlySpeed() {
-        return maxFly;
+        return maxFlySpeed;
     }
 
     @Override
     public boolean allowNegativeSpeed() {
-        return allowNegative;
+        return allowNegativeSpeed;
     }
 
     @Override
     public boolean hasNegativeSpeedPermission() {
-        return negativePerm;
+        return negativeSpeedPermission;
     }
 
     @Override
@@ -155,47 +155,47 @@ public final class Settings extends Configuration implements ISettings {
 
     @Override
     public float getMinWalkSpeed() {
-        return minWalk;
+        return minWalkSpeed;
     }
 
     @Override
     public float getMinFlySpeed() {
-        return minFly;
+        return minFlySpeed;
     }
 
     @Override
     public Pattern getNickCharacterWhitelist() {
-        return characterPattern;
+        return nickCharacterWhitelist;
     }
 
     @Override
     public boolean hasNickInversedWhitelist() {
-        return invertedWhitelist;
+        return nickInversedWhitelist;
     }
 
     @Override
     public boolean allowNickColor() {
-        return allowChatColor;
+        return allowNickColor;
     }
 
     @Override
     public boolean useNickColorPermission() {
-        return chatColorPerm;
+        return nickColorPermission;
     }
 
     @Override
     public int getMaxNickLength() {
-        return maxLength;
+        return maxNickLength;
     }
 
     @Override
     public boolean allowNickDuplicates() {
-        return allowReuse;
+        return allowNickDuplicates;
     }
 
     @Override
     public boolean useNickDuplicatePermission() {
-        return reusePermission;
+        return nickDuplicatePermission;
     }
 
     @Override
@@ -205,7 +205,7 @@ public final class Settings extends Configuration implements ISettings {
 
     @Override
     public boolean saveHistoryLog() {
-        return saveHistory;
+        return saveHistoryLog;
     }
 
     @Override
@@ -220,11 +220,11 @@ public final class Settings extends Configuration implements ISettings {
 
     @Override
     public boolean hasAfkAwayMessage() {
-        return hasAfkAwayMessage;
+        return afkAwayMessage;
     }
 
     @Override
-    public String getAfkBackMessage() {
+    public String getAfkBackFormat() {
         return afkBackFormat;
     }
 
@@ -234,18 +234,18 @@ public final class Settings extends Configuration implements ISettings {
     }
 
     @Override
-    public String getAfkAwayMoreInfoMessage() {
+    public String getAfkAwayMoreInfoFormat() {
         return afkAwayMoreInfoFormat;
     }
 
     @Override
     public boolean hasAfkAwayMoreInfoMessage() {
-        return hasAfkAwayMoreInfoMessage;
+        return afkAwayMoreInfoMessage;
     }
 
     @Override
     public boolean isAfkMoreInfoEnabled() {
-        return isAfkMoreInfoEnabled;
+        return afkMoreInfoEnabled;
     }
 
 }
